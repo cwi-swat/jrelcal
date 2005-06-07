@@ -1,0 +1,179 @@
+\bc\begin{verbatim} 
+module Set (Set(..),emptySet,isEmpty,inSet,subSet,insertSet,
+            deleteSet,powerSet,power1Set,takeSet,(!!!),
+            list2set,set2list,size,mapS,filterS,
+            unionSet,intersectSet,diffSet, 
+            genUnion)
+
+where
+
+import List (sort) 
+\end{verbatim}\ec
+
+We implement sets as ordered lists without duplicates, and 
+show them in the usual set format $\{ a_1, a_2, \ldots \}$. 
+
+\bc\begin{verbatim} 
+newtype Set a = Set [a] deriving (Eq,Ord)
+
+instance (Show a) => Show (Set a) where
+    showsPrec _ (Set s) str = showSet s str
+
+showSet []     str = showString "{}" str
+showSet (x:xs) str = showChar '{' ( shows x ( showl xs str))
+   where showl []     str = showChar '}' str
+         showl (x:xs) str = showChar ',' (shows x (showl xs str))
+\end{verbatim}\ec
+
+The empty set: 
+
+\bc\begin{verbatim} 
+emptySet  :: Set a       
+emptySet = Set []
+
+isEmpty  :: Set a -> Bool            
+isEmpty (Set []) = True
+isEmpty _        = False
+\end{verbatim}\ec
+
+The `element of' ($\in$) relation: 
+
+\bc\begin{verbatim}
+inSet  :: (Ord a) => a -> Set a -> Bool  
+inSet x (Set s) = elem x (takeWhile (<= x) s)
+\end{verbatim}\ec
+
+The `subset of' ($\subseteq$) relation: 
+
+\bc\begin{verbatim}
+subSet :: (Ord a) => Set a -> Set a -> Bool
+subSet (Set []) _       = True  
+subSet (Set (x:xs)) set = (inSet x set) && subSet (Set xs) set 
+\end{verbatim}\ec
+
+The operation of inserting an element into a set: 
+
+\bc\begin{verbatim} 
+insertSet :: (Ord a) => a -> Set a -> Set a 
+insertSet x (Set s) = Set (insertList x s) 
+
+insertList x [] = [x]
+insertList x ys@(y:ys') = case compare x y of 
+                                 GT -> y : insertList x ys' 
+                                 EQ -> ys 
+                                 _  -> x : ys 
+\end{verbatim}\ec
+
+Deleting an element from a set: 
+
+\bc\begin{verbatim}
+deleteSet :: Ord a => a -> Set a -> Set a 
+deleteSet x (Set s) = Set (deleteList x s)
+
+deleteList x [] = []
+deleteList x ys@(y:ys') = case compare x y of 
+                                 GT -> y : deleteList x ys'
+                                 EQ -> ys'
+                                 _  -> ys
+\end{verbatim}\ec
+
+Conversion from list to set: 
+
+\bc\begin{verbatim}
+list2set :: Ord a => [a] -> Set a
+list2set xs = Set (foldr insertList [] xs)
+\end{verbatim}\ec
+
+Conversion from set to list: 
+
+\bc\begin{verbatim}
+set2list :: Set a -> [a] 
+set2list (Set xs) = xs
+\end{verbatim}\ec
+
+Size of a set: 
+
+\bc\begin{verbatim} 
+size :: Set a -> Int
+size = length . set2list
+\end{verbatim}\ec
+
+The $f$-map of a set $S$  is the set $\{ f x \mid x \in S \}$. 
+
+\bc\begin{verbatim} 
+mapS :: Ord b => (a -> b) -> Set a -> Set b
+mapS f = list2set . map f . set2list
+\end{verbatim}\ec
+
+Filtering for sets: 
+
+\bc\begin{verbatim} 
+filterS :: Ord a => (a -> Bool) -> Set a -> Set a
+filterS p = list2set . filter p . set2list
+\end{verbatim}\ec
+
+Implementation of power set $\pow A$: 
+
+\bc\begin{verbatim}
+powerSet :: Ord a => Set a -> Set (Set a)
+powerSet (Set xs) = 
+   Set (sort (map (\xs -> (list2set xs)) (powerList xs)))
+
+powerList  :: [a] -> [[a]]
+powerList  [] = [[]]
+powerList  (x:xs) = (powerList xs) 
+                     ++ (map (x:) (powerList xs))
+\end{verbatim}\ec
+
+Power set excluding the empty set ($\pow^+A$): 
+
+\bc\begin{verbatim}
+power1Set :: Ord a => Set a -> Set (Set a)
+power1Set s = deleteSet emptySet (powerSet s) 
+\end{verbatim}\ec
+
+Taking the first $n$ elements from a set: 
+
+\bc\begin{verbatim}
+takeSet :: Int -> Set a -> Set a
+takeSet n (Set xs) = Set (take n xs) 
+\end{verbatim}\ec
+
+Set lookup at an index: 
+
+\bc\begin{verbatim}
+infixl 9 !!!
+
+(!!!) :: Eq a => Set a -> Int -> a 
+(Set xs) !!! n = xs !! n
+\end{verbatim}\ec
+
+Implementations of $A \cup B$, $A \cap B$ and $A - B$: 
+
+\bc\begin{verbatim}
+unionSet :: Ord a => Set a -> Set a -> Set a
+unionSet (Set [])     set2  =  set2
+unionSet (Set (x:xs)) set2  =
+  insertSet x (unionSet (Set xs) (deleteSet x set2))
+
+intersectSet :: Ord a => Set a -> Set a -> Set a 
+intersectSet (Set [])     set2  =  Set []
+intersectSet (Set (x:xs)) set2 
+   | inSet x set2 = insertSet x (intersectSet (Set xs) set2)
+   | otherwise    = intersectSet (Set xs) set2
+
+diffSet :: Ord a => Set a -> Set a -> Set a
+diffSet (Set [])     set2  =  Set []
+diffSet set1     (Set [])  =  set1
+diffSet set1     (Set (x:xs)) 
+   | inSet x set1 = diffSet (deleteSet x set1) (Set xs)
+   | otherwise    = diffSet set1 (Set xs) 
+\end{verbatim}\ec
+
+Generalized set union: $\bigcup {\cal F} = \{ a \in A \mid A \in {\cal F} \}$. 
+
+\bc\begin{verbatim}
+genUnion :: Ord a => Set (Set a) -> Set a 
+genUnion (Set [])     = emptySet
+genUnion (Set (s:ss)) = unionSet s (genUnion (Set ss))
+\end{verbatim}\ec

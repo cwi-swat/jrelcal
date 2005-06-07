@@ -1,0 +1,14 @@
+package
+identification
+  name=JRelCal
+  version=0.1
+  location=http://www.cwi.nl/~storm
+  info=http://www.cwi.nl/~storm
+  description='Implementation of calculus of binary relations in Java'
+
+  keywords=meta-environment, library, taf, term, tree, sharing
+
+configuration interface
+
+requires
+

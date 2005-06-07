@@ -1,0 +1,713 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{latexsym,amssymb,amsmath,theorem,proof,calc,alltt}
+%\usepackage{parsetree}
+%\usepackage{tree-dvips}
+\usepackage{pst-tree}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.jpg}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                  % 
+%  VERSION Jan 2005                %
+%                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{mymacros}
+
+\newcommand{\close}[1]{\begin{array}{c}{#1} \\ {\times} \end{array}}
+\newcommand{\clsubs}[2]{\begin{array}{c}{#1} \\ {#2} \end{array}}
+\newcommand{\stack}[1]{\begin{array}{c}{#1} \end{array}}
+\newcommand{\barr}{\begin{array}{c}}
+\newcommand{\earr}{\end{array}}
+
+\newcommand{\EQ}{\approx}
+\newcommand{\NEQ}{\not\approx}
+
+\newcommand{\var}{{\rm var\:}}
+%\newcommand{\dom}{{\rm dom\:}}
+%\newcommand{\rng}{{\rm rng\:}}
+
+\newcommand{\bB}{\mbox{\boldmath $B$}}
+
+\newcommand{\ttop}{\mbox{\boldmath $\top\!\!\!\!\top$}}
+\newcommand{\bbot}{\mbox{\boldmath $\bot\!\!\!\!\bot$}}
+
+\newcommand{\bT}{\mbox{\boldmath $T$}}
+\newcommand{\cB}{\mbox{$\cal B$}}
+
+\newcommand{\cE}{{\cal E}}
+
+\newcommand{\href}[1]{}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\Exists}{\boldsymbol{\exists\!\!\!\exists}}
+\newcommand{\Forall}{\boldsymbol{\forall\!\!\!\forall}}
+\newcommand{\Neg}{\boldsymbol{\neg\!\!\!\neg}}
+\newcommand{\SC}{\ \boldsymbol{;}\ }
+
+\newsavebox{\fminibox}
+\newlength{\fminilength}
+\newenvironment{fminipage}[1][\linewidth]
+ {\setlength{\fminilength}{#1-2\fboxsep-2\fboxrule-1em}%
+  \bigskip\begin{lrbox}{\fminibox}\quad\begin{minipage}{\fminilength}\bigskip}
+ {\smallskip\end{minipage}\end{lrbox}\noindent\fbox{\usebox{\fminibox}}\bigskip}
+
+\newcommand{\bc}{\begin{fminipage}}
+\newcommand{\ec}{\end{fminipage}}
+
+\newenvironment{code}{\begin{fminipage}\begin{alltt}}%
+{\end{alltt}\end{fminipage}}
+
+\newenvironment{pcode}{\begin{fminipage}\begin{alltt}}%
+{\end{alltt}\end{fminipage}
+}
+
+\renewcommand{\impl}{\Rightarrow}
+
+\newtheorem{exercise}[theorem]{Exercise}
+
+\newcommand{\produces}{\longrightarrow}
+\newcommand{\yields}{\Rightarrow}
+
+\setlength{\textheight}{22cm}
+\setlength{\textwidth}{16cm}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+
+\setlength{\parindent}{0 ex} 
+\setlength{\parskip}{1.5 ex}
+
+\newcommand{\Ibox}[1]{[{\scriptstyle\:#1\: }]}
+\newcommand{\Idia}[1]{\langle{\scriptstyle\: #1\: }\rangle}
+\newcommand{\Icbox}[1]{[{\scriptstyle\: #1\:}]^{\:\breve{}}}
+\newcommand{\Icdia}[1]{\langle{\scriptstyle\: #1\: }\rangle^{\breve{}}}
+\newcommand{\Cbox}{\Box^{\:\breve{}}}
+\newcommand{\Cnu}{\nu^{\:\breve{}}}
+\newcommand{\Cdia}{\Diamond^{\breve{}}}
+\newcommand{\Cpi}{\pi^{\breve{}}}
+
+
+\title{Relational Analysis of Software Systems} 
+
+\author{Jan van Eijck\thanks{CWI, Amsterdam
+        and Uil-OTS, Utrecht, \texttt{jve@cwi.nl}}, 
+        Paul Klint\thanks{CWI, Amsterdam
+        and Informatics Institute, University of Amsterdam, \texttt{paulk@cwi.nl}}
+        and 
+        Tijs van der Storm\thanks{CWI, Amsterdam,\texttt{storm@cwi.nl}}
+}
+
+\begin{document}
+
+\maketitle 
+
+\begin{abstract} \noindent
+We present relational tools for analysing (large) software systems,
+based on an appropriate Haskell datatype for relations derived from
+Chapter 5 of \cite{DoeEij04:thr}. The main purpose is to demonstrate
+some very concrete applications of abstract relations, and to develop 
+a relational analysis tool for software engineering in an appropriate 
+functional language. Our tool is written in Haskell 98
+\cite{Haskell98:rep}, in `literate programming' style \cite{Knuth:lp}.
+\end{abstract} 
+
+\paragraph{Keywords:} \ldots
+
+%\paragraph{MSC codes:} 03B10, 03F03, 68N17, 68T15 
+
+\section{Introduction} 
+
+To be written
+
+\section{Module Declaration} 
+
+\bc\begin{verbatim}
+module RASS ( 
+
+        module Set,
+        module Graph,
+        module GraphViz,
+        module RASS
+
+) where 
+
+import List
+import System.IO.Unsafe (unsafePerformIO) 
+import Char
+import Set
+import Graph
+import GraphViz
+\end{verbatim}\ec
+
+The modules \verb^List^,  \verb^System^, \verb^System.IO.Unsafe^, \verb^Char^, 
+are standard Haskell modules, for operations on lists and characters, 
+for input/output routines, and for input/output outside the IO monad (`unsafe IO'), 
+respectively. The three modules \verb^Set^, \verb^Graph^ 
+and \verb^GraphViz^ are given in the appendices below. 
+
+
+%The module
+%\verb^ATermLib^ is the Haskell Aterm library that is 
+%part of {\em Strafunski}, a Haskell software bundle for 
+%generic programming and language processing \cite{LaeVis03:asal}. 
+%Aterms or `annotated terms' are documented in \cite{BraJonKli00:eat}.
+
+\section{Analyzing Procedure Call Structure}
+
+This example is from \cite{Klint03:atitr}. 
+
+Declaring types for procedure names and component names:
+
+\bc\begin{verbatim} 
+type Procedure = String
+type Component = String 
+\end{verbatim}\ec
+
+An example of a procedure calling relation (the links indicate 
+direct calls). 
+
+\bc\begin{verbatim}
+calls :: Rel Procedure
+calls = makeR [("a","b"),("b","c"),("b","d"),("d","c"),("d","e"),
+               ("f","e"),("f","g"),("g","e")]
+\end{verbatim}\ec
+
+The relation displayed as it is encoded: 
+
+\begin{verbatim}
+RASS> calls
+({"a","b","c","d","e","f","g"},
+ {"a","b","c","d","e","f","g"},
+  array (0,6) [(0,{1}),(1,{2,3}),(2,{}),(3,{2,4}),(4,{}),(5,{4,6}),(6,{4})])
+\end{verbatim}
+
+The set of edges of the relation: 
+
+\begin{verbatim}
+RASS> edges calls
+{("a","b"),("b","c"),("b","d"),("d","c"),("d","e"),("f","e"),("f","g"),("g","e")}
+\end{verbatim}
+
+Graphical display via the {\em dot} \cite{KouNor:dgwd}
+visualisation tool (\verb^writeRel^ writes the source for  {\em dot}
+to a file): 
+
+\begin{verbatim}
+RASS> writeRel "calls" calls
+\end{verbatim} 
+
+The result: 
+
+\begin{center}
+\includegraphics[width=2.5in]{calls}
+\end{center}
+
+\paragraph{Number of procedure calls} 
+
+\begin{verbatim} 
+RASS> size (edges calls)
+8
+\end{verbatim}
+
+\paragraph{Number of procedures} 
+
+\begin{verbatim} 
+RASS> size (carrier calls)
+7
+\end{verbatim}
+
+\paragraph{Entry points (or sources)} 
+
+\begin{verbatim} 
+RASS> sources calls
+{"a","f"}
+\end{verbatim} 
+
+\paragraph{Leaves (or sinks)} 
+
+\begin{verbatim} 
+RASS> sinks calls
+{"c","e"}
+\end{verbatim} 
+
+\paragraph{Indirect calls} 
+
+\begin{verbatim}
+RASS> edges (tc calls)
+{("a","b"),("a","c"),("a","d"),("a","e"),("b","c"),("b","d"),("b","e"),
+("d","c"),("d","e"),("f","e"),("f","g"),("g","e")}
+\end{verbatim}
+
+Viewed as a graph: 
+
+\begin{center}
+\includegraphics[width=3in]{tcalls}
+\end{center}
+
+
+\paragraph{Calls from given entry points} 
+
+\begin{verbatim}
+RASS> rightSection (tc calls) "a"
+{"b","c","d","e"}
+RASS> rightSection (tc calls) "f"
+{"e","g"}
+\end{verbatim}
+
+\paragraph{Procedures called from all entry points} \mbox{}
+
+\begin{verbatim}
+RASS> commonDescendants calls (sources calls)
+{"e"}
+\end{verbatim}
+
+\section{Analyzing the Component Structure of an Application} 
+
+The following example is again from \cite{Klint03:atitr}.
+Suppose the following relation gives the direct procedure dependencies of 
+an application: 
+
+\bc\begin{verbatim}
+calls2 :: Rel Procedure 
+calls2 = makeR [("main","a"),("main","b"),("a","b"),
+                ("a","c"),("a","d"),("b","d")]
+\end{verbatim}\ec
+
+In graph format: 
+
+\begin{center}
+\includegraphics[width=2in]{calls2}
+\end{center}
+
+Suppose the mapping from procedures to the components to which they belong is 
+as follows: 
+
+\bc\begin{verbatim} 
+belongsTo :: Procedure -> Component 
+belongsTo "main" = "Appl"
+belongsTo "a"    = "Appl"
+belongsTo "b"    = "DB"
+belongsTo "c"    = "Lib"
+belongsTo "d"    = "Lib"
+\end{verbatim}\ec
+
+Then the dependency structure between procedures can be lifted to a 
+dependency structure between components by means of the following function: 
+
+\bc\begin{verbatim}
+lift :: (Ord a, Ord b) => (a -> b) -> Rel a -> Rel b
+lift f = makeR . (map (\ (x,y) -> (f x, f y))) . edgelist
+\end{verbatim}\ec 
+
+We get:
+
+\begin{verbatim} 
+RASS> edges (lift belongsTo calls2)
+{("Appl","Appl"),("Appl","DB"),("Appl","Lib"),("DB","Lib")}
+RASS> writeRel "components" (lift belongsTo calls2)
+\end{verbatim}
+
+The \verb^components^ file displayed in graph format: 
+
+\begin{center}
+\includegraphics[width=1.5in]{components}
+\end{center}
+
+\section{Dataflow} 
+
+The following examples,  based on Aho, Sethi and Ullman 
+\cite{AhoSetUll:cptt}, 
+concern flow of control in computations. Nodes in a flow graph
+represent computations in basic blocks (where the computation 
+starts at the beginning of the block and leaves at the end, without
+halt or possibility of branching except at the end), 
+edges represent the flow of control between basic blocks. 
+An edge from block $B_1$ to block $B_2$ expresses that $B_2$ can 
+immediately follow $B_1$ in some execution sequence. 
+
+Here is an example flow graph taken from \cite{AhoSetUll:cptt}.
+
+\bc\begin{verbatim}
+flow :: Rel Int
+flow = makeR [(1,2),(1,3),(2,3),(3,4),(4,3),(4,5),(4,6),(5,7),(6,7),
+              (7,4),(7,8),(8,9),(8,10),(8,3),(9,1),(10,7)]
+\end{verbatim}\ec
+
+Viewed as a graph: 
+
+\begin{center}
+\includegraphics[width=2.5in]{flow}
+\end{center}
+
+\paragraph{Domination} \mbox{}
+
+
+\cite{AhoSetUll:cptt}, Section 10.4, defines the relation of domination on 
+flow graphs as follows. 
+\begin{quote}
+ Let a flow graph $G$ and an initial node $i$ in the graph be given. \\
+ $d$ dominates $n$ in $(G,i)$ if every path from $i$ to $n$ passes through $d$. 
+\end{quote}
+
+Aho, Sethi and Ullman note that the dominate relation is reflexive:
+every node $n$ dominates itself, for every path from $i$ to $n$ ends
+in $n$.
+
+Note that the initial node has to be given explicitly. Taking the set
+of initial nodes to be the sources of the relation will not work (the
+example graph has no sources).
+
+The importance of the domination relation is in loop detection. See below. 
+
+Here is a straightforward implementation of the definition:
+
+\bc\begin{verbatim} 
+domi  :: Ord a => Rel a -> a -> Rel a
+domi r i = 
+  let  
+    univ = edgelist (total (carrier r))
+   in 
+     makeR [ (d,n) | (d,n) <- univ, 
+                      not (inSet n (avoidFrom r i d)) ]
+\end{verbatim}\ec
+
+This gives: 
+
+\begin{verbatim}
+RASS> edges (domi flow 1)
+{(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),
+ (2,2),(3,3),(3,4),(3,5),(3,6),(3,7),(3,8),(3,9),(3,10),(4,4),
+ (4,5),(4,6),(4,7),(4,8),(4,9),(4,10),(5,5),(6,6),(7,7),(7,8),
+ (7,9),(7,10),(8,8),(8,9),(8,10),(9,9),(10,10)}
+\end{verbatim}
+
+Write the source for {\em dot}\/: 
+
+\begin{verbatim}
+RASS> writeRel "domi" (domi flow 1)
+\end{verbatim} 
+
+The result displayed: 
+
+\begin{center}
+\includegraphics[width=5in]{domi}
+\end{center}
+
+Aho, Sethi and Ullman define immediate dominators in terms of
+domination, as follows.
+
+\begin{quote} 
+ Let a flow graph $G$ and an initial node $i$ in the graph be given. \\
+ $m$ immediately dominates $n$ in $(G,i)$ if 
+  \begin{itemize}   
+    \item $m$ dominates $n$ in $(G,i)$, 
+    \item if $d \neq n$ and $d$ dominates $n$ in $(G,i)$, 
+          then $d$ dominates $m$ in $(G,i)$. 
+  \end{itemize} 
+\end{quote}
+
+This definition has a flaw, for it omits the crucial condition 
+of irreflexivity. We amend it as follows: 
+
+\begin{quote} 
+ Let a flow graph $G$ and an initial node $i$ in the graph be given. \\
+ $m$ immediately dominates $n$ in $(G,i)$ if 
+  \begin{itemize}   
+    \item $m$ dominates $n$ in $(G,i)$, 
+    \item $m \neq n$, 
+    \item if $d \neq n$ and $d$ dominates $n$ in $(G,i)$, 
+          then $d$ dominates $m$ in $(G,i)$. 
+  \end{itemize} 
+\end{quote}
+
+Here is the implementation (again, we can follow the definition to the
+letter):
+
+\bc\begin{verbatim}
+idomi :: Ord a => Rel a -> a -> Rel a 
+idomi r i = 
+  let
+    dr = domi r i
+  in 
+  makeRL 
+   [ (m,n) | (m,n) <- edgelist dr,
+              m /= n, 
+              all (\ k -> inSet k (leftSection dr m))
+                  [ d | (d,e) <- edgelist dr, e == n, d /= n ]   ]
+\end{verbatim}\ec
+
+This gives: 
+
+\begin{verbatim} 
+RASS> edges (idomi flow 1)
+{(1,2),(1,3),(3,4),(4,5),(4,6),(4,7),(7,8),(8,9),(8,10)}
+\end{verbatim}
+
+Write the source for {\em dot}\/: 
+
+\begin{verbatim}
+RASS> writeRel "idom" (idomi flow 1)
+\end{verbatim} 
+
+The result displayed: 
+
+\begin{center}
+\includegraphics[width=2.5in]{idom}
+\end{center}
+
+This is what Aho, Sethi and Ullman call the dominator tree for the flow graph. 
+
+\paragraph{Loop Detection}  \mbox{}
+
+Informally, a loop in a flow graph is a set of strongly connected nodes in 
+the graph with a single entry point. 
+
+Loops in a graph can be found by searching for {\em back edges}, edges $(n,m)$ 
+in the graph with the property that $m$ dominates $n$. Here is the implementation: 
+
+\bc\begin{verbatim} 
+backedges :: Ord a => Rel a -> a -> [(a,a)]
+backedges r i = [ (n,m) | (n,m) <- edgelist r, 
+                          elem (m,n) (edgelist (domi r i) ) ]
+\end{verbatim}\ec
+
+This gives: 
+
+\begin{verbatim}
+RASS> backedges flow 1
+[(4,3),(7,4),(8,3),(9,1),(10,7)]
+\end{verbatim}
+
+These are indeed the edges through which the flow graph loops. 
+
+Next, we define the natural loops. The natural loop of back edge $(n,m)$ 
+is the set that contains $m$ together with all nodes that can reach $n$ while 
+avoiding $m$: 
+
+\bc\begin{verbatim} 
+naturalLoop :: Ord a => Rel a -> a -> (a,a) -> Set a
+naturalLoop r i (n,m) = insertSet m (avoidTo r n m)
+\end{verbatim}\ec
+
+The natural loops of a given flow graph: 
+
+\bc\begin{verbatim}
+naturalLoops :: Ord a => Rel a -> a -> [Set a]
+naturalLoops r i = map (naturalLoop r i) (backedges r i)
+\end{verbatim}\ec
+
+Applied to the example, we get: 
+
+\begin{verbatim}
+RASS> naturalLoops flow 1
+[{3,4,5,6,7,8,10},{4,5,6,7,8,10},{3,4,5,6,7,8,10},{1,2,3,4,5,6,7,8,9,10},
+ {7,8,10}]
+\end{verbatim}
+
+Note that backedges to the same node yield the same natural loop: 
+$(4,3)$ and $(8,3)$ both yield the loop $\{3,4,5,6,7,8,10\}$. 
+
+\section{Representing Program Fragments as Areas} 
+
+An \verb^Area^ is a triple consisting of a file name and two pairs, 
+where the first pair gives a begin line and a begin column in the file, 
+and the second pair an end line and an end column. 
+
+\bc\begin{verbatim}
+data Area = Area String (Int,Int) (Int,Int) deriving (Eq,Ord,Read)
+\end{verbatim}\ec
+
+Showing areas: 
+
+\bc\begin{verbatim} 
+instance Show Area where 
+  show (Area name begin end) = name ++ show begin ++ show end
+\end{verbatim}\ec
+
+Converting from a quintuple to an area: 
+
+\bc\begin{verbatim}
+toArea :: (String, Int, Int, Int, Int) -> Area
+toArea (name, l1, p1, l2, p2) 
+   | l1 > l2             = error "end line before begin line"
+   | l1 == l2 && p1 > p2 = error "end pos before begin pos"
+   | otherwise           = Area name (l1,p1) (l2,p2)
+\end{verbatim}\ec
+
+The relations \verb^part^ (being textually part of) 
+and \verb^properPart^ (being textually strictly part of). 
+Note that the first of these is a partial order, the second a 
+strict partial order. The type of areas is {\em not} linearly ordered
+by textual inclusion! 
+
+\bc\begin{verbatim} 
+part :: Area -> Area -> Bool
+part (Area name1 begin1 end1) (Area name2 begin2 end2) = 
+  name1 == name2 && begin2 <= begin1 && end1 <= end2
+
+properPart :: Area -> Area -> Bool
+properPart (Area name1 begin1 end1) (Area name2 begin2 end2) = 
+  name1 == name2 && 
+  or [begin1 == begin2 && end1 < end2, 
+      begin1 > begin2  && end1 < end2, 
+      begin1 > begin2  && end1 < end2]
+\end{verbatim}\ec
+
+\section{Relation input}
+
+Make a file of Haskell definitions into a module: 
+
+\bc\begin{verbatim} 
+makeMod :: FilePath -> IO ()
+makeMod name = do prefix <- return $ "module A where \n\nimport RASS\n\n"
+                  str    <- readFile fname
+                  writeFile mname (prefix ++ str)
+  where fname = name ++ ".hs"
+        mname = name ++ "MOD.hs"
+\end{verbatim}\ec
+
+\bc\begin{verbatim}
+str2rl :: (Ord a, Read a, Ord b, Read b) => String -> Rl a b 
+str2rl str = makeRL (read str)
+\end{verbatim}\ec
+
+Reading a relation (list of pairs, in Haskell format) from a file: 
+
+\bc\begin{verbatim}
+readRlFile :: (Ord a, Read a, Ord b, Read b) => FilePath -> Rl a b
+readRlFile name = unsafePerformIO (do str <- readFile name 
+                                      return (str2rl str))
+\end{verbatim}\ec
+
+Converting a string to a relation, assuming the types of the 
+two argument places are the same: 
+
+\bc\begin{verbatim}
+str2rel :: (Ord a, Read a) => String -> Rel a
+str2rel str = makeR (read str)
+\end{verbatim}\ec
+
+Reading a relation (list of pairs, in Haskell format) from a file,
+assuming the types of the first and second elements of the pairs are
+the same:
+
+\bc\begin{verbatim}
+readRelFile :: (Ord a, Read a) => FilePath -> Rel a
+readRelFile name = unsafePerformIO (do str <- readFile name
+                                       return (str2rel str))
+\end{verbatim}\ec
+
+\section{Relation Output} 
+
+Define the class of showable types: 
+
+\bc\begin{verbatim}
+class ShowT a
+ where
+  showT :: a -> String
+\end{verbatim}\ec
+
+\bc\begin{verbatim} 
+instance ShowT Int
+ where
+  showT _ = "Int"
+
+instance ShowT String
+ where
+  showT _ = "String"
+
+instance ShowT Area
+ where 
+  showT _ = "Area"
+
+instance (ShowT a, ShowT b) => ShowT (a,b)
+ where
+  showT (a,b) = "(" ++ showT a ++ "," ++ showT b ++ ")"
+
+instance ShowT a => ShowT [a]
+ where
+  showT l = "[" ++ showT (head l) ++ "]"
+\end{verbatim}\ec
+
+Convering a string to a correct function name: 
+
+\bc\begin{verbatim} 
+low :: String -> String 
+low s = case span isAlphaNum s of 
+   (x:xs,[]) -> if isAlpha x 
+                  then (toLower x) : xs
+                  else error  "incorrect name"
+   _         -> error  "incorrect name"
+\end{verbatim}\ec
+
+Writing a relation to a file. 
+
+\bc\begin{verbatim} 
+wR ::  (Ord a, Show a, ShowT a, Ord b, Show b, ShowT b) => 
+                                         String -> Rl a b -> IO()
+wR name rel = 
+  do typing <- return $ rname ++ " :: " ++ showT edges
+     r      <- return $ typing ++ "\n" ++  rname ++ " = "  ++ show edges
+     writeFile fname r
+  where fname = name ++ ".hs"
+        rname = low name 
+        edges = edgelist rel
+\end{verbatim}\ec
+
+\section{Further Work} 
+
+\begin{itemize} 
+
+\item Interface to the ATerm library \cite{BraJonKli00:eat}. 
+
+\item Interface to the Strafunski software bundle \cite{LaeVis03:asal}. 
+
+\item Use RASS for realistic tasks. 
+
+\item Performance comparison with Rscript \cite{Klint03:atitr}, \ldots 
+
+\item If necessary for performance reasons: reimplement operations 
+      on sets in terms of OBDDs. 
+
+\item Update \cite{DoeEij04:thr} with motivating examples from 
+      software engineering. 
+\end{itemize} 
+
+\paragraph{Acknowledgement} Thanks to Ralf L\"ammel for 
+sound Haskell advice. 
+    
+\clearpage 
+\appendix
+
+\section{A Module for Sets}
+
+This module is based on the software from \cite[Chapter 4]{DoeEij04:thr}.
+
+\input{Set} 
+
+\clearpage 
+
+%\section{A Module for Binary Relations} 
+%
+%This module is based on the software from \cite[Chapter 5]{DoeEij04:thr}.
+%
+%\input{Rel} 
+%
+%\clearpage 
+
+\section{A Module for Graph Representations of Relations} 
+
+\input{Graph}
+
+\clearpage 
+\section{A Module for Graphical Display of Relations} 
+
+\input{GraphViz}
+
+\bibliographystyle{plain}
+\bibliography{mybibAG,mybibHZ,RASS}
+%\bibliography{/home/jve/texmacros/mybibAG,/home/jve/texmacros/mybibHZ,RASS}
+
+\end{document} 

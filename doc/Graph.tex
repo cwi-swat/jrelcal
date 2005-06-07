@@ -1,0 +1,599 @@
+Computations involving relation composition have very poor performance
+if relations are represented as sets of pairs, as in Chapter 5 of
+\cite{DoeEij04:thr}. Performance improves dramatically 
+if relations are encoded as adjacency matrices. 
+
+\bc\begin{verbatim}
+module Graph where 
+
+import Array
+import Set
+import List
+\end{verbatim}\ec
+
+The use of arrays for the encoding of adjacency matrices in this
+module was inspired by King and Launchbury, \cite{KinLau95:sdfsaih}. 
+Most important differences with their code: 
+\begin{itemize} 
+\item Use of a set datatype for adjacency. 
+\item Explicit bounds for from-sets and to-sets, allowing for a more appropriate
+      treatment of graph inverse. 
+\item Encoding of relations as triples consisting of a from-set, a to-set, and 
+      a graph. 
+\end{itemize} 
+
+Vertices are integers, bounds are integers, edges are vertex pairs. 
+
+\bc\begin{verbatim}
+type Vertex = Int
+type Bound  = Vertex
+type Edge   = (Vertex,Vertex)
+\end{verbatim}\ec
+
+A table is an array indexed by vertices. A graph
+is a table of vertex sets. 
+
+\bc\begin{verbatim}
+type Table b = Array Vertex b 
+type Graph   = Table (Set Vertex)
+\end{verbatim}\ec
+
+Computing the edges from a graph: 
+
+\bc\begin{verbatim}
+edgesG :: Graph -> [Edge]
+edgesG t = [ (v,w) | v <- indices t, w <- set2list (t!v) ]
+\end{verbatim}\ec
+
+Building a graph from a size bound and a list of 
+edges. Note that graphs always start from index $0$. 
+
+\bc\begin{verbatim}
+buildG :: Bound -> [Edge] -> Graph 
+buildG n es = 
+   accumArray (flip insertSet) emptySet (0,n-1) es
+\end{verbatim}\ec
+
+Some example graphs: 
+
+\bc\begin{verbatim}
+graph1 = buildG 6 [(0,0),(1,2),(2,3),(3,4),(4,5)]
+graph2 = buildG 6 [(0,5),(1,1),(2,2),(3,4),(4,5)]
+\end{verbatim}\ec
+
+Encoding a relation as a triple consisting of a from-set, 
+a to-set, and a graph: 
+
+\bc\begin{verbatim} 
+type Rl a b = (Set a, Set b, Graph)
+\end{verbatim}\ec
+
+A binary relation with from-set and to-set of the same type. 
+
+\bc\begin{verbatim} 
+type Rel a = Rl a a 
+\end{verbatim}\ec
+
+Create a relation from a from-set, a to-set and 
+a list of pairs. If the list contains a pair $(x,y)$ with 
+$x$ not in the from-set or $y$ not in the to-set, an 
+error is generated. 
+
+\bc\begin{verbatim}
+makeRl :: (Ord a, Ord b) => Set a -> Set b -> [(a,b)] -> Rl a b
+makeRl (Set xs) (Set ys) pairs = (Set xs, Set ys, g) 
+  where g = buildG (length xs) [(f v xs, f w ys) | (v,w) <- pairs ]
+        f x xs = case elemIndex x xs of 
+          Just i  -> i 
+          _       -> error "element not found"
+\end{verbatim}\ec
+
+Creating a relation on the domain and range sets of 
+a list of pairs: 
+
+\bc\begin{verbatim}
+makeRL :: (Ord a, Ord b) => [(a,b)] -> Rl a b 
+makeRL pairs = makeRl s t pairs  
+  where s = list2set (map fst pairs) 
+        t = list2set (map snd pairs)
+\end{verbatim}\ec
+
+Mapping a relation to a list of edges: 
+
+\bc\begin{verbatim} 
+edgelist::  (Ord a, Ord b) => Rl a b -> [(a,b)]
+edgelist (Set xs, Set ys, g) = 
+  [ (xs!!i,ys!!j) | (i,j) <- edgesG g ]
+\end{verbatim}\ec
+
+The edges of a relation as a set: 
+
+\bc\begin{verbatim} 
+edges ::  (Ord a, Ord b) => Rl a b -> Set (a,b)
+edges = list2set . edgelist 
+\end{verbatim}\ec
+
+Creating a relation on a given set: 
+
+\bc\begin{verbatim}
+makeRel :: Ord a => Set a -> [(a,a)] -> Rel a 
+makeRel s pairs = makeRl s s pairs 
+\end{verbatim}\ec
+
+Creating a relation on the carrier set of a list of pairs: 
+
+\bc\begin{verbatim}
+makeR :: Ord a => [(a,a)] -> Rel a 
+makeR pairs = makeRel s pairs  
+  where s = list2set ((map fst pairs) ++ (map snd pairs))
+\end{verbatim}\ec
+
+Example relations:  
+
+\bc\begin{verbatim}
+rel = makeR [('a','A'),('b','B'),('c','B'),('d','D'),('e','E'),('e','a')]
+succ100 = makeR [(n,n+1) | n <- [0..98] ]
+succ200 = makeR [(n,n+1) | n <- [0..198] ]
+succ300 = makeR [(n,n+1) | n <- [0..298] ]
+succ400 = makeR [(n,n+1) | n <- [0..398] ]
+succ500 = makeR [(n,n+1) | n <- [0..498] ]
+\end{verbatim}\ec
+
+A map function for tables: 
+
+\bc\begin{verbatim}
+mapT :: (Vertex -> a -> b) -> Table a -> Table b
+mapT f t = array (bounds t) [ (v, f v (t!v)) | v <- indices t ]
+\end{verbatim}\ec
+
+The \verb^mapT^ function is used for computing the 
+outdegree table of a graph: 
+
+\bc\begin{verbatim}
+outdegree :: Graph -> Table Int
+outdegree g = mapT (\ _ vs -> size vs) g
+\end{verbatim}\ec
+
+Graph inverse: 
+
+\bc\begin{verbatim}
+invG :: Bound -> Graph -> Graph
+invG n g = buildG n (reverseE g)
+  where 
+  reverseE :: Graph -> [Edge]
+  reverseE g = [(j,i) | (i,j) <- edgesG g ] 
+\end{verbatim}\ec
+
+Relation inverse: 
+
+\bc\begin{verbatim}
+inv :: (Ord a, Ord b) => Rl a b -> Rl b a 
+inv (s, t, graph) = (t, s, invG (size t) graph) 
+\end{verbatim}\ec
+
+Use graph inverse to compute the indegree table: 
+
+\bc\begin{verbatim}
+indegree :: Bound -> Graph -> Table Int
+indegree n g = outdegree (invG n g)
+\end{verbatim}\ec
+
+The domain of a relation is the set of those elements in the from-set with
+positive outdegree. 
+
+\bc\begin{verbatim}
+dom :: Ord a => Rl a b -> Set a
+dom (Set xs,_,g) = 
+  list2set [ xs!!i | i <- [0 .. length xs-1], (outdegree g)!i > 0 ]
+\end{verbatim}\ec
+
+The range of a relation is the set of those elements in the to-set with
+positive in-degree. 
+
+\bc\begin{verbatim}
+ran :: Ord b => Rl a b -> Set b
+ran (_ ,Set ys,g) = let n = length ys in 
+  list2set [ ys!!i | i <- [0 .. n-1], (indegree n g)!i > 0 ]
+\end{verbatim}\ec
+
+Prune a relation by restricting it to its domain and range: 
+
+\bc\begin{verbatim}
+pruneDR :: (Ord a, Ord b) => Rl a b -> Rl a b 
+pruneDR = makeRL . edgelist 
+\end{verbatim}\ec
+
+The carrier set of a relation: 
+
+\bc\begin{verbatim} 
+carrier :: Ord a => Rel a -> Set a  
+carrier r = unionSet (dom r) (ran r)  
+\end{verbatim}\ec
+
+Prune a relation by restricting it to its carrier set: 
+
+\bc\begin{verbatim}
+pruneC :: Ord a => Rel a -> Rel a
+pruneC = makeR . edgelist 
+\end{verbatim}\ec
+
+
+Graph union: 
+
+\bc\begin{verbatim}
+unionG :: Graph -> Graph -> Graph 
+unionG  graph1 graph2 = 
+   mapT (\ i js -> unionSet js (graph2!i)) graph1
+\end{verbatim}\ec
+
+Relation union: if from-sets and to-sets are identical, use graph union. 
+If not, generate the edge sets, use set union, and convert to 
+a relation again. 
+
+\bc\begin{verbatim}
+union :: (Ord a, Ord b) => Rl a b -> Rl a b -> Rl a b 
+union r1@(s1,t1,graph1) r2@(s2,t2,graph2) = 
+  if   (s1,t1) == (s2,t2)
+  then (s1, t1, unionG graph1 graph2) 
+  else  
+  makeRl (unionSet s1 s2) 
+         (unionSet t1 t2) 
+         (List.union (edgelist r1) (edgelist r2))
+\end{verbatim}\ec
+
+Graph intersection: 
+
+\bc\begin{verbatim}
+intersectG :: Graph -> Graph -> Graph 
+intersectG graph1 graph2 = 
+  mapT (\ i js -> intersectSet js (graph2!i)) graph1
+\end{verbatim}\ec
+
+Relation intersection: 
+
+\bc\begin{verbatim}
+intersect :: (Ord a, Ord b) => Rl a b -> Rl a b -> Rl a b 
+intersect r1@(s1,t1,graph1) r2@(s2,t2, graph2) = 
+  if   (s1,t1) == (s2,t2)
+  then (s1, t1, intersectG graph1 graph2)  
+  else 
+  makeRl (intersectSet s1 s2) 
+         (intersectSet t1 t2) 
+         (List.intersect (edgelist r1) (edgelist r2))
+\end{verbatim}\ec
+
+Graph difference: 
+
+\bc\begin{verbatim}
+diffG :: Graph -> Graph -> Graph 
+diffG graph1 graph2 = 
+  mapT (\ i js -> diffSet js (graph2!i)) graph1
+\end{verbatim}\ec
+
+Relation difference: 
+
+\bc\begin{verbatim}
+diff :: (Ord a, Ord b) => Rl a b -> Rl a b -> Rl a b 
+diff r1@(s1,t1,graph1) r2@(s2,t2, graph2) = 
+  if   (s1,t1) == (s2,t2)
+  then (s1, t1, diffG graph1 graph2)  
+  else 
+  makeRl (diffSet s1 s2) 
+         (diffSet t1 t2) 
+         ((edgelist r1) \\ (edgelist r2))
+\end{verbatim}\ec
+
+Graph complement: 
+
+\bc\begin{verbatim}
+complG :: Bound -> Graph -> Graph
+complG n graph = mapT (\ _ js -> diffSet (Set [0..n]) js) graph
+\end{verbatim}\ec
+
+Relation complement: 
+
+\bc\begin{verbatim}
+compl :: (Ord a, Ord b) => Rl a b -> Rl a b 
+compl (s, t, graph) = (s, t, complG (size t) graph)
+\end{verbatim}\ec
+
+Graph composition: 
+
+\bc\begin{verbatim}
+compG :: Graph -> Graph -> Graph 
+compG graph1 graph2 = mapT f graph1 
+  where f i js = genUnion (mapS (\ j -> (graph2!j)) js)
+\end{verbatim}\ec
+
+Relation composition: 
+
+\bc\begin{verbatim}
+comp :: (Ord a, Ord b,Ord c) => Rl a b -> Rl b c -> Rl a c 
+comp (s1,t1,graph1) (s2,t2,graph2) = 
+  if t1 == s2 then (s1,t2, compG graph1 graph2)
+  else error "non composable relations"
+\end{verbatim}\ec
+
+N-fold graph product: 
+
+\bc\begin{verbatim}
+repeatG :: Graph -> Int -> Graph 
+repeatG g n | n < 1     = error "argument < 1"
+            | n == 1    = g 
+            | otherwise = compG g (repeatG g (n-1))
+\end{verbatim}\ec
+
+N-fold relation product: 
+
+\bc\begin{verbatim}
+repeatR :: Ord a => Rel a  -> Int -> Rel a
+repeatR r n | n < 1     = error "argument < 1"
+            | n == 1    = r
+            | otherwise = comp r (repeatR r (n-1))
+\end{verbatim}\ec
+
+Reflexive closure of graph: 
+
+\bc\begin{verbatim}
+rClosureG :: Bound -> Graph -> Graph
+rClosureG n g = unionG g (idG n)
+\end{verbatim}\ec
+
+Reflexive closure of relation: 
+
+\bc\begin{verbatim}
+rClosure :: Ord a => Rel a -> Rel a 
+rClosure (s,t,g) = (s, t, unionG g (idG (size s)))
+\end{verbatim}\ec
+
+Symmetric closure of graph: 
+
+\bc\begin{verbatim} 
+sClosureG :: Bound -> Graph -> Graph 
+sClosureG n g = unionG g (invG n g)
+\end{verbatim}\ec
+
+Symmetric closure of relation: 
+
+\bc\begin{verbatim} 
+sClosure :: Ord a => Rel a -> Rel a
+sClosure (s,t,g) = (s, t, unionG g (invG (size s) g))
+\end{verbatim}\ec
+
+Least fixpoint: 
+
+\bc\begin{verbatim} 
+lfp :: Eq a => (a -> a) -> a -> a
+lfp f x = if f x == x  
+            then x
+            else lfp f (f x) 
+\end{verbatim}\ec  
+
+Transitive closure of graph: 
+
+\bc\begin{verbatim}
+tcG :: Graph -> Graph
+tcG = lfp (\h -> unionG h (compG h h))
+\end{verbatim}\ec
+
+Transitive closure of relation: 
+
+\bc\begin{verbatim}
+tc :: Ord a => Rel a -> Rel a
+tc (s,t,g) = (s, t, tcG g)
+\end{verbatim}\ec
+
+Empty graph: 
+
+\bc\begin{verbatim}
+emptyG :: Bound -> Graph
+emptyG n = listArray (0,n-1) (repeat emptySet)
+\end{verbatim}\ec
+
+Empty relation: 
+
+\bc\begin{verbatim}
+emptyR :: (Ord a, Ord b) => Set a -> Set b -> Rl a b
+emptyR s t = (s,t,emptyG (size s))
+\end{verbatim}\ec
+
+Identity graph: 
+
+\bc\begin{verbatim}
+idG :: Bound -> Graph 
+idG bnd = mapT (\ i _ -> Set [i]) (emptyG bnd)
+\end{verbatim}\ec
+
+Identity relation: 
+
+\bc\begin{verbatim}
+idR :: Ord a => Set a -> Rel a 
+idR s = (s, s,  idG (size s))
+\end{verbatim}\ec
+
+Total graph: 
+
+\bc\begin{verbatim}
+totalG :: Bound -> Bound -> Graph
+totalG n m = listArray (0,n-1) (repeat (Set [0..m-1]))
+\end{verbatim}\ec
+
+Cartesian product relation: 
+
+\bc\begin{verbatim}
+cartProd :: (Ord a, Ord b) => Set a -> Set b -> Rl a b 
+cartProd s t = (s, t, totalG (size s) (size t)) 
+\end{verbatim}\ec
+
+The total relation on a set $S$ is the set $S \times S$: 
+
+\bc\begin{verbatim}
+total :: Ord a => Set a -> Rel a
+total s = cartProd s s 
+\end{verbatim}\ec 
+
+Reflexive transitive closure of graph: 
+
+\bc\begin{verbatim}
+rtcG :: Bound -> Graph -> Graph 
+rtcG n g = 
+  lfp (\h -> compG h h) (rClosureG n g)
+\end{verbatim}\ec
+
+Reflexive transitive closure of relation:
+
+\bc\begin{verbatim}
+rtc :: Ord a => Rel a -> Rel a
+rtc (s, t, g) = (s, t, rtcG (size s) g)
+\end{verbatim}\ec
+
+Restraining the lefthand size of a relation with a set $C$, 
+for $R$ a relation  from $S$ to $T$, gives the relation 
+ $R \cap (C \times T)$. 
+
+\bc\begin{verbatim}
+domainR :: (Ord a,Ord b) => Rl a b -> Set a -> Rl a b 
+domainR (s, t, g) c = (s, t, g') 
+  where 
+    g' = mapT f g
+    f i js = if inSet (s!!!i) c then js else emptySet
+\end{verbatim}\ec
+
+Restraining the righthand side: 
+
+\bc\begin{verbatim}
+rangeR :: (Ord a,Ord b) => Rl a b -> Set b -> Rl a b 
+rangeR (s, t, g) c = (s, t, g') 
+  where 
+    g' = mapT (\ _ js -> filterS (\ i -> inSet (t!!!i) c) js) g
+\end{verbatim}\ec
+
+Carrier restriction of a relation: 
+
+\bc\begin{verbatim}
+carrierR :: Ord a => Rel a -> Set a -> Rel a 
+carrierR (s,t,g) c = (s,t,g') 
+  where 
+    g' = mapT f g
+    f i js = if inSet (s!!!i) c
+                then filterS (\ i -> inSet (t!!!i) c) js 
+                else emptySet
+\end{verbatim}\ec
+
+Sources of a relation are the points with in-degree $0$ and out-degree
+$\geq 1$; sinks are the points with out-degree $0$ and in-degree $> 0$: 
+
+\bc\begin{verbatim}
+sources :: Ord a => Rel a -> Set a
+sources (Set xs,_,g) = let n = length xs in 
+  list2set 
+    [ xs!!i | i <- [0 .. n-1], (indegree n g)!i == 0, (outdegree g)!i > 0 ]
+
+sinks :: Ord a => Rel a -> Set a
+sinks (Set xs,_,g) = let n = length xs in 
+  list2set 
+    [ xs!!i | i <- [0 .. n-1], (indegree n g)!i > 0, (outdegree g)!i == 0 ]
+\end{verbatim}\ec
+
+The right section of a point $x$ under a relation $R$, denoted
+$xR$, is the set $\{ y \mid xRy \}$. 
+
+\bc\begin{verbatim}
+rightSection :: (Ord a,Ord b) => Rl a b -> a -> Set b
+rightSection r x = ran (domainR r (Set [x]))
+\end{verbatim}\ec
+
+The left section of a point $x$ under a relation $R$, denoted
+$Rx$, is the set $\{ y \mid yRx \}$. 
+
+\bc\begin{verbatim}
+leftSection :: (Ord a,Ord b) => Rl a b -> b -> Set a
+leftSection r x = dom (rangeR r (Set [x]))
+\end{verbatim}\ec
+
+Common descendants of a set under a relation:
+
+\bc\begin{verbatim} 
+commonDescendants :: Ord a => Rel a -> Set a -> Set a 
+commonDescendants r (Set [])     = carrier r
+commonDescendants r (Set (x:xs)) = 
+  intersectSet s (commonDescendants r (Set xs)) where 
+    s = rightSection (tc r) x
+\end{verbatim}\ec
+
+Common ancestors of a set under a relation:
+
+\bc\begin{verbatim} 
+commonAncestors :: Ord a => Rel a -> Set a -> Set a 
+commonAncestors r (Set [])     = carrier r
+commonAncestors r (Set (x:xs)) = 
+  intersectSet s (commonAncestors r (Set xs)) where 
+    s = leftSection (tc r) x
+\end{verbatim}\ec
+
+Reachability along $R$ from $S$ with restriction to $T$ nodes: 
+
+\bc\begin{verbatim}
+reachFromThrough :: Ord a => Rel a -> Set a -> Set a -> Rel a 
+reachFromThrough r s t = domainR r' s where 
+  r' = tc (carrierR r t) 
+\end{verbatim}\ec
+
+Reachability along $R$ from $S$ with restriction to $\overline{T}$ nodes: 
+
+\bc\begin{verbatim}
+reachFromExcl :: Ord a => Rel a -> Set a -> Set a -> Rel a 
+reachFromExcl r s t = reachFromThrough r s t' where 
+  t' = diffSet (carrier r) t
+\end{verbatim}\ec
+
+We define the points in the relation that can be reached from initial
+point $i$ via a path that avoids a point $d$; crucially, if $i \neq d$
+then $i$ is an element of the $d$-avoidance set (it can be reached
+through the empty path).
+
+\bc\begin{verbatim} 
+avoidFrom :: Ord a => Rel a -> a -> a -> Set a
+avoidFrom r i d = 
+  let 
+    excl = ran (reachFromExcl r (Set [i]) (Set [d]))
+  in 
+    if i == d 
+       then excl 
+       else insertSet i excl
+\end{verbatim}\ec
+
+Reachability along $R$ of $S$ with restriction to $T$ nodes: 
+
+\bc\begin{verbatim}
+reachToThrough :: Ord a => Rel a -> Set a -> Set a -> Rel a 
+reachToThrough r s t = rangeR r' s where 
+  r' = tc (carrierR r t) 
+\end{verbatim}\ec
+
+Reachability along $R$ of $S$ with restriction to $\overline{T}$ nodes: 
+
+\bc\begin{verbatim}
+reachToExcl :: Ord a => Rel a -> Set a -> Set a -> Rel a 
+reachToExcl r s t = reachToThrough r s t' where 
+  t' = diffSet (carrier r) t
+\end{verbatim}\ec
+
+The points from which $i$ can be reached along $R$ while avoiding a point $d$.
+Note that if $i \neq d$ then $i$ can be reached while avoiding $d$. 
+
+\bc\begin{verbatim}
+avoidTo :: Ord a => Rel a -> a -> a -> Set a
+avoidTo r i d = 
+  let 
+    excl = dom (reachToExcl r (Set [i]) (Set [d]))
+  in 
+    if i == d 
+       then excl 
+       else insertSet i excl
+\end{verbatim}\ec
+
+
+
+
+

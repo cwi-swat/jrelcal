@@ -1,0 +1,23 @@
+
+.SUFFIXES: .grap .pic .ltx .dvi .pdf .bbl .ind .idx .xwd .ps .tex .fig
+
+%.bbl: %.tex
+	bibtex $*
+
+%.pdf: %.tex
+	TEXINPUTS=$$TEXINPUTS:${srcdir} ;\
+	export TEXINPUTS ;\
+	pdflatex $< ;\
+	fgrep -s 'LaTeX Warning: Citation' $*.log && bibtex $* && pdflatex $< ;\
+	while fgrep -s 'Rerun to get cross-references right' $*.log ;\
+	do \
+		TEXINPUTS=$$TEXINPUTS:${srcdir} ;\
+		pdflatex $< ;\
+	done
+
+%.ps: %.dvi
+	dvips -o $@ $<
+
+
+
+

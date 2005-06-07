@@ -1,0 +1,44 @@
+\bc\begin{verbatim} 
+module GraphViz where 
+
+import Set
+import Graph
+\end{verbatim}\ec 
+
+For graphical visualisation of relations we use the graphic
+visualisation tool {\em dot} \cite{KouNor:dgwd}.
+
+The following function uses a string as glue between a list of 
+strings, to produce a single long string. 
+
+\bc\begin{verbatim} 
+glueWith :: String -> [String] -> String
+glueWith _ []     = []
+glueWith _ [y]    = y
+glueWith s (y:ys) = y ++ s ++ glueWith s ys
+\end{verbatim}\ec
+
+The \verb^graphviz^ function maps a relation with showable 
+components to a string that can be processed by {\em dot}. 
+
+\bc\begin{verbatim} 
+graphviz :: (Ord a, Show a, Ord b, Show b) => Rl a b -> String
+graphviz rel = 
+  let 
+    (Set xs) = edges rel 
+  in 
+   "digraph G { " 
+      ++
+    glueWith " ; " [ (show x) ++ " -> " ++ (show y) | (x,y) <- xs ]
+      ++ " }"
+\end{verbatim}\ec
+
+Writing a graphical representation of a relation to a file:  
+
+\bc\begin{verbatim}
+writeRel :: (Ord a, Show a, Ord b, Show b) => String -> Rl a b -> IO()
+writeRel name r = writeFile (name ++ ".dot") (graphviz r)
+\end{verbatim}\ec
+
+
+
