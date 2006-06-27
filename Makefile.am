@@ -13,3 +13,7 @@ CLEANFILES = ${PACKAGE}-${VERSION}.pkg
 ${PACKAGE}-${VERSION}.pkg: package Makefile
 	cp $< $@
 
+.PHONY: doc
+
+doc:
+	cd doc && $(MAKE) $(AM_MAKE_FLAGS) doc

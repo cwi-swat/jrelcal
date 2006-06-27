@@ -41,14 +41,13 @@ EXTRA_DIST = \
 	$(INCLUDED_PICS) \
 	$(INCLUDED_STY) \
 	$(INCLUDED_BIB) \
-	latex-make-rules
+	latex-make-rules \
+	Doxyfile
 
 CLEANFILES = *~ *.log *.aux *.dvi *.ps *.pdf *.toc *.bbl *.blg *.lhs *.hi *.o \
 	$(MAIN)
 
 all:  ${LHS_FILES}
-
-doc: RASS.pdf
 
 RASS.pdf: RASS.tex $(INCLUDED_TEX) $(INCLUDED_BIB) $(INCLUDED_PICS) $(INCLUDED_STY)
 
@@ -57,3 +56,11 @@ dist: RASS.pdf
 
 install:
 
+if MAINTAINER_MODE
+
+.PHONY: doc
+
+doc: 
+	doxygen
+
+endif
