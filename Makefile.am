@@ -36,7 +36,8 @@ check:
 
 .PHONY: doc
 doc:
-	${ANT_ENV} ${JARFILE_ENV} ant doc
+	${ANT_ENV} ${JARFILE_ENV} ant doc; \
+		(cd doc && $(MAKE) $(AM_MAKE_FLAGS) doc)
 
 clean-local:
 	${JARFILE_ENV} ant clean
