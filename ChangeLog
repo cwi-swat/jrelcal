@@ -1,3 +1,9 @@
+2006-06-28    <storm@cwi.nl>
+
+	* Added build.xml to simplify building/testing using Ant.
+
+	* Changed from doxygen documentation generation to JavaDoc
+
 2006-06-27    <storm@cwi.nl>
 
 	* Added doxygen documentation generation
