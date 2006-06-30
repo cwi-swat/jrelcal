@@ -5,9 +5,9 @@
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
   <property name="src" value="src"/>
-  <property name="doc" location="doc/html"/> 
-  <property name="testresults" location="testresults"/>
   <property name="resources" value="resources"/>
+  <property name="doc" location="doc/html"/> 
+  <property environment="env"/>
 
   <path id="project.classpath">
     <pathelement path="${env.LOCAL_JARS}"/>
@@ -16,7 +16,7 @@
 
   <target name="build">
     <mkdir dir="${build}"/>
-    <javac destdir="${build}" debug="true" source="1.5" target="1.5">
+    <javac destdir="${build}" debug="true" source="1.4" target="1.4">
       <src path="${src}"/>
       <classpath refid="project.classpath"/>
     </javac>
@@ -41,21 +41,6 @@
     </jar>
   </target>
 
-  <target name="check" depends="build">
-    <mkdir dir="${testresults}"/>
-    <junit printsummary="withOutAndErr" showoutput="yes">
-      <classpath>
-	<pathelement path="project.classpath"/>
-	<pathelement location="${build}"/>
-      </classpath>
-      <formatter type="plain"/>
-      <batchtest todir="${testresults}" >
-	<fileset dir="${src}">
-	  <include name="**/TestAll.java"/>
-	</fileset>
-      </batchtest>
-    </junit>
-  </target>
 
   <target name="doc">
     <mkdir dir="${doc}"/>
@@ -64,21 +49,24 @@
       destdir="${doc}"
       author="true"
       overview="${src}/overview.html"
-      packagenames="jrelcal"
+      packagenames="${env.JAVA_PACKAGES}"
       private="true"
       use="true"
+      linksource="yes"
       version="true"
-      windowtitle="JRelCal Documentation">
+      windowtitle="${env.PACKAGE}"
+    >
       <classpath refid="project.classpath"/>
     </javadoc>
     <replace file="${doc}/overview-summary.html" token="__VERSION__" value="${env.PKG_VERSION}"/>	
   </target> 
 
+
   <target name="clean">
     <delete dir="${build}"/>
-    <delete dir="${doc}"/>
     <delete dir="${dist}"/>
-    <delete dir="${testresults}"/>
+    <delete dir="${doc}"/>
     <delete file="${env.JAR}"/>
   </target>
+
 </project>
