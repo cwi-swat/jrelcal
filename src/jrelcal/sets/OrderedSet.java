@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package jrelcal;
+package jrelcal.sets;
 
 import java.util.TreeSet;
 import java.util.Iterator;
@@ -13,6 +13,7 @@ import java.util.Iterator;
  * @author storm
  * @class jrelcal.OrderedSet
  */
+@SuppressWarnings("serial")
 public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
 	implements Comparable<OrderedSet<T>> {
 

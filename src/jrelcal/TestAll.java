@@ -1,6 +1,11 @@
 
 package jrelcal;
 
+import jrelcal.bags.MultiRelationTest;
+import jrelcal.bags.OrderedBagTest;
+import jrelcal.sets.IndexedSetTest;
+import jrelcal.sets.OrderedSetTest;
+import jrelcal.sets.RelationTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

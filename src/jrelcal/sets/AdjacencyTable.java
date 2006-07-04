@@ -1,4 +1,6 @@
-package jrelcal;
+package jrelcal.sets;
+
+import jrelcal.Pair;
 
 public class AdjacencyTable {
 	private VertexSet[] _table;

@@ -1,21 +1,23 @@
 /*
  * Created on Jan 28, 2005
  */
-package jrelcal;
+package jrelcal.rsf;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import jrelcal.Pair;
+import jrelcal.sets.OrderedSet;
+import jrelcal.sets.Relation;
+
 /**
  * @author bruntink
  */
 public class RSFReader extends BufferedReader {
-	private File RSFFile;
 
 	/**
 	 * @param file

@@ -1,4 +1,6 @@
-package jrelcal;
+package jrelcal.sets;
+
+import jrelcal.Pair;
 
 
 public class Relation<S extends Comparable<S>, T extends Comparable<T>> {
@@ -44,19 +46,23 @@ public class Relation<S extends Comparable<S>, T extends Comparable<T>> {
 		initialize(domain, range, table);
 	}
 
+	@SuppressWarnings("hiding")
 	protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S,T> newRelation() {
 		return new Relation<S,T>();
 	}
 	
+	@SuppressWarnings("hiding")
 	protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S,T> newRelation(OrderedSet<Pair<S, T>> pairs) {
 		return new Relation<S,T>(pairs);
 	}
 
+	@SuppressWarnings("hiding")
 	protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S,T> newRelation(IndexedSet<S> domain, IndexedSet<T> range,
 			OrderedSet<Pair<S, T>> pairs) {
 		return new Relation<S,T>(domain, range, pairs);
 	}
 
+	@SuppressWarnings("hiding")
 	protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S,T> newRelation(IndexedSet<S> domain, IndexedSet<T> range,
 			AdjacencyTable table) {
 		return new Relation<S,T>(domain, range, table);

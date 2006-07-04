@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package jrelcal;
+package jrelcal.bags;
 
 import junit.framework.TestCase;
 
@@ -26,7 +26,6 @@ public class OrderedBagTest extends TestCase {
 	private OrderedBag<Integer> twoThreeFourBag;
 	private OrderedBag<Integer> oneTwoBag;
 	private OrderedBag<Integer> fourFiveSixBag;
-	private VertexBag vertexBagEmpty;
 	private VertexBag vertexBagOneTwoThree;
 	private VertexBag vertexBagZeroToFive;
 
@@ -84,7 +83,6 @@ public class OrderedBagTest extends TestCase {
 		for (int i = 4; i <= 6; i++)
 			fourFiveSixBag.add(i);
 	
-		vertexBagEmpty = new VertexBag();
 		vertexBagOneTwoThree = new VertexBag();
 		vertexBagZeroToFive = new VertexBag();
 		for (int i = 0; i < 3; i++) {

@@ -4,7 +4,9 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package jrelcal;
+package jrelcal.bags;
+
+import jrelcal.Pair;
 
 
 /**
@@ -82,7 +84,6 @@ public class MultiAdjacencyTable {
 	}
 
 	public MultiAdjacencyTable compose(MultiAdjacencyTable table) {
-		//System.out.println("Composing " + this + "\nwith\n" + table);
 		MultiAdjacencyTable newTable = copy();
 		for (int i = 0; i < bound(); i++) {
 			for (int j = 0; j < table.bound(); j++) {
@@ -90,7 +91,6 @@ public class MultiAdjacencyTable {
 					newTable.remap(i, j, table.getImage(j));				
 			}
 		}
-		//System.out.println("... is " + newTable);
 		return newTable;
 	}
 
@@ -117,18 +117,6 @@ public class MultiAdjacencyTable {
 			newTable = newTable.additiveUnion(compositionTable);
 		}
 		return newTable;
-		//return leastFixPointUnionCompose(this, this);
-	}
-
-	private static MultiAdjacencyTable leastFixPointUnionCompose(MultiAdjacencyTable table, MultiAdjacencyTable fixed) {
-		MultiAdjacencyTable newTable = unionCompose(table, fixed);
-		if (newTable.equals(table))
-			return table;
-		return leastFixPointUnionCompose(newTable, fixed);
-	}
-	
-	private static MultiAdjacencyTable unionCompose(MultiAdjacencyTable table, MultiAdjacencyTable fixed) {
-		return table.additiveUnion(table.compose(fixed));
 	}
 
 	public static MultiAdjacencyTable emptyGraph(int bound) {

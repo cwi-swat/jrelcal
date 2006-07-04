@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package jrelcal;
+package jrelcal.bags;
 
 
 import java.util.Collection;
@@ -12,6 +12,8 @@ import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import jrelcal.sets.IndexedSet;
 
 /**
  * @author storm
@@ -323,6 +325,7 @@ public class OrderedBag<T extends Comparable<T>> //extends TreeMap<T, Integer>
 		return a;
 	}
 	
+	@SuppressWarnings("hiding")
 	public <T> T[] toArray(T[] a) {
 		int size = size();
 		if (size <= a.length) {

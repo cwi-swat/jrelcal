@@ -5,8 +5,9 @@
  * Window - Preferences - Java - Code Style - Code Templates
  *
  */
-package jrelcal;
+package jrelcal.sets;
 
+import jrelcal.Pair;
 import junit.framework.TestCase;
 
 /**

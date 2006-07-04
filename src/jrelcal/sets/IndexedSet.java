@@ -1,8 +1,9 @@
-package jrelcal;
+package jrelcal.sets;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@SuppressWarnings("serial")
 public class IndexedSet<T extends Comparable<T>> extends OrderedSet<T> 
 	implements Indexable<T> {
 

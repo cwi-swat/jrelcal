@@ -1,11 +1,12 @@
 /*
  * Created on Jan 28, 2005
  */
-package jrelcal;
+package jrelcal.rsf;
 
 /**
  * @author bruntink
  */
+@SuppressWarnings("serial")
 public class RSFFormatException extends Exception {
 
 	/**

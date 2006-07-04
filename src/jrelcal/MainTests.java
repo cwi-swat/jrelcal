@@ -1,12 +1,14 @@
 package jrelcal;
 
+import jrelcal.bags.MultiRelation;
+import jrelcal.bags.OrderedBag;
+import jrelcal.sets.IndexedSet;
+
 public class MainTests {
 	public static final int BOUND = 10;
 	
 	public static void main(String arg[]) {
 		OrderedBag<Pair<Integer, Integer>> pairs = new OrderedBag<Pair<Integer, Integer>>();
-		OrderedBag<Pair<Integer, Integer>> pairs2 = new OrderedBag<Pair<Integer, Integer>>();
-		
 		for (int i = 0; i < 4; i++) {
 			pairs.add(new Pair<Integer, Integer>(i, i + 1));
 			pairs.add(new Pair<Integer, Integer>(i+1, i + 2));
