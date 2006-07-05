@@ -14,38 +14,38 @@ import java.util.Iterator;
  * @class jrelcal.OrderedSet
  */
 @SuppressWarnings("serial")
-public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
-	implements Comparable<OrderedSet<T>>, Iterable<T> {
+public class Set<T extends Comparable<T>> extends TreeSet<T>
+	implements Comparable<Set<T>>, Iterable<T> {
 
-	private OrderedSet<T> copy() {
-		OrderedSet<T> set = new OrderedSet<T>();
+	private Set<T> copy() {
+		Set<T> set = new Set<T>();
 		set.addAll(this);
 		return set;
 	}
 		
-	public OrderedSet() {
+	public Set() {
 		super();
 	}
 	
-	public OrderedSet(T element) {
+	public Set(T element) {
 		this();
 		add(element);
 	}
 	
-	public OrderedSet<T> union(OrderedSet<T> bag) {
-		OrderedSet<T> newSet = copy();
+	public Set<T> union(Set<T> bag) {
+		Set<T> newSet = copy();
 		newSet.addAll(bag);
 		return newSet;
 	}
 
-	public OrderedSet<T> difference(OrderedSet<T> bag) {
-		OrderedSet<T> newSet = copy();
+	public Set<T> difference(Set<T> bag) {
+		Set<T> newSet = copy();
 		newSet.removeAll(bag);
 		return newSet;
 	}
 
-	public OrderedSet<T> intersection(OrderedSet<T> bag) {
-		OrderedSet<T> newSet = copy();
+	public Set<T> intersection(Set<T> bag) {
+		Set<T> newSet = copy();
 		newSet.retainAll(bag);
 		return newSet;
 	}
@@ -58,7 +58,7 @@ public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
 	}
 
 	
-	public int compareTo(OrderedSet<T> set) {
+	public int compareTo(Set<T> set) {
 		int thisSize = size();
 		int thatSize = set.size();
 		if (thisSize < thatSize) return -1;
@@ -73,7 +73,7 @@ public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
 		return 0;
 	}
 	
-	public boolean equals(OrderedSet<T> set) {
+	public boolean equals(Set<T> set) {
 		return compareTo(set) == 0;
 	}
 	

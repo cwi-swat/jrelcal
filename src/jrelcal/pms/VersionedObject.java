@@ -16,4 +16,13 @@ class VersionedObject {
 		return subsystem.equals(vo.subsystem) &&
 			version.equals(vo.version);
 	}
+	
+	public int compareTo(VersionedObject o) {
+		int n = subsystem.compareTo(o.subsystem);
+		if (n != 0) {
+			return n;
+		}
+		return version.compareTo(o.version);
+	}
+	
 }

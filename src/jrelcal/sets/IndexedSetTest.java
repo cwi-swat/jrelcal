@@ -11,7 +11,7 @@ package jrelcal.sets;
  * @author storm
  * @class jrelcal.IndexedSetTest
  */
-public class IndexedSetTest extends OrderedSetTest {
+public class IndexedSetTest extends SetTest {
 	private IndexedSet<Integer> fourFiveSixIndexedSet;
 	
 	public IndexedSetTest(String string) {

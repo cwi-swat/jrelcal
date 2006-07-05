@@ -19,8 +19,8 @@ import jrelcal.sets.IndexedSet;
  * @author storm
  * @class jrelcal.TreeBag
  */
-public class OrderedBag<T extends Comparable<T>>  
-	implements Comparable<OrderedBag<T>>, Collection<T> {
+public class Bag<T extends Comparable<T>>  
+	implements Comparable<Bag<T>>, Collection<T> {
 	
 	protected TreeMap<T,Integer> _map;
 
@@ -37,18 +37,18 @@ public class OrderedBag<T extends Comparable<T>>
 	
 	
 	
-	public OrderedBag() {
+	public Bag() {
 		_map = new TreeMap<T,Integer>();
 	}
 
-	public OrderedBag(T t) {
+	public Bag(T t) {
 		_map = new TreeMap<T,Integer>();
 		add(t);
 	}
 
 	
-	private OrderedBag<T> copy() {
-		OrderedBag<T> newBag = new OrderedBag<T>();
+	private Bag<T> copy() {
+		Bag<T> newBag = new Bag<T>();
 		newBag.addAll(this);
 		return newBag;
 	}
@@ -96,8 +96,8 @@ public class OrderedBag<T extends Comparable<T>>
 		getMap().put(element, mult);
 	}
 	
-	public OrderedBag<T> additiveUnion(OrderedBag<T> bag) {
-		OrderedBag<T> newBag = copy();
+	public Bag<T> additiveUnion(Bag<T> bag) {
+		Bag<T> newBag = copy();
 		for (T key : bag.uniqueElements()) {
 			Integer thatMult = bag.multiplicity(key);
 			if (contains(key)) {
@@ -110,8 +110,8 @@ public class OrderedBag<T extends Comparable<T>>
 		return newBag;
 	}
 
-	public OrderedBag<T> difference(OrderedBag<T> bag) {
-		OrderedBag<T> newBag = copy();
+	public Bag<T> difference(Bag<T> bag) {
+		Bag<T> newBag = copy();
 		for (T key : bag.uniqueElements()) {
 			if (contains(key)) {
 				Integer thisMult = multiplicity(key);
@@ -127,8 +127,8 @@ public class OrderedBag<T extends Comparable<T>>
 		return newBag;
 	}
 
-	public OrderedBag<T> maximalUnion(OrderedBag<T> bag) {
-		OrderedBag<T> newBag = copy();
+	public Bag<T> maximalUnion(Bag<T> bag) {
+		Bag<T> newBag = copy();
 		for (T key : bag.uniqueElements()) {
 			Integer thatMult = bag.multiplicity(key);
 			if (contains(key)) {
@@ -141,8 +141,8 @@ public class OrderedBag<T extends Comparable<T>>
 		return newBag;
 	}
 
-	public OrderedBag<T> intersection(OrderedBag<T> bag) {
-		OrderedBag<T> newBag = new OrderedBag<T>();
+	public Bag<T> intersection(Bag<T> bag) {
+		Bag<T> newBag = new Bag<T>();
 		for (T key : bag.uniqueElements()) {
 			if (contains(key)) {
 				Integer thisMult = multiplicity(key);
@@ -153,18 +153,18 @@ public class OrderedBag<T extends Comparable<T>>
 		return newBag;
 	}
 
-	public OrderedBag<T> unique() {
-		OrderedBag<T> newBag = new OrderedBag<T>();
+	public Bag<T> unique() {
+		Bag<T> newBag = new Bag<T>();
 		for (T key : uniqueElements())
 			newBag.add(key);
 		return newBag;
 	}
 
 	public boolean equals(Object o) {
-		return equals((OrderedBag<T>)o);
+		return equals((Bag<T>)o);
 	}
 	
-	public boolean equals(OrderedBag<T> bag) {
+	public boolean equals(Bag<T> bag) {
 		return compareTo(bag) == 0;
 	}
 	
@@ -177,7 +177,7 @@ public class OrderedBag<T extends Comparable<T>>
 		return contains((T)o);
 	}
 
-	public boolean containsAll(OrderedBag<T> bag) {
+	public boolean containsAll(Bag<T> bag) {
 		for (T element: bag) 
 			if (!containsEntries(element, bag.multiplicity(element)))
 				return false;
@@ -205,7 +205,7 @@ public class OrderedBag<T extends Comparable<T>>
 	}
 
 	
-	public int compareTo(OrderedBag<T> bag) {
+	public int compareTo(Bag<T> bag) {
 		int thisSize = cardinality();
 		int thatSize = bag.cardinality();
 		if (thisSize < thatSize) return -1;
@@ -229,7 +229,7 @@ public class OrderedBag<T extends Comparable<T>>
 	
 	public boolean addAllMaximally(Collection< ? extends T> c) {
 		boolean b = false;
-		OrderedBag<T> bag = new OrderedBag<T>();
+		Bag<T> bag = new Bag<T>();
 		for (T t: c) 
 			bag.addAdditive(t);
 		for (T t: bag.uniqueElements()) {
@@ -361,9 +361,9 @@ class TreeBagIterator<T extends Comparable<T>> implements Iterator<T> {
 	private int _mult = 0;
 	private T _key = null;
 	private Iterator<T> _keyIterator;
-	private OrderedBag<T> _bag;
+	private Bag<T> _bag;
 	
-	public TreeBagIterator(OrderedBag<T> bag) {
+	public TreeBagIterator(Bag<T> bag) {
 		_bag = bag;
 		_keyIterator = bag.uniqueElements().iterator();
 	}

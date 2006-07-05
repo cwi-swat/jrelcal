@@ -20,11 +20,11 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 
 	private MultiAdjacencyTable _table;
 
-	public void initialize(OrderedBag<Pair<S, T>> pairs) {
+	public void initialize(Bag<Pair<S, T>> pairs) {
 		initialize(inferFromSet(pairs), inferToSet(pairs), pairs);
 	}
 	
-	public void initialize(IndexedSet<S> domain, IndexedSet<T> range, OrderedBag<Pair<S, T>> pairs) {
+	public void initialize(IndexedSet<S> domain, IndexedSet<T> range, Bag<Pair<S, T>> pairs) {
 		initialize(domain, range, new MultiAdjacencyTable(domain.size(), pairsToEdges(
 				domain, range, pairs)));
 	}
@@ -37,23 +37,23 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	}
 	
 	public void addAdditive(Pair<S,T> pair) {
-		initialize((new OrderedBag<Pair<S,T>>(pair)).additiveUnion(asPairs()));
+		initialize((new Bag<Pair<S,T>>(pair)).additiveUnion(asPairs()));
 	}
 
 	public void addMaximally(Pair<S,T> pair) {
-		initialize((new OrderedBag<Pair<S,T>>(pair)).maximalUnion(asPairs()));
+		initialize((new Bag<Pair<S,T>>(pair)).maximalUnion(asPairs()));
 	}
 
 	public MultiRelation() {
-		initialize(new IndexedSet<S>(), new IndexedSet<T>(), new OrderedBag<Pair<S,T>>());
+		initialize(new IndexedSet<S>(), new IndexedSet<T>(), new Bag<Pair<S,T>>());
 	}
 	
-	public MultiRelation(OrderedBag<Pair<S, T>> pairs) {
+	public MultiRelation(Bag<Pair<S, T>> pairs) {
 		initialize(inferFromSet(pairs), inferToSet(pairs), pairs);
 	}
 
 	public MultiRelation(IndexedSet<S> domain, IndexedSet<T> range,
-			OrderedBag<Pair<S, T>> pairs) {
+			Bag<Pair<S, T>> pairs) {
 		initialize(domain, range, new MultiAdjacencyTable(domain.size(),
 				pairsToEdges(domain, range, pairs)));
 	}
@@ -63,13 +63,13 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		initialize(domain, range, table);
 	}
 
-	public OrderedBag<Pair<S, T>> asPairs() {
+	public Bag<Pair<S, T>> asPairs() {
 		return asPairs(getFromSet(), getToSet());
 	}
 
-	public OrderedBag<Pair<S, T>> asPairs(IndexedSet<S> fromSet,
+	public Bag<Pair<S, T>> asPairs(IndexedSet<S> fromSet,
 			IndexedSet<T> toSet) {
-		OrderedBag<Pair<S, T>> pairs = new OrderedBag<Pair<S, T>>();
+		Bag<Pair<S, T>> pairs = new Bag<Pair<S, T>>();
 		for (Pair<Integer, Integer> edge : getTable().getEdges()) {
 			pairs.add(new Pair<S, T>(fromSet.elementAt(edge.getFirst()), toSet
 					.elementAt(edge.getSecond())));
@@ -82,8 +82,8 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 				getTable().inverse(getToSet().size()));
 	}
 
-	public OrderedBag<S> domain() {
-		OrderedBag<S> bag = new OrderedBag<S>();
+	public Bag<S> domain() {
+		Bag<S> bag = new Bag<S>();
 		for (int i = 0; i < getTable().bound(); i++) {
 			for (int j = 0; j < outDegree(i); j++)
 				bag.add(getFromSet().elementAt(i));
@@ -91,8 +91,8 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return bag;
 	}
 
-	public OrderedBag<T> range() {
-		OrderedBag<T> bag = new OrderedBag<T>();
+	public Bag<T> range() {
+		Bag<T> bag = new Bag<T>();
 		Integer inDegree[] = getTable().inDegree(getTable().bound());
 		for (int i = 0; i < getTable().bound(); i++) {
 			for (int j = 0; j < inDegree[i]; j++)
@@ -220,7 +220,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return getTable().bound();
 	}
 
-	public MultiRelation<S, T> domainRestriction(OrderedBag<S> bag) {
+	public MultiRelation<S, T> domainRestriction(Bag<S> bag) {
 		MultiAdjacencyTable table = getTable().copy();
 		int bound = table.bound();
 		VertexBag vertexBag = bag.toVertexBag(getFromSet());
@@ -231,7 +231,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return new MultiRelation<S, T>(getFromSet(), getToSet(), table);
 	}
 
-	public MultiRelation<S, T> domainExclusion(OrderedBag<S> bag) {
+	public MultiRelation<S, T> domainExclusion(Bag<S> bag) {
 		MultiAdjacencyTable table = getTable().copy();
 		int bound = table.bound();
 		VertexBag vertexBag = bag.toVertexBag(getFromSet());
@@ -242,7 +242,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return new MultiRelation<S, T>(getFromSet(), getToSet(), table);
 	}
 
-	public MultiRelation<S, T> rangeRestriction(OrderedBag<T> bag) {
+	public MultiRelation<S, T> rangeRestriction(Bag<T> bag) {
 		MultiAdjacencyTable table = getTable().copy();
 		int bound = table.bound();
 		VertexBag vertexBag = bag.toVertexBag(getToSet());
@@ -251,7 +251,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return new MultiRelation<S, T>(getFromSet(), getToSet(), table);
 	}
 
-	public MultiRelation<S, T> rangeExclusion(OrderedBag<T> bag) {
+	public MultiRelation<S, T> rangeExclusion(Bag<T> bag) {
 		MultiAdjacencyTable table = getTable().copy();
 		int bound = table.bound();
 		VertexBag vertexBag = bag.toVertexBag(getToSet());
@@ -261,14 +261,14 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	}
 
 	
-	public OrderedBag<T> rightSection(S s) {
-		OrderedBag<S> bag = new OrderedBag<S>();
+	public Bag<T> rightSection(S s) {
+		Bag<S> bag = new Bag<S>();
 		bag.add(s);
 		return domainRestriction(bag).range();
 	}
 
-	public OrderedBag<S> leftSection(T t) {
-		OrderedBag<T> bag = new OrderedBag<T>();
+	public Bag<S> leftSection(T t) {
+		Bag<T> bag = new Bag<T>();
 		bag.add(t);
 		return rangeRestriction(bag).domain();
 	}
@@ -287,13 +287,13 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	 */
 
 	public static <U extends Comparable<U>, V extends Comparable<V>> MultiRelation<U, V> emptyRelation(
-			OrderedBag<U> from, OrderedBag<V> to) {
+			Bag<U> from, Bag<V> to) {
 		return new MultiRelation<U, V>(from.toIndexedSet(), to.toIndexedSet(),
 				MultiAdjacencyTable.emptyGraph(from.size()));
 	}
 
 	public static <U extends Comparable<U>, V extends Comparable<V>> MultiRelation<U, V> cartesianProduct(
-			OrderedBag<U> from, OrderedBag<V> to) {
+			Bag<U> from, Bag<V> to) {
 		IndexedSet<U> fromSet = from.toIndexedSet();
 		IndexedSet<V> toSet = to.toIndexedSet();
 		VertexBag fromBag = from.toVertexBag(fromSet);
@@ -335,7 +335,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	 */
 
 	protected static <S extends Comparable<S>, T extends Comparable<T>> IndexedSet<S> inferFromSet(
-			OrderedBag<Pair<S, T>> pairs) {
+			Bag<Pair<S, T>> pairs) {
 		IndexedSet<S> fromSet = new IndexedSet<S>();
 		for (Pair<S, T> pair : pairs) {
 			fromSet.add(pair.getFirst());
@@ -344,7 +344,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	}
 
 	protected static <S extends Comparable<S>, T extends Comparable<T>> IndexedSet<T> inferToSet(
-			OrderedBag<Pair<S, T>> pairs) {
+			Bag<Pair<S, T>> pairs) {
 		IndexedSet<T> toSet = new IndexedSet<T>();
 		for (Pair<S, T> pair : pairs) {
 			toSet.add(pair.getSecond());
@@ -352,10 +352,10 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return toSet;
 	}
 
-	private static <S extends Comparable<S>, T extends Comparable<T>> OrderedBag<Pair<Integer, Integer>> pairsToEdges(
+	private static <S extends Comparable<S>, T extends Comparable<T>> Bag<Pair<Integer, Integer>> pairsToEdges(
 			IndexedSet<S> fromSet, IndexedSet<T> toSet,
-			OrderedBag<Pair<S, T>> pairs) {
-		OrderedBag<Pair<Integer, Integer>> edges = new OrderedBag<Pair<Integer, Integer>>();
+			Bag<Pair<S, T>> pairs) {
+		Bag<Pair<Integer, Integer>> edges = new Bag<Pair<Integer, Integer>>();
 		for (Pair<S, T> pair : pairs) {
 			edges.add(new Pair<Integer, Integer>(fromSet.indexOf(pair
 					.getFirst()), toSet.indexOf(pair.getSecond())));
@@ -391,7 +391,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	///////////////////////////////////////////////////////////////////////
 	
 	
-	public static <T extends Comparable<T>> OrderedBag<T> carrier(MultiRelation<T,T> relation) {
+	public static <T extends Comparable<T>> Bag<T> carrier(MultiRelation<T,T> relation) {
 		return relation.domain().maximalUnion(relation.range());
 	}
 	
@@ -419,7 +419,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return new MultiRelation<T,T>(set, relation.getToSet(), relation.getTable().reflexiveTransitiveClosure(set.size()));
 	}
 	
-	public static <T extends Comparable<T>> MultiRelation<T,T> carrierRestriction(MultiRelation<T,T> relation, OrderedBag<T> bag) {
+	public static <T extends Comparable<T>> MultiRelation<T,T> carrierRestriction(MultiRelation<T,T> relation, Bag<T> bag) {
 		IndexedSet<T> fromSet = relation.getFromSet();
 		MultiAdjacencyTable table = relation.getTable().copy();
 		int bound = table.bound();
@@ -433,13 +433,13 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return new MultiRelation<T,T>(fromSet, relation.getToSet(), table);
 	}
 	
-	public static <T extends Comparable<T>> OrderedBag<T> sources(MultiRelation<T,T> relation) {
+	public static <T extends Comparable<T>> Bag<T> sources(MultiRelation<T,T> relation) {
 		IndexedSet<T> fromSet = relation.getFromSet();
 		int n = fromSet.size();
 		MultiAdjacencyTable table = relation.getTable();
 		Integer inDegree[] = table.inDegree(n);
 		Integer outDegree[] = table.outDegree();
-		OrderedBag<T> bag = new OrderedBag<T>();
+		Bag<T> bag = new Bag<T>();
 		int i = 0;
 		for (T t: fromSet) {
 			if (inDegree[i] == 0)
@@ -450,13 +450,13 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return bag;
 	}
 
-	public static <T extends Comparable<T>> OrderedBag<T> sinks(MultiRelation<T,T> relation) {
+	public static <T extends Comparable<T>> Bag<T> sinks(MultiRelation<T,T> relation) {
 		IndexedSet<T> fromSet = relation.getFromSet();
 		int n = fromSet.size();
 		MultiAdjacencyTable table = relation.getTable();
 		Integer inDegree[] = table.inDegree(n);
 		Integer outDegree[] = table.outDegree();
-		OrderedBag<T> bag = new OrderedBag<T>();
+		Bag<T> bag = new Bag<T>();
 		int i = 0;
 		for (T t: fromSet) {
 			if (outDegree[i] == 0)
@@ -468,12 +468,12 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 	}
 
 	
-	public static <T extends Comparable<T>> MultiRelation<T,T> identityGraph(OrderedBag<T> bag) {
+	public static <T extends Comparable<T>> MultiRelation<T,T> identityGraph(Bag<T> bag) {
 		IndexedSet<T> set = bag.toIndexedSet();
 		return new MultiRelation<T,T>(set, set, MultiAdjacencyTable.identityGraph(set.size()));
 	}
 	
-	public static <T extends Comparable<T>> MultiRelation<T,T> totalGraph(OrderedBag<T> bag) {
+	public static <T extends Comparable<T>> MultiRelation<T,T> totalGraph(Bag<T> bag) {
 		IndexedSet<T> set = bag.toIndexedSet();
 		VertexBag vertexBag = bag.toVertexBag();
 		return new MultiRelation<T,T>(set, set, 

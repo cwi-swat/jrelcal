@@ -10,7 +10,7 @@ package jrelcal.bags;
  * @author storm
  * @class jrelcal.VertexBag
  */
-public class VertexBag extends OrderedBag<Integer> {
+public class VertexBag extends Bag<Integer> {
 	public VertexBag() {
 		super();
 	}

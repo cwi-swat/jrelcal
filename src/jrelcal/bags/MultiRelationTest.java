@@ -41,25 +41,25 @@ public class MultiRelationTest extends TestCase {
 	
 	
 
-	protected OrderedBag<Integer> emptyBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> oneBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> oneOneBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> oneOneOneBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> twoBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> twoTwoBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> threeBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> oneTwoBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> oneTwoThreeBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> twoThreeBag = new OrderedBag<Integer>();
-	protected OrderedBag<Integer> fourFiveBag = new OrderedBag<Integer>();
+	protected Bag<Integer> emptyBag = new Bag<Integer>();
+	protected Bag<Integer> oneBag = new Bag<Integer>();
+	protected Bag<Integer> oneOneBag = new Bag<Integer>();
+	protected Bag<Integer> oneOneOneBag = new Bag<Integer>();
+	protected Bag<Integer> twoBag = new Bag<Integer>();
+	protected Bag<Integer> twoTwoBag = new Bag<Integer>();
+	protected Bag<Integer> threeBag = new Bag<Integer>();
+	protected Bag<Integer> oneTwoBag = new Bag<Integer>();
+	protected Bag<Integer> oneTwoThreeBag = new Bag<Integer>();
+	protected Bag<Integer> twoThreeBag = new Bag<Integer>();
+	protected Bag<Integer> fourFiveBag = new Bag<Integer>();
 	
 	
 	public MultiRelationTest(String string) {
 		super(string);
 	}
 
-	protected OrderedBag<Integer> empty() {
-		return new OrderedBag<Integer>();
+	protected Bag<Integer> empty() {
+		return new Bag<Integer>();
 	}
 	
 	protected Pair<Integer,Integer> pair(int x, int y) {

@@ -3,7 +3,7 @@
  */
 package jrelcal.pms;
 
-class Configuration {
+class Configuration implements Comparable<Configuration> {
 	protected Interface iface;
 	protected Body body;
 	public Configuration(Interface iface, Body body) {
@@ -15,6 +15,14 @@ class Configuration {
 		Configuration c = (Configuration)o;
 		return iface.equals(c.iface) &&
 			body.equals(c.body);
+	}
+	
+	public int compareTo(Configuration c) {
+		int n = iface.compareTo(c.iface);
+		if (n != 0) {
+			return n;
+		}
+		return body.compareTo(c.body);
 	}
 	
 }

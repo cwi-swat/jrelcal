@@ -34,22 +34,22 @@ public class RelationTest extends TestCase {
 	protected Relation<Integer,Integer> oneFourTwoFiveRelation = new Relation<Integer,Integer>();
 	
 
-	protected OrderedSet<Integer> emptySet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> oneSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> twoSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> threeSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> oneTwoSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> oneTwoThreeSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> twoThreeSet = new OrderedSet<Integer>();
-	protected OrderedSet<Integer> fourFiveSet = new OrderedSet<Integer>();
+	protected Set<Integer> emptySet = new Set<Integer>();
+	protected Set<Integer> oneSet = new Set<Integer>();
+	protected Set<Integer> twoSet = new Set<Integer>();
+	protected Set<Integer> threeSet = new Set<Integer>();
+	protected Set<Integer> oneTwoSet = new Set<Integer>();
+	protected Set<Integer> oneTwoThreeSet = new Set<Integer>();
+	protected Set<Integer> twoThreeSet = new Set<Integer>();
+	protected Set<Integer> fourFiveSet = new Set<Integer>();
 	
 	
 	public RelationTest(String string) {
 		super(string);
 	}
 
-	protected OrderedSet<Integer> empty() {
-		return new OrderedSet<Integer>();
+	protected Set<Integer> empty() {
+		return new Set<Integer>();
 	}
 	
 	protected Pair<Integer,Integer> pair(int x, int y) {

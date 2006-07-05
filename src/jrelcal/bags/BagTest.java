@@ -12,41 +12,41 @@ import junit.framework.TestCase;
  * @author storm
  * @class jrelcal.TreeBagTest
  */
-public class OrderedBagTest extends TestCase {
-	private OrderedBag<Integer> emptyBag;
-	private OrderedBag<Integer> oneBag;
-	private OrderedBag<Integer> oneOneBag;
-	private OrderedBag<Integer> oneOneOneBag;
-	private OrderedBag<Integer> twoBag;
-	private OrderedBag<Integer> oneTwoThreeBag;
-	private OrderedBag<Integer> oneOneTwoTwoBag;
-	private OrderedBag<Integer> oneOneTwoTwoThreeBag;
-	private OrderedBag<Integer> oneOneTwoTwoThreeBag2;
-	private OrderedBag<Integer> oneOneTwoTwoThreeThreeBag;
-	private OrderedBag<Integer> twoThreeFourBag;
-	private OrderedBag<Integer> oneTwoBag;
-	private OrderedBag<Integer> fourFiveSixBag;
+public class BagTest extends TestCase {
+	private Bag<Integer> emptyBag;
+	private Bag<Integer> oneBag;
+	private Bag<Integer> oneOneBag;
+	private Bag<Integer> oneOneOneBag;
+	private Bag<Integer> twoBag;
+	private Bag<Integer> oneTwoThreeBag;
+	private Bag<Integer> oneOneTwoTwoBag;
+	private Bag<Integer> oneOneTwoTwoThreeBag;
+	private Bag<Integer> oneOneTwoTwoThreeBag2;
+	private Bag<Integer> oneOneTwoTwoThreeThreeBag;
+	private Bag<Integer> twoThreeFourBag;
+	private Bag<Integer> oneTwoBag;
+	private Bag<Integer> fourFiveSixBag;
 	private VertexBag vertexBagOneTwoThree;
 	private VertexBag vertexBagZeroToFive;
 
-	public OrderedBagTest(String string) {
+	public BagTest(String string) {
 		super(string);
 	}
 	
 	protected void setUp() {
-		emptyBag = new OrderedBag<Integer>();
-		oneBag = new OrderedBag<Integer>();
-		oneOneBag = new OrderedBag<Integer>();
-		oneOneOneBag = new OrderedBag<Integer>();
-		twoBag = new OrderedBag<Integer>();
-		oneTwoThreeBag = new OrderedBag<Integer>();
-		oneOneTwoTwoBag = new OrderedBag<Integer>();
-		oneOneTwoTwoThreeBag = new OrderedBag<Integer>();
-		oneOneTwoTwoThreeBag2 = new OrderedBag<Integer>();
-		oneOneTwoTwoThreeThreeBag = new OrderedBag<Integer>();
-		twoThreeFourBag = new OrderedBag<Integer>();
-		oneTwoBag = new OrderedBag<Integer>();
-		fourFiveSixBag = new OrderedBag<Integer>();
+		emptyBag = new Bag<Integer>();
+		oneBag = new Bag<Integer>();
+		oneOneBag = new Bag<Integer>();
+		oneOneOneBag = new Bag<Integer>();
+		twoBag = new Bag<Integer>();
+		oneTwoThreeBag = new Bag<Integer>();
+		oneOneTwoTwoBag = new Bag<Integer>();
+		oneOneTwoTwoThreeBag = new Bag<Integer>();
+		oneOneTwoTwoThreeBag2 = new Bag<Integer>();
+		oneOneTwoTwoThreeThreeBag = new Bag<Integer>();
+		twoThreeFourBag = new Bag<Integer>();
+		oneTwoBag = new Bag<Integer>();
+		fourFiveSixBag = new Bag<Integer>();
 		
 		oneBag.add(1);
 		oneOneBag.add(1);
@@ -136,7 +136,7 @@ public class OrderedBagTest extends TestCase {
 	}
 
 	public void testEqualityEmptyNillaryConstructor() {
-		assertTrue(emptyBag.equals(new OrderedBag<Integer>()));
+		assertTrue(emptyBag.equals(new Bag<Integer>()));
 	}
 	
 

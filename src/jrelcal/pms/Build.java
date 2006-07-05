@@ -1,6 +1,6 @@
 package jrelcal.pms;
 
-public class Build {
+public class Build implements Comparable<Build> {
 	protected Integer id;
 	protected Configuration configuration;
 	
@@ -13,6 +13,14 @@ public class Build {
 		Build b = (Build)o;
 		return id.equals(b.id) &&
 			configuration.equals(b.configuration);
+	}
+	
+	public int compareTo(Build b) {
+		int n = configuration.compareTo(b.configuration);
+		if (n != 0) {
+			return n;
+		}
+		return id.compareTo(b.id);
 	}
 	
 }

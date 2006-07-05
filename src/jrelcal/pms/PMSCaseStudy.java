@@ -1,51 +1,122 @@
 package jrelcal.pms;
 
+
 import jrelcal.Pair;
 import jrelcal.sets.*;
 
 public class PMSCaseStudy {
 	
-	OrderedSet<String> subsystems;
-	Relation<String, Integer> interfaces;
-	Relation<String, Integer> bodies;
-	Relation<Pair<String,Integer>,Pair<String,Integer>> configurations;
-	Relation<Pair<String,Integer>,Integer> builds;
-	Relation<Pair<Pair<String,Integer>,Integer>,Pair<String,Integer>> boms;
-	Relation<Pair<Pair<String,Integer>,Integer>,Pair<Pair<String,Integer>,Integer>> systemBoms;
+	Set<Subsystem> subsystems;
+	Set<Interface> interfaces;
+	Set<Body> bodies;
+	Set<Configuration> configurations;
+	Set<Build> builds;
+	Relation<Build, Interface> boms;
+	Relation<Build, Build> systemBoms;
 	
-//	Relation<Pair<Pair<String,Integer>,Integer>,Pair<Pair<String,Integer>,Integer>> allSystemBoms() {
-//		Pair<Pair<String,Integer>,Integer> b1;
-//		Pair<Pair<String,Integer>,Integer> b2;
-//		Pair<String,Integer> i;
-//		
-//	}
-//	
+	Relation<Build, Build> allSystemBoms(Relation<Build,Interface> boms, Set<Build> builds) {
+		Relation<Build,Build> result = new Relation<Build,Build>();
+		for (Pair<Build,Interface> b1_i: boms) {
+			Build b1 = b1_i.getFirst();
+			Interface i = b1_i.getSecond();			
+			for (Build b2: builds) {
+				if (i.subsystem.equals(b2.configuration.iface.subsystem)) {
+					result.add(new Pair<Build, Build>(b1, b2));
+				}
+			}
+		}
+		return result;
+	}
 	
-//	rel[ABuild, ABuild] sysboms = 
-//		{ <b1, b2> |
-//		<ABuild b1, AnInterface i>: boms,
-//		ABuild b2 : builds,
-//		i.subsystem == b2.configuration.interface.subsystem
-//	}
-//	
-	/*
-	 * type ASubsystem = str
-type AVersion = int
-type ABuildID = int
-type ASymbol = str
 
-type AnItem = <ASubsystem subsystem, AVersion version>
-type AnInterface = AnItem
-type ABody = AnItem
-type AConfiguration = <AnInterface interface, ABody body>
-type ABuild = <AConfiguration configuration, ABuildID buildId>
-type ABOM = rel[ABuild, AnInterface]
-type ASystemBOM = rel[ABuild, ABuild]
-
-
-set[ASubsystem] subsystems = {"App", "X", "Y", "Z", "A", "B", "C", "M", "M"} 
-
-
+	Relation<Build,Build> aSystemBom(Relation<Build,Build> systemBoms, Build b) {
+		Relation<Build,Build> result = new Relation<Build,Build>();
+		Relation<Build,Build> systemBomsClosure = Relation.reflexiveTransitiveClosure(systemBoms);
+		Set<Build> reachable = systemBomsClosure.rightImage(b);
+		for (Pair<Build,Build> b1_b2: systemBoms) {
+			Build b1 = b1_b2.getFirst();
+			Build b2 = b1_b2.getSecond();
+			if (reachable.contains(b1) && reachable.contains(b2)) {
+				result.add(new Pair<Build,Build>(b1, b2));
+			}
+		}
+		return result;
+	}
+	
+	
+	Relation<Build,Subsystem> classify(Relation<Build,Build> systemBoms) {
+		Relation<Build,Subsystem> result = new Relation<Build, Subsystem>();
+		for (Build b: Relation.carrier(systemBoms)) {
+			result.add(new Pair<Build,Subsystem>(b, b.configuration.iface.subsystem));
+		}
+		return result;
+	}
+	
+	Set<Set<Build>> generalizedProduct(Set<Set<Build>> space) {
+		Set<Set<Build>> result = new Set<Set<Build>>();
+		Set<Set<Build>> previous = null;
+		for (Set<Build> current: space) {
+			if (previous == null) {
+				previous = new Set<Set<Build>>(current);
+				continue;
+			}
+			Relation<Set<Build>,Build> product = Relation.cartesianProduct(previous, current);
+			previous = new Set<Set<Build>>();
+			for (Pair<Set<Build>,Build> pair: product) {
+				previous.add(pair.getFirst().union(new Set<Build>(pair.getSecond())));
+			}			
+		}
+		return result;
+	}
+	
+	Set<Set<Build>> space(Relation<Build, Subsystem> classification) {
+		Set<Set<Build>> result = new Set<Set<Build>>();
+		for (Subsystem s: classification.range()) {
+			Set<Build> bs = classification.inverse().image(s);
+			result.add(bs);
+		}
+		return generalizedProduct(result);
+	}
+	
+	
+	
+	
+	Set<Build> prune(Relation<Build,Build> systemBoms, Relation<Build, Subsystem> classification, Set<Build> s) {
+		Set<Build> result = new Set<Build>();
+		for (Build b: s) {
+			Set<Build> bset = new Set<Build>(b);
+			Set<Build> reachableWithoutB = systemBoms.image(s.difference(bset)); 
+			if (classification.image(reachableWithoutB).containsAll(classification.image(b))) {
+				result.add(b);
+			}
+		}
+		return result;
+	}
+	
+	Set<Set<Build>> searchSpace(Relation<Build,Build> systemBoms, Relation<Build, Subsystem> classification, Set<Build> s) {
+		Set<Set<Build>> result = new Set<Set<Build>>();
+		Set<Set<Build>> space = space(classification);
+		for (Set<Build> sol: space) {
+			result.add(prune(systemBoms, classification, sol));
+		}
+		return result;
+	}
+	
+	void example() {
+		Set<Subsystem> subsystems = new Set<Subsystem>();
+		subsystems.add(new Subsystem("App"));
+		subsystems.add(new Subsystem("X"));
+		subsystems.add(new Subsystem("Y"));
+		subsystems.add(new Subsystem("Z"));
+		subsystems.add(new Subsystem("A"));
+		subsystems.add(new Subsystem("B"));
+		subsystems.add(new Subsystem("C"));
+		subsystems.add(new Subsystem("M"));
+		subsystems.add(new Subsystem("N"));
+		
+		
+		/*
+		
 set[AnInterface] interfaces = {
 	<"App", -1>,
 	<"X", -1>,
@@ -163,38 +234,9 @@ ABOM boms = {
 	<C2, IN1>
 }
 
-
-rel[ABuild, ABuild] sysboms = 
-	{ <b1, b2> |
-		<ABuild b1, AnInterface i>: boms,
-		ABuild b2 : builds,
-		i.subsystem == b2.configuration.interface.subsystem
+		 */
 	}
-		
 
-ASystemBOM sysbom(ABuild b) =
-	{ <b1, b2> | <ABuild b1, ABuild, b2> : sysboms, {b1, b2} <= sysboms*[b] }
-
-)
-comment
-
-ASystemBOM example = sysboms %%sysbom(App)
-
-rel[ABuild, ASubsystem] class = 
-	{ <b, b.configuration.interface.subsystem> |
-		ABuild b : carrier(example) }
-
-set[set[ABuild]] space = gprod( { bs | ASubsystem s: range(class), set[ABuild] bs <- inv(class)[s] } )
-
-set[ABuild] prune(set[ABuild] s) = { b | ABuild b: s,
-		class[b] <= class[example[ (s \ {b} ) ] ] }
-
-set[set[ABuild]] pspace = { s | set[ABuild] sol: space, set[ABuild] s <- prune(sol) }
-
-	 */
-	
-	
-	
 	/**
 	 * @param args
 	 */

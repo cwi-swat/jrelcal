@@ -16,7 +16,7 @@ import jrelcal.Pair;
 public class MultiAdjacencyTable {
 	private VertexBag[] _table;
 
-	public MultiAdjacencyTable(int bound, OrderedBag<Pair<Integer,Integer>> edges) {
+	public MultiAdjacencyTable(int bound, Bag<Pair<Integer,Integer>> edges) {
 		this(bound);
 		for (Pair<Integer, Integer> edge : edges) {
 			addToImage(edge.getFirst(), edge.getSecond());
@@ -145,8 +145,8 @@ public class MultiAdjacencyTable {
 		return transitiveClosure().additiveUnion(identityGraph(bound));
 	}
 
-	public OrderedBag<Pair<Integer,Integer>> getEdges() {
-		OrderedBag<Pair<Integer,Integer>> edges = new OrderedBag<Pair<Integer,Integer>>();
+	public Bag<Pair<Integer,Integer>> getEdges() {
+		Bag<Pair<Integer,Integer>> edges = new Bag<Pair<Integer,Integer>>();
 		for (int i = 0; i < _table.length; i++) {
 			for (Integer vertex : _table[i]) {
 				edges.add(new Pair<Integer, Integer>(i, vertex));
@@ -177,8 +177,8 @@ public class MultiAdjacencyTable {
 		return new MultiAdjacencyTable(bound, reverseEdges());
 	}
 
-	private OrderedBag<Pair<Integer,Integer>> reverseEdges() {
-		OrderedBag<Pair<Integer,Integer>> edges = new OrderedBag<Pair<Integer,Integer>>();
+	private Bag<Pair<Integer,Integer>> reverseEdges() {
+		Bag<Pair<Integer,Integer>> edges = new Bag<Pair<Integer,Integer>>();
 		for (Pair<Integer, Integer> edge : getEdges()) {
 			edges.add(new Pair<Integer, Integer>(edge.getSecond(), edge
 					.getFirst()));

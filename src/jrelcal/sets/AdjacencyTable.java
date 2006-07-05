@@ -5,7 +5,7 @@ import jrelcal.Pair;
 public class AdjacencyTable {
 	private VertexSet[] _table;
 
-	public AdjacencyTable(int bound, OrderedSet<Pair<Integer,Integer>> edges) {
+	public AdjacencyTable(int bound, Set<Pair<Integer,Integer>> edges) {
 		this(bound);
 		for (Pair<Integer, Integer> edge : edges) {
 			_table[edge.getFirst()].add(edge.getSecond());
@@ -118,8 +118,8 @@ public class AdjacencyTable {
 		return transitiveClosure().union(identityGraph(bound));
 	}
 
-	public OrderedSet<Pair<Integer,Integer>> getEdges() {
-		OrderedSet<Pair<Integer,Integer>> edges = new OrderedSet<Pair<Integer,Integer>>();
+	public Set<Pair<Integer,Integer>> getEdges() {
+		Set<Pair<Integer,Integer>> edges = new Set<Pair<Integer,Integer>>();
 		for (int i = 0; i < _table.length; i++) {
 			for (Integer vertex : _table[i]) {
 				edges.add(new Pair<Integer, Integer>(i, vertex));
@@ -148,8 +148,8 @@ public class AdjacencyTable {
 		return new AdjacencyTable(bound, reverseEdges());
 	}
 
-	private OrderedSet<Pair<Integer,Integer>> reverseEdges() {
-		OrderedSet<Pair<Integer,Integer>> edges = new OrderedSet<Pair<Integer,Integer>>();
+	private Set<Pair<Integer,Integer>> reverseEdges() {
+		Set<Pair<Integer,Integer>> edges = new Set<Pair<Integer,Integer>>();
 		for (Pair<Integer, Integer> edge : getEdges()) {
 			edges.add(new Pair<Integer, Integer>(edge.getSecond(), edge
 					.getFirst()));
