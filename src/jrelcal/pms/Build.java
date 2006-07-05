@@ -32,7 +32,9 @@ public class Build implements Comparable<Build> {
 	}
 	
 	public String toLabel() {
-		return "\"" + toString() + "\"";
+		return configuration.iface.subsystem + "^" + 
+			Math.abs(configuration.iface.version) + "_" + 
+			configuration.body.version;
 	}
 	
 }

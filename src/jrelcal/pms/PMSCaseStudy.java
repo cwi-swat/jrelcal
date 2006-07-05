@@ -86,6 +86,7 @@ public class PMSCaseStudy {
 	}
 	
 	Set<Set<Build>> searchSpace(Relation<Build,Build> systemBoms, Relation<Build, Subsystem> classification, Set<Build> s) {
+		// It seems that pruning isn't necessary?!!?!?
 //		Set<Set<Build>> result = new Set<Set<Build>>();
 //		Set<Set<Build>> space = space(classification);
 //		for (Set<Build> sol: space) {
@@ -277,12 +278,14 @@ public class PMSCaseStudy {
 		systemBoms = allSystemBoms(boms, builds);
 		Relation<Build,Subsystem> classification = classify(systemBoms);
 		Set<Set<Build>> solutionSpace = searchSpace(systemBoms, classification, builds);
-		
-		p("Boms: " + boms);
-		p("SystemBoms: " + systemBoms);
-		p("Classification: " + classification);
-		p("Solution space: " + solutionSpace);
-		p("Solution size: " + solutionSpace.size());
+	
+		p("/*");
+		p(" * Boms: " + boms);
+		p(" * SystemBoms: " + systemBoms);
+		p(" * Classification: " + classification);
+		p(" * Solution space: " + solutionSpace);
+		p(" * Solution size: " + solutionSpace.size());
+		p(" */\n\n");
 		
 		//Set<Relation<Build,Build>> derivedSystemBoms = new Set<Relation<Build,Build>>();
 		// App1 is the root of all systemboms
@@ -309,7 +312,7 @@ public class PMSCaseStudy {
 	public void dot(Relation<Build, Build> systemBom) {
 		p("digraph bla {");
 		for (Build b: Relation.carrier(systemBom)) {
-			p(b.toIdentifier() + " [label=\"" + b.toString() + "\"]");
+			p(b.toIdentifier() + " [label=\"" + b.toLabel() + "\"]");
 		}
 		for (Pair<Build, Build> pair: systemBom) {
 			Build b1 = pair.getFirst();
@@ -321,7 +324,7 @@ public class PMSCaseStudy {
 	}
 	
 	public void p(String s) {
-		System.out.println(s + "\n");
+		System.out.println(s);
 	}
 
 	/**
