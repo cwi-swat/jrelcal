@@ -15,7 +15,7 @@ import java.util.Iterator;
  */
 @SuppressWarnings("serial")
 public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
-	implements Comparable<OrderedSet<T>> {
+	implements Comparable<OrderedSet<T>>, Iterable<T> {
 
 	private OrderedSet<T> copy() {
 		OrderedSet<T> set = new OrderedSet<T>();
