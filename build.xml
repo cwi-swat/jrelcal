@@ -23,14 +23,14 @@
   </target>
 
   <target name="check" depends="build">
-    <mkdir dir="${testresults}"/>
+    <mkdir dir="testresults"/>
     <junit printsummary="withOutAndErr" showoutput="yes">
       <classpath>
 	<pathelement path="project.classpath"/>
 	<pathelement location="${build}"/>
       </classpath>
       <formatter type="plain"/>
-      <batchtest todir="${testresults}" >
+      <batchtest todir="testresults" >
 	<fileset dir="${src}">
 	  <include name="**/TestAll.java"/>
 	</fileset>
