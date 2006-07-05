@@ -25,4 +25,13 @@ class VersionedObject {
 		return version.compareTo(o.version);
 	}
 	
+	public String toLabel() {
+		return "\"" + toString() + "\"";
+	}
+
+	
+	public String toIdentifier() {
+		return subsystem.toIdentifier() + "_" + Math.abs(version);
+	}
+	
 }

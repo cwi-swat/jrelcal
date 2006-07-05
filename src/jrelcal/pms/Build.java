@@ -26,5 +26,13 @@ public class Build implements Comparable<Build> {
 	public String toString() {
 		return "<" + configuration.toString() + "," + id.toString() + ">";
 	}	
+
+	public String toIdentifier() {
+		return "Build_" + configuration.toIdentifier() + "_" + id.toString();
+	}
+	
+	public String toLabel() {
+		return "\"" + toString() + "\"";
+	}
 	
 }

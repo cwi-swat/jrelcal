@@ -16,4 +16,9 @@ class Body extends VersionedObject implements Comparable<Body> {
 		return "<B" + subsystem.toString() + "," + version.toString() + ">";
 	}
 	
+	public String toIdentifier() {
+		return "B_" + super.toIdentifier();
+	}
+	
+	
 }

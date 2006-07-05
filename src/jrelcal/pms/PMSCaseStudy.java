@@ -86,12 +86,13 @@ public class PMSCaseStudy {
 	}
 	
 	Set<Set<Build>> searchSpace(Relation<Build,Build> systemBoms, Relation<Build, Subsystem> classification, Set<Build> s) {
-		Set<Set<Build>> result = new Set<Set<Build>>();
-		Set<Set<Build>> space = space(classification);
-		for (Set<Build> sol: space) {
-			result.add(prune(systemBoms, classification, sol));
-		}
-		return result;
+//		Set<Set<Build>> result = new Set<Set<Build>>();
+//		Set<Set<Build>> space = space(classification);
+//		for (Set<Build> sol: space) {
+//			result.add(prune(systemBoms, classification, sol));
+//		}
+//		return result;
+		return space(classification);
 	}
 	
 	void example() {
@@ -275,8 +276,52 @@ public class PMSCaseStudy {
 		
 		systemBoms = allSystemBoms(boms, builds);
 		Relation<Build,Subsystem> classification = classify(systemBoms);
-		System.out.println(searchSpace(systemBoms, classification, builds));
+		Set<Set<Build>> solutionSpace = searchSpace(systemBoms, classification, builds);
 		
+		p("Boms: " + boms);
+		p("SystemBoms: " + systemBoms);
+		p("Classification: " + classification);
+		p("Solution space: " + solutionSpace);
+		p("Solution size: " + solutionSpace.size());
+		
+		//Set<Relation<Build,Build>> derivedSystemBoms = new Set<Relation<Build,Build>>();
+		// App1 is the root of all systemboms
+		
+		int i = 0;
+		for(Set<Build> sol: solutionSpace) {
+			p("/* Solution #" + ++i + "*/");
+			Relation<Build,Build> temp = new Relation<Build, Build>();
+			for (Pair<Build,Build> pair: Relation.totalGraph(sol)) {				
+				Build b1 = pair.getFirst();
+				Build b2 = pair.getSecond();
+				for (Build b: systemBoms.image(b1)) {
+					if (classification.image(b2).equals(classification.image(b))) {
+						temp.add(pair);
+					}
+				}
+			}
+			dot(temp);
+		}
+		
+		
+	}
+	
+	public void dot(Relation<Build, Build> systemBom) {
+		p("digraph bla {");
+		for (Build b: Relation.carrier(systemBom)) {
+			p(b.toIdentifier() + " [label=\"" + b.toString() + "\"]");
+		}
+		for (Pair<Build, Build> pair: systemBom) {
+			Build b1 = pair.getFirst();
+			Build b2 = pair.getSecond();
+			p(b1.toIdentifier() + " -> " + b2.toIdentifier());
+		}
+		p("}");
+		
+	}
+	
+	public void p(String s) {
+		System.out.println(s + "\n");
 	}
 
 	/**

@@ -22,4 +22,8 @@ class Subsystem implements Comparable<Subsystem> {
 		return name;
 	}
 	
+	public String toIdentifier() {
+		return toString();
+	}
+	
 }

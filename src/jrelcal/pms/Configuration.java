@@ -25,8 +25,16 @@ class Configuration implements Comparable<Configuration> {
 		return body.compareTo(c.body);
 	}
 	
+	public String toLabel() {
+		return "\"" + toString() + "\"";
+	}
+	
 	public String toString() {
 		return "<" + iface.toString() + "," + body.toString() + ">";
+	}
+	
+	public String toIdentifier() {
+		return "Conf_" + iface.toIdentifier() + "_" + body.toIdentifier();
 	}
 	
 }
