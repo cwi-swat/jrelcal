@@ -2,7 +2,7 @@
 
 include $(top_srcdir)/java_make_rules
 
-SUBDIRS = jars src utils doc
+SUBDIRS = jars utils doc
 
 ACLOCAL_FLAGS = -I .
 
@@ -11,7 +11,7 @@ JARFILE = JRelCal-${VERSION}.jar
 JARFILE_ENV = JAR=${JARFILE}
 JUNIT = ${top_srcdir}/jars/junit.jar
 EXTERNAL_JARS = ${JUNIT}
-JAVA_PACKAGES=jrelcal
+JAVA_PACKAGES=jrelcal,jrelcal.sets,jrelcal.bags,jrelcal.pms,jrelcal.rsf,
 
 data_DATA = ${JARFILE}
 noinst_SCRIPTS = ${PACKAGE}-${VERSION}.pkg
