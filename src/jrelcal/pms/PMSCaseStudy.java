@@ -1,8 +1,13 @@
 package jrelcal.pms;
 
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import jrelcal.Pair;
-import jrelcal.sets.*;
+import jrelcal.sets.Relation;
+import jrelcal.sets.Set;
 
 public class PMSCaseStudy {
 	Relation<Build, Build> allSystemBoms(Relation<Build,Interface> boms, Set<Build> builds) {
@@ -303,7 +308,14 @@ public class PMSCaseStudy {
 					}
 				}
 			}
-			dot(temp);
+			dot2(temp);
+		}
+		
+		try {
+			output.close();
+		}
+		catch (IOException e) {
+			
 		}
 		
 		
@@ -322,9 +334,37 @@ public class PMSCaseStudy {
 		p("}");
 		
 	}
+
+	public void dot2(Relation<Build, Build> systemBom) {
+		p("strict digraph bla {");
+		for (Build b: Relation.carrier(systemBom)) {
+			Interface in = b.configuration.iface;
+			Body bo = b.configuration.body;
+			p(in.toIdentifier() + " [shape=ellipse,label=\"" + in.toLabel() + "\"]");
+			p(bo.toIdentifier() + " [shape=box,label=\"" + bo.toLabel() + "\"]");
+			p(in.toIdentifier() + " -> " + bo.toIdentifier() + " [style=dotted,arrowhead=none]");
+		}
+		for (Pair<Build, Build> pair: systemBom) {
+			Build b1 = pair.getFirst();
+			Build b2 = pair.getSecond();
+			p(b1.configuration.body.toIdentifier() + " -> " + b2.configuration.iface.toIdentifier());
+		}
+		p("}");
+		
+	}
+
+	
+	private BufferedWriter output = null;
 	
 	public void p(String s) {
-		System.out.println(s);
+		try {
+			if (output == null) {
+				output = new BufferedWriter(new FileWriter("/export/scratch1/storm/bla.dot"));
+			}
+	        output.write(s + "\n");
+	    } catch (IOException e) {
+	    	System.err.println("Error!");
+	    }
 	}
 
 	/**

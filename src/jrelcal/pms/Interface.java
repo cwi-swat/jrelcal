@@ -20,4 +20,9 @@ class Interface extends VersionedObject implements Comparable<Interface> {
 		return "I_" + super.toIdentifier();
 	}
 	
+	public String toLabel() {
+		return subsystem.toString() + "^" + Math.abs(version);
+	}
+	
+	
 }
