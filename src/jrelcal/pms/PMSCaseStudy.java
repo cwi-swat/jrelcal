@@ -5,15 +5,6 @@ import jrelcal.Pair;
 import jrelcal.sets.*;
 
 public class PMSCaseStudy {
-	
-	Set<Subsystem> subsystems;
-	Set<Interface> interfaces;
-	Set<Body> bodies;
-	Set<Configuration> configurations;
-	Set<Build> builds;
-	Relation<Build, Interface> boms;
-	Relation<Build, Build> systemBoms;
-	
 	Relation<Build, Build> allSystemBoms(Relation<Build,Interface> boms, Set<Build> builds) {
 		Relation<Build,Build> result = new Relation<Build,Build>();
 		for (Pair<Build,Interface> b1_i: boms) {
@@ -66,6 +57,7 @@ public class PMSCaseStudy {
 				previous.add(pair.getFirst().union(new Set<Build>(pair.getSecond())));
 			}			
 		}
+		result = previous;
 		return result;
 	}
 	
@@ -103,146 +95,196 @@ public class PMSCaseStudy {
 	}
 	
 	void example() {
-		Set<Subsystem> subsystems = new Set<Subsystem>();
-		subsystems.add(new Subsystem("App"));
-		subsystems.add(new Subsystem("X"));
-		subsystems.add(new Subsystem("Y"));
-		subsystems.add(new Subsystem("Z"));
-		subsystems.add(new Subsystem("A"));
-		subsystems.add(new Subsystem("B"));
-		subsystems.add(new Subsystem("C"));
-		subsystems.add(new Subsystem("M"));
-		subsystems.add(new Subsystem("N"));
+		Set<Subsystem> subsystems;
+		Set<Interface> interfaces;
+		Set<Body> bodies;
+		Set<Configuration> configurations;
+		Set<Build> builds;
+		Relation<Build, Interface> boms;
+		Relation<Build, Build> systemBoms;
+
+		
+		Subsystem SApp = new Subsystem("App");
+		Subsystem SX = new Subsystem("X");
+		Subsystem SY = new Subsystem("Y");
+		Subsystem SZ = new Subsystem("Z");
+		Subsystem SA = new Subsystem("A");
+		Subsystem SB = new Subsystem("B");
+		Subsystem SC = new Subsystem("C");
+		Subsystem SM = new Subsystem("M");
+		Subsystem SN = new Subsystem("N");
 		
 		
-		/*
+		subsystems = new Set<Subsystem>();
+		subsystems.add(SApp);
+		subsystems.add(SX);
+		subsystems.add(SY);
+		subsystems.add(SZ);
+		subsystems.add(SA);
+		subsystems.add(SB);
+		subsystems.add(SC);
+		subsystems.add(SM);
+		subsystems.add(SN);
+
+		Interface IApp1 = new Interface(SApp, -1);
+		Interface IX1 = new Interface(SX, -1);
+		Interface IY1 = new Interface(SY, -1);
+		Interface IZ1 = new Interface(SZ, -1);
+		Interface IA1 = new Interface(SA, -1);
+		Interface IA2 = new Interface(SA, -2);
+		Interface IA3 = new Interface(SA, -3);
+		Interface IB1 = new Interface(SB, -1);
+		Interface IB2 = new Interface(SB, -2);
+		Interface IC1 = new Interface(SC, -1);
+		Interface IC2 = new Interface(SC, -2);
+		Interface IM1 = new Interface(SM, -1);
+		Interface IM2 = new Interface(SM, -2);
+		Interface IN1 = new Interface(SN, -1);
+
 		
-set[AnInterface] interfaces = {
-	<"App", -1>,
-	<"X", -1>,
-	<"Y", -1>,
-	<"Z", -1>,
-	<"A", -1>,
-	<"A", -2>,
-	<"A", -3>,
-	<"B", -1>,
-	<"B", -2>,
-	<"C", -1>,
-	<"C", -2>,
-	<"M", -1>,
-	<"M", -2>,
-	<"N", -1>
-	}
+		
+		interfaces = new Set<Interface>();
+		interfaces.add(IApp1);
+		interfaces.add(IX1);
+		interfaces.add(IY1);
+		interfaces.add(IZ1);
+		interfaces.add(IA1);
+		interfaces.add(IA2);
+		interfaces.add(IA3);
+		interfaces.add(IB1);
+		interfaces.add(IB2);
+		interfaces.add(IC1);
+		interfaces.add(IC2);
+		interfaces.add(IM1);
+		interfaces.add(IM2);
+		interfaces.add(IN1);
+		
 
-set[ABody] bodies = {
-	<"App", 1>,
-	<"X", 1>,
-	<"Y", 1>,
-	<"Z", 1>,
-	<"A", 1>,
-	<"A", 2>,
-	<"A", 3>,
-	<"B", 1>,
-	<"B", 2>,
-	<"C", 1>,
-	<"C", 2>,
-	<"M", 1>,
-	<"M", 2>,
-	<"N", 1>
-	}
+		Body BApp1 = new Body(SApp, 1);
+		Body BX1 = new Body(SX, 1);
+		Body BY1 = new Body(SY, 1);
+		Body BZ1 = new Body(SZ, 1);
+		Body BA1 = new Body(SA, 1);
+		Body BA2 = new Body(SA, 2);
+		Body BA3 = new Body(SA, 3);
+		Body BB1 = new Body(SB, 1);
+		Body BB2 = new Body(SB, 2);
+		Body BC1 = new Body(SC, 1);
+		Body BC2 = new Body(SC, 2);
+		Body BM1 = new Body(SM, 1);
+		Body BM2 = new Body(SM, 2);
+		Body BN1 = new Body(SN, 1);
+		
+		bodies = new Set<Body>();
+		bodies.add(BApp1);
+		bodies.add(BX1);
+		bodies.add(BY1);
+		bodies.add(BZ1);
+		bodies.add(BA1);
+		bodies.add(BA2);
+		bodies.add(BA3);
+		bodies.add(BB1);
+		bodies.add(BB2);
+		bodies.add(BC1);
+		bodies.add(BC2);
+		bodies.add(BM1);
+		bodies.add(BM2);
+		bodies.add(BN1);
+		
 
-ABody BApp = <"App", 1>
-ABody BX1 = <"X", 1>
-ABody BY1 = <"Y", 1>
-ABody BZ1 = <"Z", 1>
-ABody BA1 = <"A", 1>
-ABody BA2 = <"A", 2>
-ABody BA3 = <"A", 3>
-ABody BB1 = <"B", 1>
-ABody BB2 = <"B", 2>
-ABody BC1 = <"C", 1>
-ABody BC2 = <"C", 2>
-ABody BM1 = <"M", 1>
-ABody BM2 = <"M", 2>
-ABody BN1 = <"N", 1>
+		Configuration CApp1 = new Configuration(IApp1, BApp1);
+		Configuration CX1 = new Configuration(IX1, BX1);
+		Configuration CY1 = new Configuration(IY1, BY1);
+		Configuration CZ1 = new Configuration(IZ1, BZ1);
+		Configuration CA1 = new Configuration(IA1, BA1);
+		Configuration CA2 = new Configuration(IA2, BA2);
+		Configuration CA3 = new Configuration(IA3, BA3);
+		Configuration CB1 = new Configuration(IB1, BB1);
+		Configuration CB2 = new Configuration(IB2, BB2);
+		Configuration CC1 = new Configuration(IC1, BC1);
+		Configuration CC2 = new Configuration(IC2, BC2);
+		Configuration CM1 = new Configuration(IM1, BM1);
+		Configuration CM2 = new Configuration(IM2, BM2);
+		Configuration CN1 = new Configuration(IN1, BN1);
+		
+		configurations = new Set<Configuration>();
+		configurations.add(CApp1);
+		configurations.add(CX1);
+		configurations.add(CY1);
+		configurations.add(CZ1);
+		configurations.add(CA1);
+		configurations.add(CA2);
+		configurations.add(CA3);
+		configurations.add(CB1);
+		configurations.add(CB2);
+		configurations.add(CC1);
+		configurations.add(CC2);
+		configurations.add(CM1);
+		configurations.add(CM2);
+		configurations.add(CN1);
+		
 
+		Build App1 = new Build(CApp1, 0);
+		Build X1 = new Build(CX1, 0);
+		Build Y1 = new Build(CY1, 0);
+		Build Z1 = new Build(CZ1, 0);
+		Build A1 = new Build(CA1, 0);
+		Build A2 = new Build(CA2, 0);
+		Build A3 = new Build(CA3, 0);
+		Build B1 = new Build(CB1, 0);
+		Build B2 = new Build(CB2, 0);
+		Build C1 = new Build(CC1, 0);
+		Build C2 = new Build(CC2, 0);
+		Build M1 = new Build(CM1, 0);
+		Build M2 = new Build(CM2, 0);
+		Build N1 = new Build(CN1, 0);
 
-AnInterface IApp = <"App", -1>
-AnInterface IX1 = <"X", -1>
-AnInterface IY1 = <"Y", -1>
-AnInterface IZ1 = <"Z", -1>
-AnInterface IA1 = <"A", -1>
-AnInterface IA2 = <"A", -2>
-AnInterface IA3 = <"A", -3>
-AnInterface IB1 = <"B", -1>
-AnInterface IB2 = <"B", -2>
-AnInterface IC1 = <"C", -1>
-AnInterface IC2 = <"C", -2>
-AnInterface IM1 = <"M", -1>
-AnInterface IM2 = <"M", -2>
-AnInterface IN1 = <"N", -1>
-
-AConfiguration CApp = <<"App", -1>, <"App", 1>>
-AConfiguration CX1 = <<"X", -1>, <"X", 1>>
-AConfiguration CY1 = <<"Y", -1>, <"Y", 1>>
-AConfiguration CZ1 = <<"Z", -1>, <"Z", 1>>
-AConfiguration CA1 = <<"A", -1>, <"A", 1>>
-AConfiguration CA2 = <<"A", -2>, <"A", 2>>
-AConfiguration CA3 = <<"A", -3>, <"A", 3>>
-AConfiguration CB1 = <<"B", -1>, <"B", 1>>
-AConfiguration CB2 = <<"B", -2>, <"B", 2>>
-AConfiguration CC1 = <<"C", -1>, <"C", 1>>
-AConfiguration CC2 = <<"C", -2>, <"C", 2>>
-AConfiguration CM1 = <<"M", -1>, <"M", 1>>
-AConfiguration CM2 = <<"M", -2>, <"M", 2>>
-AConfiguration CN1 = <<"N", -1>, <"N", 1>>
-
-ABuild App = <CApp, 0>
-ABuild X1 = <CX1, 0>
-ABuild Y1 = <CY1, 0>
-ABuild Z1 = <CZ1, 0>
-ABuild A1 = <CA1, 0>
-ABuild A2 = <CA2, 0>
-ABuild A3 = <CA3, 0>
-ABuild B1 = <CB1, 0>
-ABuild B2 = <CB2, 0>
-ABuild C1 = <CC1, 0>
-ABuild C2 = <CC2, 0>
-ABuild M1 = <CM1, 0>
-ABuild M2 = <CM2, 0>
-ABuild N1 = <CN1, 0>
-
-set[ABuild] builds =
-	{App, X1, Y1, Z1, A1, A2, A3, B1, B2, C1, C2, M1, M2, N1}
-
-ABOM boms = {
-	<App, IX1>,
-	<App, IY1>,
-	<App, IZ1>,
-	<X1, IA1>,
-	<Y1, IA2>,
-	<Z1, IA3>,
-	<Z1, IC2>,
-	<A1, IB1>,
-	<A1, IC1>,
-	<A2, IB2>,
-	<A2, IC1>,
-	<A3, IB2>,
-	<A3, IC1>,
-	<B1, IM1>,
-	<B2, IM2>,
-	<C2, IN1>
-}
-
-		 */
+		builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(X1);
+		builds.add(Y1);
+		builds.add(Z1);
+		builds.add(A1);
+		builds.add(A2);
+		builds.add(A3);
+		builds.add(B1);
+		builds.add(B2);
+		builds.add(C1);
+		builds.add(C2);
+		builds.add(M1);
+		builds.add(M2);
+		builds.add(N1);
+		
+		boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IX1));
+		boms.add(new Pair<Build,Interface>(App1, IY1));
+		boms.add(new Pair<Build,Interface>(App1, IZ1));
+		boms.add(new Pair<Build,Interface>(X1, IA1));
+		boms.add(new Pair<Build,Interface>(Y1, IA2));
+		boms.add(new Pair<Build,Interface>(Z1, IA3));
+		boms.add(new Pair<Build,Interface>(Z1, IC2));
+		boms.add(new Pair<Build,Interface>(A1, IB1));
+		boms.add(new Pair<Build,Interface>(A1, IC1));
+		boms.add(new Pair<Build,Interface>(A2, IB2));
+		boms.add(new Pair<Build,Interface>(A2, IC1));
+		boms.add(new Pair<Build,Interface>(A3, IB2));
+		boms.add(new Pair<Build,Interface>(A3, IC1));
+		boms.add(new Pair<Build,Interface>(B1, IM1));
+		boms.add(new Pair<Build,Interface>(B2, IM2));
+		boms.add(new Pair<Build,Interface>(C2, IN1));
+		
+		systemBoms = allSystemBoms(boms, builds);
+		Relation<Build,Subsystem> classification = classify(systemBoms);
+		System.out.println(searchSpace(systemBoms, classification, builds));
+		
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		PMSCaseStudy app = new PMSCaseStudy();
+		app.example();
 	}
 	
 	

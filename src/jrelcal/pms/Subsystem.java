@@ -5,6 +5,7 @@ package jrelcal.pms;
 
 class Subsystem implements Comparable<Subsystem> {
 	protected String name;
+	
 	public Subsystem(String name) {
 		this.name = name;
 	}
@@ -15,6 +16,10 @@ class Subsystem implements Comparable<Subsystem> {
 
 	public int compareTo(Subsystem s) {
 		return name.compareTo(s.name);
+	}
+	
+	public String toString() {
+		return name;
 	}
 	
 }

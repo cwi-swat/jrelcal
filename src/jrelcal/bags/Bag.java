@@ -165,7 +165,17 @@ public class Bag<T extends Comparable<T>>
 	}
 	
 	public boolean equals(Bag<T> bag) {
-		return compareTo(bag) == 0;
+		for (T t: uniqueElements()) {
+			if (multiplicity(t) != bag.multiplicity(t)) {
+				return false;
+			}
+		}
+		for (T t: bag.uniqueElements()) {
+			if (multiplicity(t) != bag.multiplicity(t)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	
@@ -210,6 +220,7 @@ public class Bag<T extends Comparable<T>>
 		int thatSize = bag.cardinality();
 		if (thisSize < thatSize) return -1;
 		if (thisSize > thatSize) return +1;
+		
 		Iterator<T> thatIterator = bag.uniqueElements().iterator();
 		for (Iterator<T> thisIterator = uniqueElements().iterator(); thisIterator.hasNext();) {
 			T thisKey = thisIterator.next();
@@ -325,21 +336,20 @@ public class Bag<T extends Comparable<T>>
 		return a;
 	}
 	
-	@SuppressWarnings("hiding")
-	public <T> T[] toArray(T[] a) {
+	public <X> X[] toArray(X[] a) {
 		int size = size();
 		if (size <= a.length) {
 			int i = 0;
-			for (Object o: this) 
-				a[i++] = (T)o;
+			for (T o: this) 
+				a[i++] = (X)o;
 			if (size < a.length)
 				a[i] = null;
 			return a;
 		}
-		a = (T[])new Object[size];
+		a = (X[])new Object[size];
 		int i = 0;
-		for (Object o: this) {
-			a[i++] = (T)o;
+		for (T o: this) {
+			a[i++] = (X)o;
 		}
 		return a;
 	}

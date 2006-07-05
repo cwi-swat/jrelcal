@@ -133,8 +133,12 @@ public class AdjacencyTable {
 	}
 
 	public Integer[] outDegree() {
-		Integer table[] = new Integer[_table.length];
-		for (int i = 0; i < table.length; i++) {
+//		Integer table[] = new Integer[_table.length];
+//		for (int i = 0; i < table.length; i++) {
+//			table[i] = _table[i].size();
+//		}
+		Integer table[] = new Integer[bound()];
+		for (int i = 0; i < bound(); i++) {
 			table[i] = _table[i].size();
 		}
 		return table;
@@ -219,6 +223,12 @@ public class AdjacencyTable {
 		return true;
 	}
 
+	public void print() {
+		for (int i = 0; i < _table.length; i++) {
+			System.out.println(i + ": " + _table[i]);
+		}
+	}
+	
 	public String toString() {
 		return getEdges().toString();
 	}

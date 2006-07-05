@@ -84,4 +84,16 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
 		return set;
 	}
 	
+	public String toString() {
+		final String curly = "{";
+		StringBuilder str = new StringBuilder(curly);
+		for (T t: this) {
+			str = str.append(t + ",\n");
+		}
+		if (!str.toString().equals(curly))
+			str = str.delete(str.length() - 2, str.length());
+		str.append("}");
+		return str.toString();
+	}
+	
 }

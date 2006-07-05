@@ -12,4 +12,8 @@ class Body extends VersionedObject implements Comparable<Body> {
 		return super.compareTo(b);
 	}
 	
+	public String toString() {
+		return "<B" + subsystem.toString() + "," + version.toString() + ">";
+	}
+	
 }

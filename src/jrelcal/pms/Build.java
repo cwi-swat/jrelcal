@@ -22,5 +22,9 @@ public class Build implements Comparable<Build> {
 		}
 		return id.compareTo(b.id);
 	}
+
+	public String toString() {
+		return "<" + configuration.toString() + "," + id.toString() + ">";
+	}	
 	
 }

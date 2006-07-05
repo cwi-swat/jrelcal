@@ -96,8 +96,9 @@ public class Relation<S extends Comparable<S>, T extends Comparable<T>> implemen
 
 	public Set<T> range() {
 		Set<T> set = new Set<T>();
-		Integer inDegree[] = getTable().inDegree(getTable().bound());
-		for (int i = 0; i < getTable().bound(); i++) {
+		int n = getToSet().size();
+		Integer inDegree[] = getTable().inDegree(n);
+		for (int i = 0; i < n; i++) {
 			if (inDegree[i] > 0)
 				set.add(getToSet().elementAt(i));
 		}

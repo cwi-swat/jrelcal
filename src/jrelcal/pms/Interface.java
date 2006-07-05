@@ -12,4 +12,7 @@ class Interface extends VersionedObject implements Comparable<Interface> {
 		return super.compareTo(i);
 	}
 	
+	public String toString() {
+		return "<I" + subsystem.toString() + "," + version.toString() + ">";
+	}
 }
