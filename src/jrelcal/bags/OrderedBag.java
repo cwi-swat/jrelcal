@@ -19,7 +19,7 @@ import jrelcal.sets.IndexedSet;
  * @author storm
  * @class jrelcal.TreeBag
  */
-public class OrderedBag<T extends Comparable<T>> //extends TreeMap<T, Integer> 
+public class OrderedBag<T extends Comparable<T>>  
 	implements Comparable<OrderedBag<T>>, Collection<T> {
 	
 	protected TreeMap<T,Integer> _map;
