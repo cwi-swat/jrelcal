@@ -9,7 +9,7 @@ import jrelcal.Pair;
 import jrelcal.sets.Relation;
 import jrelcal.sets.Set;
 
-public class PMSCaseStudy {
+public class BillsOfMaterials {
 	Relation<Build, Build> allSystemBoms(Relation<Build,Interface> boms, Set<Build> builds) {
 		Relation<Build,Build> result = new Relation<Build,Build>();
 		for (Pair<Build,Interface> b1_i: boms) {
