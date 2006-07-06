@@ -292,6 +292,7 @@ public class Relation<S extends Comparable<S>, T extends Comparable<T>>
 		return asPairs().equals(relation.asPairs());
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
 		return equals((Relation<S,T>)o);
 	}

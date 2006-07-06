@@ -278,6 +278,7 @@ public class MultiRelation<S extends Comparable<S>, T extends Comparable<T>> {
 		return asPairs().equals(relation.asPairs());
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
 		return equals((MultiRelation<S,T>)o);
 	}

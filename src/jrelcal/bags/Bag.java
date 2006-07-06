@@ -160,6 +160,7 @@ public class Bag<T extends Comparable<T>>
 		return newBag;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
 		return equals((Bag<T>)o);
 	}
@@ -183,6 +184,7 @@ public class Bag<T extends Comparable<T>>
 		return getMap().containsKey(key) && getMap().get(key) > 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean contains(Object o) {
 		return contains((T)o);
 	}
@@ -292,6 +294,7 @@ public class Bag<T extends Comparable<T>>
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean remove(Object o) {
 		return this.remove((T)o);
 	}
@@ -336,6 +339,7 @@ public class Bag<T extends Comparable<T>>
 		return a;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <X> X[] toArray(X[] a) {
 		int size = size();
 		if (size <= a.length) {

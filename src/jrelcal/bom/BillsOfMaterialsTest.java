@@ -167,6 +167,161 @@ public class BillsOfMaterialsTest extends TestCase {
 		assertEquals(bom.getAllSystemBoms(), expected);
 	}
 	
+	public void testTwoPossibilitiesOneTransitivity() {
+		Set<Build> builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(A1);
+		builds.add(B1);
+		builds.add(B2);
+		Relation<Build,Interface> boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IA1));
+		boms.add(new Pair<Build,Interface>(A1, IB1));
+		BillsOfMaterials bom = new BillsOfMaterials(builds, boms);
+		Set<Relation<Build,Build>> expected = new Set<Relation<Build,Build>>();
+		Relation<Build,Build> sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B1));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B2));
+		expected.add(sysBom);
+		assertEquals(bom.getAllSystemBoms(), expected);		
+	}
+
+	public void testThreePossibilitiesOneTransitivity() {
+		Set<Build> builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(A1);
+		builds.add(A2);
+		builds.add(B1);
+		builds.add(B2);
+		Relation<Build,Interface> boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IA1));
+		boms.add(new Pair<Build,Interface>(A1, IB1));
+		BillsOfMaterials bom = new BillsOfMaterials(builds, boms);
+		Set<Relation<Build,Build>> expected = new Set<Relation<Build,Build>>();
+		Relation<Build,Build> sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B1));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B2));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A2));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B1));
+		expected.add(sysBom);
+		assertEquals(bom.getAllSystemBoms(), expected);		
+	}
+
+	public void testFourPossibilitiesOneTransitivity() {
+		Set<Build> builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(A1);
+		builds.add(A2);
+		builds.add(B1);
+		builds.add(B2);
+		Relation<Build,Interface> boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IA1));
+		boms.add(new Pair<Build,Interface>(A1, IB1));
+		boms.add(new Pair<Build,Interface>(A2, IB2));		
+		BillsOfMaterials bom = new BillsOfMaterials(builds, boms);
+		Set<Relation<Build,Build>> expected = new Set<Relation<Build,Build>>();
+		Relation<Build,Build> sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B1));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A1));
+		sysBom.add(new Pair<Build,Build>(A1, B2));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A2));
+		sysBom.add(new Pair<Build,Build>(A2, B1));
+		expected.add(sysBom);
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, A2));
+		sysBom.add(new Pair<Build,Build>(A2, B2));
+		expected.add(sysBom);
+		assertEquals(bom.getAllSystemBoms(), expected);		
+	}
+
+	public void testTriangle() {
+		Set<Build> builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(B1);
+		builds.add(C1);
+		builds.add(C2);
+		Relation<Build,Interface> boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IB1));
+		boms.add(new Pair<Build,Interface>(App1, IC1));
+		boms.add(new Pair<Build,Interface>(B1, IC2));
+		
+		BillsOfMaterials bom = new BillsOfMaterials(builds, boms);
+		Set<Relation<Build,Build>> expected = new Set<Relation<Build,Build>>();
+		Relation<Build,Build> sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B1));
+		sysBom.add(new Pair<Build,Build>(App1, C1));
+		sysBom.add(new Pair<Build,Build>(B1, C1));
+		expected.add(sysBom);
+		
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B1));
+		sysBom.add(new Pair<Build,Build>(App1, C2));
+		sysBom.add(new Pair<Build,Build>(B1, C2));
+		expected.add(sysBom);
+		
+		assertEquals(bom.getAllSystemBoms(), expected);		
+	}
+
+	public void testTriangle2() {
+		Set<Build> builds = new Set<Build>();
+		builds.add(App1);
+		builds.add(B1);
+		builds.add(B2);
+		builds.add(C1);
+		builds.add(C2);
+		Relation<Build,Interface> boms = new Relation<Build, Interface>();
+		boms.add(new Pair<Build,Interface>(App1, IB1));
+		boms.add(new Pair<Build,Interface>(App1, IC1));
+		boms.add(new Pair<Build,Interface>(B1, IC2));
+		boms.add(new Pair<Build,Interface>(B2, IC2));
+		
+		BillsOfMaterials bom = new BillsOfMaterials(builds, boms);
+		Set<Relation<Build,Build>> expected = new Set<Relation<Build,Build>>();
+		
+		Relation<Build,Build> sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B1));
+		sysBom.add(new Pair<Build,Build>(App1, C1));
+		sysBom.add(new Pair<Build,Build>(B1, C1));
+		expected.add(sysBom);
+		
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B1));
+		sysBom.add(new Pair<Build,Build>(App1, C2));
+		sysBom.add(new Pair<Build,Build>(B1, C2));
+		expected.add(sysBom);
+		
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B2));
+		sysBom.add(new Pair<Build,Build>(App1, C2));
+		sysBom.add(new Pair<Build,Build>(B2, C2));
+		expected.add(sysBom);
+		
+		sysBom = new Relation<Build, Build>();
+		sysBom.add(new Pair<Build,Build>(App1, B2));
+		sysBom.add(new Pair<Build,Build>(App1, C1));
+		sysBom.add(new Pair<Build,Build>(B2, C1));
+		expected.add(sysBom);
+		
+		assertEquals(bom.getAllSystemBoms(), expected);		
+	}
+
 	
 	protected void setUp() {
 		subsystems = new Set<Subsystem>();

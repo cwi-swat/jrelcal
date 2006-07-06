@@ -64,33 +64,13 @@ public class BillsOfMaterials {
 		return result;
 	}
 	
-	private Set<Set<Build>> generalizedProduct(Set<Set<Build>> space) {
-		Set<Set<Build>> result = new Set<Set<Build>>();
-		Set<Set<Build>> previous = null;
-		for (Set<Build> current: space) {
-			if (previous == null) {
-				previous = new Set<Set<Build>>(current);
-				continue;
-			}
-			Relation<Set<Build>,Build> product = Relation.cartesianProduct(previous, current);
-			previous = new Set<Set<Build>>();
-			for (Pair<Set<Build>,Build> pair: product) {
-				previous.add(pair.getFirst().union(new Set<Build>(pair.getSecond())));
-			}			
-		}
-		if (previous != null) {
-			result = previous;
-		}
-		return result;
-	}
-	
 	private Set<Set<Build>> searchSpace(Relation<Build,Build> systemBoms, Relation<Build,Subsystem> classification) {
 		Set<Set<Build>> result = new Set<Set<Build>>();
 		for (Subsystem s: classification.range()) {
 			Set<Build> bs = classification.inverse().image(s);
 			result.add(bs);
 		}
-		result = generalizedProduct(result); 
+		result = Set.bigProduct(result);  
 		return result;
 	}
 	
@@ -124,6 +104,22 @@ public class BillsOfMaterials {
 			str.append(b1.toIdentifier() + " -> " + b2.toIdentifier() + "\n");
 		}
 		str.append("}\n");
+		return str.toString();
+	}
+	
+	public static String systemBomsToDotString(Set<Relation<Build,Build>> systemBoms) {
+		StringBuilder str = new StringBuilder();
+		for (Relation<Build,Build> systemBom: systemBoms) {
+			str.append(systemBomToDotString(systemBom));
+		}
+		return str.toString();
+	}
+	
+	public static String systemBomsToDotStringWithInterfaces(Set<Relation<Build,Build>> systemBoms) {
+		StringBuilder str = new StringBuilder();
+		for (Relation<Build,Build> systemBom: systemBoms) {
+			str.append(systemBomToDotStringWithInterfaces(systemBom));
+		}
 		return str.toString();
 	}
 

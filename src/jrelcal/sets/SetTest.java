@@ -149,5 +149,6 @@ public class SetTest extends TestCase {
 	public void testIntersectionXthroughNonOverlappingY() {
 		assertEquals(oneTwoThreeSet.intersection(fourFiveSixSet), emptySet);
 	}
+	
 
 }
