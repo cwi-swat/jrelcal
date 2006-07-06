@@ -5,7 +5,8 @@ import java.util.Iterator;
 import jrelcal.Pair;
 
 
-public class Relation<S extends Comparable<S>, T extends Comparable<T>> implements Iterable<Pair<S,T>> {
+public class Relation<S extends Comparable<S>, T extends Comparable<T>> 
+	implements Iterable<Pair<S,T>>, Comparable<Relation<S,T>> {
 	private IndexedSet<S> _fromSet;
 	private IndexedSet<T> _toSet;
 	private AdjacencyTable _table;
@@ -520,7 +521,9 @@ public class Relation<S extends Comparable<S>, T extends Comparable<T>> implemen
 		return asPairs().iterator();
 	}
 
-	
+	public int compareTo(Relation<S,T> relation) {
+		return asPairs().compareTo(relation.asPairs());
+	}
 	
 	
 }

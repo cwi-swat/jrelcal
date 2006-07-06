@@ -1,7 +1,6 @@
 package jrelcal;
 
-public class Pair<S extends Comparable<S>, T extends Comparable<T>> implements
-		Comparable<Pair<S, T>> {
+public class Pair<S extends Comparable<S>, T extends Comparable<T>> implements Tuple<S, T> {
 	private S first;
 
 	private T second;
