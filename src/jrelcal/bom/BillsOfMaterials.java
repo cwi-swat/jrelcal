@@ -41,6 +41,7 @@ public class BillsOfMaterials {
 		return result;
 	}
 	
+	@SuppressWarnings("unused")
 	private Relation<Build,Build> aSystemBom(Relation<Build,Build> systemBoms, Build b) {
 		Relation<Build,Build> result = new Relation<Build,Build>();
 		Relation<Build,Build> systemBomsClosure = Relation.reflexiveTransitiveClosure(systemBoms);
@@ -77,7 +78,9 @@ public class BillsOfMaterials {
 				previous.add(pair.getFirst().union(new Set<Build>(pair.getSecond())));
 			}			
 		}
-		result = previous;
+		if (previous != null) {
+			result = previous;
+		}
 		return result;
 	}
 	
@@ -87,15 +90,16 @@ public class BillsOfMaterials {
 			Set<Build> bs = classification.inverse().image(s);
 			result.add(bs);
 		}
-		return generalizedProduct(result);
+		result = generalizedProduct(result); 
+		return result;
 	}
 	
 	private Set<Relation<Build,Build>> separateSystemBoms(Set<Set<Build>> solutionSpace, Relation<Build,Build> systemBoms, Relation<Build,Subsystem> classification) {
 		Set<Relation<Build,Build>> result = new Set<Relation<Build,Build>>();
-		for(Set<Build> solution: solutionSpace) {
+		for (Set<Build> solution: solutionSpace) {
 			//p("/* Solution #" + ++i + "*/");
 			Relation<Build,Build> temp = new Relation<Build, Build>();
-			for (Pair<Build,Build> pair: Relation.totalGraph(solution)) {				
+			for (Pair<Build,Build> pair: Relation.totalGraph(solution)) {
 				Build b1 = pair.getFirst();
 				Build b2 = pair.getSecond();
 				for (Build b: systemBoms.image(b1)) {
@@ -494,7 +498,7 @@ public class BillsOfMaterials {
 			out.close();
 		} 
 		catch (IOException e) {
-			System.err.println("IO error:-(");
+			System.err.println("IO error :-(");
 		}
 	}
 
