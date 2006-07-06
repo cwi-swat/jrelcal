@@ -11,7 +11,7 @@ JARFILE = JRelCal-${VERSION}.jar
 JARFILE_ENV = JAR=${JARFILE}
 JUNIT = ${top_srcdir}/jars/junit.jar
 EXTERNAL_JARS = ${JUNIT}
-JAVA_PACKAGES=jrelcal,jrelcal.sets,jrelcal.bags,jrelcal.pms,jrelcal.rsf,
+JAVA_PACKAGES=jrelcal,jrelcal.sets,jrelcal.bags,jrelcal.bom,jrelcal.rsf,
 
 data_DATA = ${JARFILE}
 noinst_SCRIPTS = ${PACKAGE}-${VERSION}.pkg
