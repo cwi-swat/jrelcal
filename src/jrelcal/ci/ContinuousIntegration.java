@@ -55,13 +55,11 @@ public class ContinuousIntegration {
 		for (Build b: builds) {
 			classification.add(new Pair<String,Build>(b.getName(), b));
 		}
-		System.out.println(classification);
 		Set<String> D = classification.domain().difference(new Set<String>("A"));
 		Set<Set<Build>> buildContexts = new Set<Set<Build>>();
 		for (String d: D) {
 			buildContexts.add(classification.image(d));
 		}
-		System.out.println(buildContexts);
 		System.out.println(Set.biggerProduct(buildContexts));	
 	}
 	

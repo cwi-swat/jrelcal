@@ -104,26 +104,6 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
 		return str.toString();
 	}
 	
-	public static <T extends Comparable<T>> Set<Set<T>> bigProduct(Set<Set<T>> space) {
-		Set<Set<T>> result = new Set<Set<T>>();
-		Set<Set<T>> previous = null;
-		for (Set<T> current: space) {
-			if (previous == null) {
-				previous = new Set<Set<T>>(current);
-				continue;
-			}
-			Relation<Set<T>,T> product = Relation.cartesianProduct(previous, current);
-			previous = new Set<Set<T>>();
-			for (Pair<Set<T>,T> pair: product) {
-				previous.add(pair.getFirst().union(new Set<T>(pair.getSecond())));
-			}			
-		}
-		if (previous != null) {
-			result = previous;
-		}
-		return result;
-	}
-	
 	public static <T extends Comparable<T>> Set<Set<T>> biggerProduct(Set<Set<T>> space) {
 		if (space.size() == 0) {
 			return new Set<Set<T>>();

@@ -70,7 +70,7 @@ public class BillsOfMaterials {
 			Set<Build> bs = classification.inverse().image(s);
 			result.add(bs);
 		}
-		result = Set.bigProduct(result);  
+		result = Set.biggerProduct(result);  
 		return result;
 	}
 	
