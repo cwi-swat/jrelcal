@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jrelcal.pms;
+package jrelcal.bom;
 
 class Subsystem implements Comparable<Subsystem> {
 	protected String name;

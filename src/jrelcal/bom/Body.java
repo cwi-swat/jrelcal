@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jrelcal.pms;
+package jrelcal.bom;
 
 class Body extends VersionedObject implements Comparable<Body> {
 	public Body(Subsystem subsystem, Integer version) {

@@ -1,5 +1,5 @@
 
-package jrelcal.pms;
+package jrelcal.bom;
 
 public class Build implements Comparable<Build> {
 	protected Integer id;

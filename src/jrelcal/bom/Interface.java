@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jrelcal.pms;
+package jrelcal.bom;
 
 class Interface extends VersionedObject implements Comparable<Interface> {
 	public Interface(Subsystem subsystem, Integer version) {

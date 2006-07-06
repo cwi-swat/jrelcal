@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jrelcal.pms;
+package jrelcal.bom;
 
 class Configuration implements Comparable<Configuration> {
 	protected Interface iface;

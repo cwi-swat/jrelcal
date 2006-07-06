@@ -1,4 +1,4 @@
-package jrelcal.pms;
+package jrelcal.bom;
 
 
 import java.io.BufferedWriter;
@@ -371,7 +371,7 @@ public class PMSCaseStudy {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PMSCaseStudy app = new PMSCaseStudy();
+		BillsOfMaterials app = new BillsOfMaterials();
 		app.example();
 	}
 	

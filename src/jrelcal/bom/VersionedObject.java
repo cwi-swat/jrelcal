@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jrelcal.pms;
+package jrelcal.bom;
 
 class VersionedObject {
 	protected Subsystem subsystem;
