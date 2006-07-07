@@ -22,7 +22,7 @@ public class BillsOfMaterials {
 		_builds = builds; 
 		_systemBoms = allSystemBoms(_billsOfMaterials, _builds);
 		_classification = classify(_systemBoms);
-		_solutionSpace = searchSpace(_systemBoms, _classification);
+		_solutionSpace = solutionSpace(_systemBoms, _classification);
 		_allSystemBoms = separateSystemBoms(_solutionSpace, _systemBoms, _classification);
 	}
 	
@@ -64,7 +64,7 @@ public class BillsOfMaterials {
 		return result;
 	}
 	
-	private Set<Set<Build>> searchSpace(Relation<Build,Build> systemBoms, Relation<Build,Subsystem> classification) {
+	private Set<Set<Build>> solutionSpace(Relation<Build,Build> systemBoms, Relation<Build,Subsystem> classification) {
 		Set<Set<Build>> result = new Set<Set<Build>>();
 		for (Subsystem s: classification.range()) {
 			Set<Build> bs = classification.inverse().image(s);
@@ -77,7 +77,6 @@ public class BillsOfMaterials {
 	private Set<Relation<Build,Build>> separateSystemBoms(Set<Set<Build>> solutionSpace, Relation<Build,Build> systemBoms, Relation<Build,Subsystem> classification) {
 		Set<Relation<Build,Build>> result = new Set<Relation<Build,Build>>();
 		for (Set<Build> solution: solutionSpace) {
-			//p("/* Solution #" + ++i + "*/");
 			Relation<Build,Build> temp = new Relation<Build, Build>();
 			for (Pair<Build,Build> pair: Relation.totalGraph(solution)) {
 				Build b1 = pair.getFirst();

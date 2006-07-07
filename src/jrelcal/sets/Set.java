@@ -104,6 +104,7 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
 		return str.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T extends Comparable<T>> Set<Set<T>> biggerProduct(Set<Set<T>> space) {
 		if (space.size() == 0) {
 			return new Set<Set<T>>();

@@ -15,8 +15,13 @@ public class ContinuousIntegration {
 			_id = id;
 		}
 		
+		
 		public String getName() {
 			return _name;
+		}
+		
+		public long getSecondSinceEpoch() {
+			return 0;
 		}
 		
 		public Integer getId() {
@@ -41,7 +46,56 @@ public class ContinuousIntegration {
 		ContinuousIntegration ci = new ContinuousIntegration();
 		ci.example();
 	}
+
 	
+	public void pseudo(String root, Set<String> deps, Set<Build> success, Relation<Build,Build> integration) {
+		
+		int slot = 7 * 60 * 60 * 24 * 1000;
+		long now = System.currentTimeMillis();
+		
+		Set<Set<Build>> extents = new Set<Set<Build>>();
+		do {
+			/* && b.getSecondSinceEpoch() > now - slot */
+			Relation<String,Build> classification = new Relation<String,Build>();
+			for (Build b: success) {	
+				if (deps.contains(b.getName()) ) {
+					classification.add(new Pair<String,Build>(b.getName(), b));
+				}			
+			}
+			Set<Set<Build>> partitioning = new Set<Set<Build>>();
+			for (String d: deps) {
+				partitioning.add(classification.image(d));
+			}
+			Set<Set<Build>> contexts = Set.biggerProduct(partitioning);	
+			Relation<Build,Build> closure = Relation.reflexiveTransitiveClosure(integration);
+			for (Set<Build> context: contexts) {
+				Set<Build> extent = closure.image(context);
+				boolean homogenous = true;
+				
+				Relation<String,Build> subclass= new Relation<String,Build>();
+				for (Build b: extent) {
+					subclass.add(new Pair<String,Build>(b.getName(), b));
+				}
+				for (String name: subclass.domain()) {
+					if (subclass.image(name).size() > 1) {
+						homogenous = false;
+						break;
+					}
+				}
+				if (homogenous) {
+					extents.add(extent);
+				}
+			}
+			
+		
+		} 
+		while (extents.size() == 0);
+		// return newest extent
+	}
+
+		
+	
+
 	public void example() {
 		Set<Build> builds = new Set<Build>();
 		builds.add(new Build("A", 1));
