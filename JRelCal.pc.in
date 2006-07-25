@@ -7,4 +7,6 @@ Requires:
 JarFile=JRelCal-@VERSION@.jar
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
 ExternalJars=@EXTERNAL_JARS@
+LocalJars=@abstop_srcdir@/jars/junit.jar
+MainClass=
 TestClass=
