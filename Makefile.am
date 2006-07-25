@@ -4,4 +4,4 @@ include $(top_srcdir)/Makefile.java.meta
 
 ACLOCAL_FLAGS = -I .
 
-SUBDIRS = jars utils doc
+SUBDIRS = jars doc
