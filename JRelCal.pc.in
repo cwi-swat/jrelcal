@@ -3,7 +3,6 @@ prefix=@prefix@
 Name: JRelCal
 Version: 0.1
 Description:
-Requires: 
 JarFile=JRelCal-@VERSION@.jar
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
 ExternalJars=@EXTERNAL_JARS@
