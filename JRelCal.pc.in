@@ -1,11 +1,13 @@
 prefix=@prefix@
-Maintainers=storm@cwi.nl
+abstop_srcdir=@abstop_srcdir@
+
+Maintainers=storm@cwi.nl,paulk@cwi.nl
 Name: JRelCal
 Version: 0.1
 Description:
-JarFile=JRelCal-@VERSION@.jar
+JarFile=JRelCal.jar
+Jars=${prefix}/share/${JarFile}
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
-ExternalJars=@EXTERNAL_JARS@
-LocalJars=@abstop_srcdir@/jars/junit.jar
+LocalJars=${abstop_srcdir}/jars/junit.jar
 MainClass=
 TestClass=
