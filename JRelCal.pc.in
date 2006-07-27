@@ -1,5 +1,5 @@
 prefix=@prefix@
-Maintainers=storm@cwi.nl,paulk@cwi.nl
+Maintainers=storm@cwi.nl
 Name: JRelCal
 Version: 0.1
 Description:
