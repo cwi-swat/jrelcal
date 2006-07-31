@@ -1,5 +1,4 @@
 prefix=@prefix@
-abstop_srcdir=@abstop_srcdir@
 
 Maintainers=storm@cwi.nl,paulk@cwi.nl
 Name: JRelCal
@@ -8,6 +7,6 @@ Description:
 JarFile=JRelCal.jar
 Jars=${prefix}/share/${JarFile}
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
-LocalJars=${abstop_srcdir}/jars/junit.jar
+LocalJars=jars/junit.jar
 MainClass=
 TestClass=
