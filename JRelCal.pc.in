@@ -9,4 +9,4 @@ Jars=${prefix}/share/${JarFile}
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
 LocalJars=jars/junit.jar
 MainClass=
-TestClass=
+TestClass=TestAll
