@@ -14,24 +14,24 @@ import junit.framework.TestCase;
  * @author storm
  * @class jrelcal.ImmutableRelationTest
  */
-public class RelationTest extends TestCase {
-	protected Relation<Integer,Integer> emptyRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> aRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> bRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> cRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> singletonRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> treeRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> diamondRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> oneTwoRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> oneOneRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> oneTwoProductRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> twoThreeRelation = new Relation<Integer,Integer>();	
-	protected Relation<Integer,Integer> oneTwoTwoOneRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> oneTwoTwoThreeRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> twoOneThreeTwoRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> twoOneRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> twoFourThreeFiveRelation = new Relation<Integer,Integer>();
-	protected Relation<Integer,Integer> oneFourTwoFiveRelation = new Relation<Integer,Integer>();
+public class AdjacencyTableRelationTest extends TestCase {
+	protected Relation<Integer,Integer> emptyRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> aRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> bRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> cRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> singletonRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> treeRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> diamondRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> oneTwoRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> oneOneRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> oneTwoProductRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> twoThreeRelation = new AdjacencyTableRelation<Integer,Integer>();	
+	protected Relation<Integer, Integer> oneTwoTwoOneRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> oneTwoTwoThreeRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> twoOneThreeTwoRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> twoOneRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer,Integer> twoFourThreeFiveRelation = new AdjacencyTableRelation<Integer,Integer>();
+	protected Relation<Integer, Integer> oneFourTwoFiveRelation = new AdjacencyTableRelation<Integer,Integer>();
 	
 
 	protected Set<Integer> emptySet = new Set<Integer>();
@@ -44,7 +44,7 @@ public class RelationTest extends TestCase {
 	protected Set<Integer> fourFiveSet = new Set<Integer>();
 	
 	
-	public RelationTest(String string) {
+	public AdjacencyTableRelationTest(String string) {
 		super(string);
 	}
 
@@ -431,15 +431,15 @@ public class RelationTest extends TestCase {
 	 */
 	
 	public void testCartesianProductEmptyxEmpty() {
-		assertEquals(emptyRelation, Relation.cartesianProduct(emptySet, emptySet));
+		assertEquals(emptyRelation, AdjacencyTableRelation.cartesianProduct(emptySet, emptySet));
 	}
 	
 	public void testCartesianProductEmptyxX() {
-		assertEquals(emptyRelation, Relation.cartesianProduct(emptySet, oneTwoSet));
+		assertEquals(emptyRelation, AdjacencyTableRelation.cartesianProduct(emptySet, oneTwoSet));
 	}
 	
 	public void testCartesianProductXxY() {
-		assertEquals(oneTwoProductRelation, Relation.cartesianProduct(oneTwoSet, oneTwoSet));
+		assertEquals(oneTwoProductRelation, AdjacencyTableRelation.cartesianProduct(oneTwoSet, oneTwoSet));
 	}
 	
 	/*
