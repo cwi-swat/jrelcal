@@ -6,18 +6,16 @@ import jrelcal.Pair;
 
 public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparable<T>>
     extends
-        AbstractRelation<S, T>
-    implements
-        Iterable<Pair<S, T>>{
+        AbstractRelation<S, T> {
     private IndexedSet<S> _fromSet;
     private IndexedSet<T> _toSet;
     private AdjacencyTable _table;
 
-    public void initialize(Set<Pair<S, T>> pairs) {
+    public void initialize(OrderedSet<Pair<S, T>> pairs) {
         initialize(inferFromSet(pairs), inferToSet(pairs), pairs);
     }
 
-    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, Set<Pair<S, T>> pairs) {
+    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, OrderedSet<Pair<S, T>> pairs) {
         initialize(domain, range, new AdjacencyTable(domain.size(), pairsToEdges(domain,
             range, pairs)));
     }
@@ -29,19 +27,19 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     }
 
     public void add(Pair<S, T> pair) {
-        initialize((new Set<Pair<S, T>>(pair)).union(asPairs()));
+        initialize((new OrderedSet<Pair<S, T>>(pair)).union(asPairs()));
     }
 
     public AdjacencyTableRelation() {
-        initialize(new IndexedSet<S>(), new IndexedSet<T>(), new Set<Pair<S, T>>());
+        initialize(new IndexedSet<S>(), new IndexedSet<T>(), new OrderedSet<Pair<S, T>>());
     }
 
-    public AdjacencyTableRelation(Set<Pair<S, T>> pairs) {
+    public AdjacencyTableRelation(OrderedSet<Pair<S, T>> pairs) {
         initialize(pairs);
     }
 
     public AdjacencyTableRelation(IndexedSet<S> domain, IndexedSet<T> range,
-        Set<Pair<S, T>> pairs) {
+        OrderedSet<Pair<S, T>> pairs) {
         initialize(domain, range, pairs);
     }
 
@@ -57,13 +55,13 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
 
     @SuppressWarnings("hiding")
     protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S, T> newRelation(
-        Set<Pair<S, T>> pairs) {
+        OrderedSet<Pair<S, T>> pairs) {
         return new AdjacencyTableRelation<S, T>(pairs);
     }
 
     @SuppressWarnings("hiding")
     protected <S extends Comparable<S>, T extends Comparable<T>> Relation<S, T> newRelation(
-        IndexedSet<S> domain, IndexedSet<T> range, Set<Pair<S, T>> pairs) {
+        IndexedSet<S> domain, IndexedSet<T> range, OrderedSet<Pair<S, T>> pairs) {
         return new AdjacencyTableRelation<S, T>(domain, range, pairs);
     }
 
@@ -73,8 +71,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return new AdjacencyTableRelation<S, T>(domain, range, table);
     }
 
-    public Set<Pair<S, T>> asPairs() {
-        Set<Pair<S, T>> pairs = new Set<Pair<S, T>>();
+    public OrderedSet<Pair<S, T>> asPairs() {
+        OrderedSet<Pair<S, T>> pairs = new OrderedSet<Pair<S, T>>();
         for (Pair<Integer, Integer> edge : getTable().getEdges()) {
             pairs.add(new Pair<S, T>(getFromSet().elementAt(edge.getFirst()), getToSet()
                 .elementAt(edge.getSecond())));
@@ -87,8 +85,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
             getToSet().size()));
     }
 
-    public Set<S> domain() {
-        Set<S> set = new Set<S>();
+    public OrderedSet<S> domain() {
+        OrderedSet<S> set = new OrderedSet<S>();
         for (int i = 0; i < getTable().bound(); i++) {
             if (outDegree(i) > 0)
                 set.add(getFromSet().elementAt(i));
@@ -96,8 +94,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-    public Set<T> range() {
-        Set<T> set = new Set<T>();
+    public OrderedSet<T> range() {
+        OrderedSet<T> set = new OrderedSet<T>();
         int n = getToSet().size();
         Integer inDegree[] = getTable().inDegree(n);
         for (int i = 0; i < n; i++) {
@@ -110,10 +108,10 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     public Relation<S, T> pruneWithDomainAndRange() {
         return new AdjacencyTableRelation<S, T>(asPairs());
     }
-    
+
     public Relation<S, T> union(Relation<S, T> relation) {
-        if (relation instanceof AdjacencyTableRelation) 
-            return union((AdjacencyTableRelation<S,T>)relation);
+        if (relation instanceof AdjacencyTableRelation)
+            return union((AdjacencyTableRelation<S, T>)relation);
         // TODO Peter: Provide default implementation
         return null;
     }
@@ -128,12 +126,12 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     }
 
     public Relation<S, T> intersection(Relation<S, T> relation) {
-        if (relation instanceof AdjacencyTableRelation) 
-            return intersection((AdjacencyTableRelation<S,T>)relation);
+        if (relation instanceof AdjacencyTableRelation)
+            return intersection((AdjacencyTableRelation<S, T>)relation);
         // TODO Peter: Provide default implementation
         return null;
     }
-    
+
     public Relation<S, T> intersection(AdjacencyTableRelation<S, T> relation) {
         if (getFromSet().equals(relation.getFromSet())
             && getToSet().equals(relation.getToSet()))
@@ -143,12 +141,12 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
             relation.getFromSet()), getToSet().intersection(relation.getToSet()), asPairs()
             .intersection(relation.asPairs()));
     }
-    
+
     public Relation<S, T> difference(Relation<S, T> relation) {
         if (relation instanceof AdjacencyTableRelation)
-            return difference((AdjacencyTableRelation<S, T>) relation);
+            return difference((AdjacencyTableRelation<S, T>)relation);
         // TODO Peter: provide default implementation of difference.
-        return null;    
+        return null;
     }
 
     public Relation<S, T> difference(AdjacencyTableRelation<S, T> relation) {
@@ -167,12 +165,12 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     }
 
     public <U extends Comparable<U>> Relation<S, U> compose(Relation<T, U> relation) {
-        if (relation instanceof AdjacencyTableRelation) 
+        if (relation instanceof AdjacencyTableRelation)
             return compose((AdjacencyTableRelation<T, U>)relation);
         // TODO Peter: Provide default implementation
         return null;
     }
-    
+
     public <U extends Comparable<U>> Relation<S, U> compose(
         AdjacencyTableRelation<T, U> relation) {
         commensurateFromAndToSets(relation);
@@ -231,7 +229,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         setTable(newTable);
     }
 
-    public Relation<S, T> domainRestriction(Set<S> set) {
+    public Relation<S, T> domainRestriction(OrderedSet<S> set) {
         AdjacencyTable table = getTable().copy();
         int bound = table.bound();
         for (int i = 0; i < bound; i++) {
@@ -241,7 +239,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return newRelation(getFromSet(), getToSet(), table);
     }
 
-    public Relation<S, T> domainExclusion(Set<T> set) {
+    public Relation<S, T> domainExclusion(OrderedSet<T> set) {
         AdjacencyTable table = getTable().copy();
         int bound = table.bound();
         for (int i = 0; i < bound; i++) {
@@ -251,7 +249,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return newRelation(getFromSet(), getToSet(), table);
     }
 
-    public Relation<S, T> rangeRestriction(Set<T> set) {
+    public Relation<S, T> rangeRestriction(OrderedSet<T> set) {
         AdjacencyTable table = getTable().copy();
         int bound = table.bound();
         for (int i = 0; i < bound; i++)
@@ -261,7 +259,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return newRelation(getFromSet(), getToSet(), table);
     }
 
-    public Relation<S, T> rangeExclusion(Set<T> set) {
+    public Relation<S, T> rangeExclusion(OrderedSet<T> set) {
         AdjacencyTable table = getTable().copy();
         int bound = table.bound();
         for (int i = 0; i < bound; i++)
@@ -271,46 +269,46 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return newRelation(getFromSet(), getToSet(), table);
     }
 
-    public Set<T> rightImage(S s) {
+    public OrderedSet<T> rightImage(S s) {
         return rightSection(s);
     }
 
-    public Set<S> leftImage(T t) {
+    public OrderedSet<S> leftImage(T t) {
         return leftSection(t);
     }
 
-    public Set<T> image(S s) {
+    public OrderedSet<T> image(S s) {
         return rightImage(s);
     }
 
-    public Set<T> image(Set<S> set) {
+    public OrderedSet<T> image(OrderedSet<S> set) {
         return rightImage(set);
     }
 
-    public Set<T> rightImage(Set<S> set) {
-        Set<T> result = new Set<T>();
+    public OrderedSet<T> rightImage(OrderedSet<S> set) {
+        OrderedSet<T> result = new OrderedSet<T>();
         for (S s : set) {
             result = rightImage(s).union(result);
         }
         return result;
     }
 
-    public Set<S> leftImage(Set<T> set) {
-        Set<S> result = new Set<S>();
+    public OrderedSet<S> leftImage(OrderedSet<T> set) {
+        OrderedSet<S> result = new OrderedSet<S>();
         for (T t : set) {
             result = leftImage(t).union(result);
         }
         return result;
     }
 
-    public Set<T> rightSection(S s) {
-        Set<S> set = new Set<S>();
+    public OrderedSet<T> rightSection(S s) {
+        OrderedSet<S> set = new OrderedSet<S>();
         set.add(s);
         return domainRestriction(set).range();
     }
 
-    public Set<S> leftSection(T t) {
-        Set<T> set = new Set<T>();
+    public OrderedSet<S> leftSection(T t) {
+        OrderedSet<T> set = new OrderedSet<T>();
         set.add(t);
         return rangeRestriction(set).domain();
     }
@@ -330,13 +328,13 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
      */
 
     public static <U extends Comparable<U>, V extends Comparable<V>> Relation<U, V> emptyRelation(
-        Set<U> fromSet, Set<V> toSet) {
+        OrderedSet<U> fromSet, OrderedSet<V> toSet) {
         return new AdjacencyTableRelation<U, V>(fromSet.toIndexedSet(), toSet.toIndexedSet(),
             AdjacencyTable.emptyGraph(fromSet.size()));
     }
 
     public static <U extends Comparable<U>, V extends Comparable<V>> Relation<U, V> cartesianProduct(
-        Set<U> from, Set<V> to) {
+        OrderedSet<U> from, OrderedSet<V> to) {
         IndexedSet<U> fromSet = from.toIndexedSet();
         IndexedSet<V> toSet = to.toIndexedSet();
         VertexSet fromVertexSet = fromSet.toVertexSet();
@@ -382,7 +380,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
      */
 
     protected static <S extends Comparable<S>, T extends Comparable<T>> IndexedSet<S> inferFromSet(
-        Set<Pair<S, T>> pairs) {
+        OrderedSet<Pair<S, T>> pairs) {
         IndexedSet<S> fromSet = new IndexedSet<S>();
         for (Pair<S, T> pair : pairs) {
             fromSet.add(pair.getFirst());
@@ -391,7 +389,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     }
 
     protected static <S extends Comparable<S>, T extends Comparable<T>> IndexedSet<T> inferToSet(
-        Set<Pair<S, T>> pairs) {
+        OrderedSet<Pair<S, T>> pairs) {
         IndexedSet<T> toSet = new IndexedSet<T>();
         for (Pair<S, T> pair : pairs) {
             toSet.add(pair.getSecond());
@@ -399,9 +397,9 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return toSet;
     }
 
-    private static <S extends Comparable<S>, T extends Comparable<T>> Set<Pair<Integer, Integer>> pairsToEdges(
-        IndexedSet<S> fromSet, IndexedSet<T> toSet, Set<Pair<S, T>> pairs) {
-        Set<Pair<Integer, Integer>> edges = new Set<Pair<Integer, Integer>>();
+    private static <S extends Comparable<S>, T extends Comparable<T>> OrderedSet<Pair<Integer, Integer>> pairsToEdges(
+        IndexedSet<S> fromSet, IndexedSet<T> toSet, OrderedSet<Pair<S, T>> pairs) {
+        OrderedSet<Pair<Integer, Integer>> edges = new OrderedSet<Pair<Integer, Integer>>();
         for (Pair<S, T> pair : pairs) {
             edges.add(new Pair<Integer, Integer>(fromSet.indexOf(pair.getFirst()), toSet
                 .indexOf(pair.getSecond())));
@@ -435,7 +433,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
 
     /////////////////////////////////////////////////////////
 
-    public static <T extends Comparable<T>> Set<T> carrier(Relation<T, T> relation) {
+    public static <T extends Comparable<T>> OrderedSet<T> carrier(Relation<T, T> relation) {
         return relation.domain().union(relation.range());
     }
 
@@ -479,7 +477,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     }
 
     public static <T extends Comparable<T>> Relation<T, T> carrierRestriction(
-        AdjacencyTableRelation<T, T> relation, Set<T> set) {
+        AdjacencyTableRelation<T, T> relation, OrderedSet<T> set) {
         AdjacencyTable table = relation.getTable().copy();
         int bound = table.bound();
         VertexSet vertexSet = set.toVertexSet(relation.getFromSet());
@@ -493,7 +491,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
             table);
     }
 
-    public static <T extends Comparable<T>> Set<T> sources(
+    public static <T extends Comparable<T>> OrderedSet<T> sources(
         AdjacencyTableRelation<T, T> relation) {
         int n = relation.getFromSet().size();
         AdjacencyTable table = relation.getTable();
@@ -509,7 +507,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-    public static <T extends Comparable<T>> Set<T> sinks(AdjacencyTableRelation<T, T> relation) {
+    public static <T extends Comparable<T>> OrderedSet<T> sinks(AdjacencyTableRelation<T, T> relation) {
         int n = relation.getFromSet().size();
         AdjacencyTable table = relation.getTable();
         Integer inDegree[] = table.inDegree(n);
@@ -524,38 +522,36 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-    public static <T extends Comparable<T>> Set<T> commonDescendants(
-        AdjacencyTableRelation<T, T> relation, Set<T> set) {
+    public static <T extends Comparable<T>> OrderedSet<T> commonDescendants(
+        AdjacencyTableRelation<T, T> relation, OrderedSet<T> set) {
         if (set.isEmpty())
             return carrier(relation);
         T last = set.last();
-        Set<T> temp = transitiveClosure(relation).rightSection(last);
-        return temp.intersection(commonDescendants(relation, (Set<T>)set.headSet(last)));
+        OrderedSet<T> temp = transitiveClosure(relation).rightSection(last);
+        return temp.intersection(commonDescendants(relation, (OrderedSet<T>)set.headSet(last)));
     }
 
-    public static <T extends Comparable<T>> Set<T> commonAncestors(
-        AdjacencyTableRelation<T, T> relation, Set<T> set) {
+    public static <T extends Comparable<T>> OrderedSet<T> commonAncestors(
+        AdjacencyTableRelation<T, T> relation, OrderedSet<T> set) {
         if (set.isEmpty())
             return carrier(relation);
         T last = set.last();
-        Set<T> temp = transitiveClosure(relation).leftSection(last);
-        return temp.intersection(commonAncestors(relation, (Set<T>)set.headSet(last)));
+        OrderedSet<T> temp = transitiveClosure(relation).leftSection(last);
+        return temp.intersection(commonAncestors(relation, (OrderedSet<T>)set.headSet(last)));
     }
 
-    public static <T extends Comparable<T>> Relation<T, T> identityGraph(Set<T> set) {
+    public static <T extends Comparable<T>> Relation<T, T> identityGraph(OrderedSet<T> set) {
         IndexedSet<T> fromAndTo = set.toIndexedSet();
         return new AdjacencyTableRelation<T, T>(fromAndTo, fromAndTo, AdjacencyTable
             .identityGraph(set.size()));
     }
 
-    public static <T extends Comparable<T>> Relation<T, T> totalGraph(Set<T> set) {
+    public static <T extends Comparable<T>> Relation<T, T> totalGraph(OrderedSet<T> set) {
         return cartesianProduct(set, set);
     }
 
     public Iterator<Pair<S, T>> iterator() {
         return asPairs().iterator();
     }
-
-   
 
 }

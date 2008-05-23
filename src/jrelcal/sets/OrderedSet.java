@@ -16,44 +16,44 @@ import jrelcal.Pair;
  * @class jrelcal.OrderedSet
  */
 @SuppressWarnings("serial")
-public class Set<T extends Comparable<T>> extends TreeSet<T>
-    implements Comparable<Set<T>>, Iterable<T> {
+public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
+    implements Comparable<OrderedSet<T>>, Iterable<T> {
 
-    private Set<T> copy() {
-        Set<T> set = new Set<T>();
+    private OrderedSet<T> copy() {
+        OrderedSet<T> set = new OrderedSet<T>();
         set.addAll(this);
         return set;
     }
         
-    public Set() {
+    public OrderedSet() {
         super();
     }
     
-    public Set(T element) {
+    public OrderedSet(T element) {
         this();
         add(element);
     }
 
-    public Set(T element1, T element2) {
+    public OrderedSet(T element1, T element2) {
         this();
         add(element1);
         add(element2);
     }
 
-    public Set<T> union(Set<T> bag) {
-        Set<T> newSet = copy();
+    public OrderedSet<T> union(OrderedSet<T> bag) {
+        OrderedSet<T> newSet = copy();
         newSet.addAll(bag);
         return newSet;
     }
 
-    public Set<T> difference(Set<T> bag) {
-        Set<T> newSet = copy();
+    public OrderedSet<T> difference(OrderedSet<T> bag) {
+        OrderedSet<T> newSet = copy();
         newSet.removeAll(bag);
         return newSet;
     }
 
-    public Set<T> intersection(Set<T> bag) {
-        Set<T> newSet = copy();
+    public OrderedSet<T> intersection(OrderedSet<T> bag) {
+        OrderedSet<T> newSet = copy();
         newSet.retainAll(bag);
         return newSet;
     }
@@ -66,7 +66,7 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
     }
 
     
-    public int compareTo(Set<T> set) {
+    public int compareTo(OrderedSet<T> set) {
         int thisSize = size();
         int thatSize = set.size();
         if (thisSize < thatSize) return -1;
@@ -81,7 +81,7 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
         return 0;
     }
     
-    public boolean equals(Set<T> set) {
+    public boolean equals(OrderedSet<T> set) {
         return compareTo(set) == 0;
     }
     
@@ -105,38 +105,38 @@ public class Set<T extends Comparable<T>> extends TreeSet<T>
     }
     
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<T>> Set<Set<T>> biggerProduct(Set<Set<T>> space) {
+    public static <T extends Comparable<T>> OrderedSet<OrderedSet<T>> biggerProduct(OrderedSet<OrderedSet<T>> space) {
         if (space.size() == 0) {
-            return new Set<Set<T>>();
+            return new OrderedSet<OrderedSet<T>>();
         }
         if (space.size() == 1) {
             return space;
         }
         if (space.size() == 2) {
-            Set<T> two[] = new Set[2];
+            OrderedSet<T> two[] = new OrderedSet[2];
             int i = 0;
-            for (Set<T> set: space) {
+            for (OrderedSet<T> set: space) {
                 two[i++] = set;
             }
             Relation<T, T> prod = AdjacencyTableRelation.cartesianProduct(two[0], two[1]);
-            Set<Set<T>> result = new Set<Set<T>>();
+            OrderedSet<OrderedSet<T>> result = new OrderedSet<OrderedSet<T>>();
             for (Pair<T,T> pair: prod) {
-                result.add(new Set<T>(pair.getFirst(), pair.getSecond()));
+                result.add(new OrderedSet<T>(pair.getFirst(), pair.getSecond()));
             }
             return result;          
         }
         if (space.size() > 2) {
-            Set<T> head = null;
-            for (Set<T> set: space) {
+            OrderedSet<T> head = null;
+            for (OrderedSet<T> set: space) {
                 head = set;
                 break;
             }
-            Set<Set<T>> tail = space.difference(new Set<Set<T>>(head));
-            Set<Set<T>> tailProduct = biggerProduct(tail);
-            Set<Set<T>> result = new Set<Set<T>>();
+            OrderedSet<OrderedSet<T>> tail = space.difference(new OrderedSet<OrderedSet<T>>(head));
+            OrderedSet<OrderedSet<T>> tailProduct = biggerProduct(tail);
+            OrderedSet<OrderedSet<T>> result = new OrderedSet<OrderedSet<T>>();
             for (T t: head) {
-                for (Set<T> set: tailProduct) {
-                    result.add(set.union(new Set<T>(t)));
+                for (OrderedSet<T> set: tailProduct) {
+                    result.add(set.union(new OrderedSet<T>(t)));
                 }
             }
             return result;

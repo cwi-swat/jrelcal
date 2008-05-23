@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 
 import jrelcal.Pair;
 import jrelcal.sets.AdjacencyTableRelation;
-import jrelcal.sets.Set;
+import jrelcal.sets.OrderedSet;
 import jrelcal.sets.Relation;
 
 /**
@@ -50,8 +50,8 @@ public class RSFReader extends BufferedReader {
         return map;
     }
     
-    public HashMap<String, Set<Pair<String,String>>> getNamedSets() throws IOException, RSFFormatException {
-        HashMap<String, Set<Pair<String,String>>> map = new HashMap<String, Set<Pair<String,String>>>();
+    public HashMap<String, OrderedSet<Pair<String,String>>> getNamedSets() throws IOException, RSFFormatException {
+        HashMap<String, OrderedSet<Pair<String,String>>> map = new HashMap<String, OrderedSet<Pair<String,String>>>();
 
         String[] strings = parseLine();
         while(strings != null) {
@@ -62,7 +62,7 @@ public class RSFReader extends BufferedReader {
                 map.get(setName).add(pair);
             }
             else {
-                Set<Pair<String,String>> newSet = new Set<Pair<String,String>>();
+                OrderedSet<Pair<String,String>> newSet = new OrderedSet<Pair<String,String>>();
                 newSet.add(pair);
                 map.put(setName, newSet);
             }

@@ -9,19 +9,19 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
         Iterable<Pair<S, T>>,
         Comparable<Relation<S, T>> {
 
-    public void initialize(Set<Pair<S, T>> pairs);
+    public void initialize(OrderedSet<Pair<S, T>> pairs);
 
-    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, Set<Pair<S, T>> pairs);
+    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, OrderedSet<Pair<S, T>> pairs);
 
     public void add(Pair<S, T> pair);
 
-    public Set<Pair<S, T>> asPairs();
+    public OrderedSet<Pair<S, T>> asPairs();
 
     public Relation<T, S> inverse();
 
-    public Set<S> domain();
+    public OrderedSet<S> domain();
 
-    public Set<T> range();
+    public OrderedSet<T> range();
 
     public Relation<S, T> pruneWithDomainAndRange();
 
@@ -35,29 +35,29 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
 
     public <U extends Comparable<U>> Relation<S, U> compose(Relation<T, U> relation);
 
-    public Relation<S, T> domainRestriction(Set<S> set);
+    public Relation<S, T> domainRestriction(OrderedSet<S> set);
 
-    public Relation<S, T> domainExclusion(Set<T> set);
+    public Relation<S, T> domainExclusion(OrderedSet<T> set);
 
-    public Relation<S, T> rangeRestriction(Set<T> set);
+    public Relation<S, T> rangeRestriction(OrderedSet<T> set);
 
-    public Relation<S, T> rangeExclusion(Set<T> set);
+    public Relation<S, T> rangeExclusion(OrderedSet<T> set);
 
-    public Set<T> rightImage(S s);
+    public OrderedSet<T> rightImage(S s);
 
-    public Set<S> leftImage(T t);
+    public OrderedSet<S> leftImage(T t);
 
-    public Set<T> image(S s);
+    public OrderedSet<T> image(S s);
 
-    public Set<T> image(Set<S> set);
+    public OrderedSet<T> image(OrderedSet<S> set);
 
-    public Set<T> rightImage(Set<S> set);
+    public OrderedSet<T> rightImage(OrderedSet<S> set);
 
-    public Set<S> leftImage(Set<T> set);
+    public OrderedSet<S> leftImage(OrderedSet<T> set);
 
-    public Set<T> rightSection(S s);
+    public OrderedSet<T> rightSection(S s);
 
-    public Set<S> leftSection(T t);
+    public OrderedSet<S> leftSection(T t);
 
     public boolean equals(Relation<S, T> relation);
 

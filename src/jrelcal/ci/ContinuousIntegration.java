@@ -48,12 +48,12 @@ public class ContinuousIntegration {
     }
 
     
-    public void pseudo(String root, Set<String> deps, Set<Build> success, AdjacencyTableRelation<Build,Build> integration) {
+    public void pseudo(String root, OrderedSet<String> deps, OrderedSet<Build> success, AdjacencyTableRelation<Build,Build> integration) {
         
         int slot = 7 * 60 * 60 * 24 * 1000;
         long now = System.currentTimeMillis();
         
-        Set<Set<Build>> extents = new Set<Set<Build>>();
+        OrderedSet<OrderedSet<Build>> extents = new OrderedSet<OrderedSet<Build>>();
         do {
             /* && b.getSecondSinceEpoch() > now - slot */
             Relation<String, Build> classification = new AdjacencyTableRelation<String,Build>();
@@ -62,14 +62,14 @@ public class ContinuousIntegration {
                     classification.add(new Pair<String,Build>(b.getName(), b));
                 }           
             }
-            Set<Set<Build>> partitioning = new Set<Set<Build>>();
+            OrderedSet<OrderedSet<Build>> partitioning = new OrderedSet<OrderedSet<Build>>();
             for (String d: deps) {
                 partitioning.add(classification.image(d));
             }
-            Set<Set<Build>> contexts = Set.biggerProduct(partitioning); 
+            OrderedSet<OrderedSet<Build>> contexts = OrderedSet.biggerProduct(partitioning); 
             Relation<Build, Build> closure = AdjacencyTableRelation.reflexiveTransitiveClosure(integration);
-            for (Set<Build> context: contexts) {
-                Set<Build> extent = closure.image(context);
+            for (OrderedSet<Build> context: contexts) {
+                OrderedSet<Build> extent = closure.image(context);
                 boolean homogenous = true;
                 
                 Relation<String, Build> subclass= new AdjacencyTableRelation<String,Build>();
@@ -97,7 +97,7 @@ public class ContinuousIntegration {
     
 
     public void example() {
-        Set<Build> builds = new Set<Build>();
+        OrderedSet<Build> builds = new OrderedSet<Build>();
         builds.add(new Build("A", 1));
         builds.add(new Build("B", 1));
         builds.add(new Build("B", 2));
@@ -109,12 +109,12 @@ public class ContinuousIntegration {
         for (Build b: builds) {
             classification.add(new Pair<String,Build>(b.getName(), b));
         }
-        Set<String> D = classification.domain().difference(new Set<String>("A"));
-        Set<Set<Build>> buildContexts = new Set<Set<Build>>();
+        OrderedSet<String> D = classification.domain().difference(new OrderedSet<String>("A"));
+        OrderedSet<OrderedSet<Build>> buildContexts = new OrderedSet<OrderedSet<Build>>();
         for (String d: D) {
             buildContexts.add(classification.image(d));
         }
-        System.out.println(Set.biggerProduct(buildContexts));   
+        System.out.println(OrderedSet.biggerProduct(buildContexts));   
     }
     
     
