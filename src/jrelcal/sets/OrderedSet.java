@@ -6,8 +6,9 @@
  */
 package jrelcal.sets;
 
-import java.util.TreeSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 import jrelcal.Pair;
 
@@ -38,6 +39,10 @@ public class OrderedSet<T extends Comparable<T>> extends TreeSet<T>
         this();
         add(element1);
         add(element2);
+    }
+    
+    public OrderedSet(Set<T> set) {
+        super(set);
     }
 
     public OrderedSet<T> union(OrderedSet<T> bag) {

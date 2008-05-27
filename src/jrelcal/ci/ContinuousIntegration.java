@@ -56,7 +56,7 @@ public class ContinuousIntegration {
         OrderedSet<OrderedSet<Build>> extents = new OrderedSet<OrderedSet<Build>>();
         do {
             /* && b.getSecondSinceEpoch() > now - slot */
-            Relation<String, Build> classification = new AdjacencyTableRelation<String,Build>();
+            AdjacencyTableRelation<String, Build> classification = new AdjacencyTableRelation<String,Build>();
             for (Build b: success) {    
                 if (deps.contains(b.getName()) ) {
                     classification.add(new Pair<String,Build>(b.getName(), b));
@@ -67,12 +67,12 @@ public class ContinuousIntegration {
                 partitioning.add(classification.image(d));
             }
             OrderedSet<OrderedSet<Build>> contexts = OrderedSet.biggerProduct(partitioning); 
-            Relation<Build, Build> closure = AdjacencyTableRelation.reflexiveTransitiveClosure(integration);
+            AdjacencyTableRelation<Build, Build> closure = (AdjacencyTableRelation<Build, Build>)AdjacencyTableRelation.reflexiveTransitiveClosure(integration);
             for (OrderedSet<Build> context: contexts) {
                 OrderedSet<Build> extent = closure.image(context);
                 boolean homogenous = true;
                 
-                Relation<String, Build> subclass= new AdjacencyTableRelation<String,Build>();
+                AdjacencyTableRelation<String, Build> subclass= new AdjacencyTableRelation<String,Build>();
                 for (Build b: extent) {
                     subclass.add(new Pair<String,Build>(b.getName(), b));
                 }
@@ -105,7 +105,7 @@ public class ContinuousIntegration {
         builds.add(new Build("C", 2));
         builds.add(new Build("D", 1));
         
-        Relation<String, Build> classification = new AdjacencyTableRelation<String,Build>();
+        AdjacencyTableRelation<String, Build> classification = new AdjacencyTableRelation<String,Build>();
         for (Build b: builds) {
             classification.add(new Pair<String,Build>(b.getName(), b));
         }

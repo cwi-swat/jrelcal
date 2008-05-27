@@ -105,9 +105,9 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-    public Relation<S, T> pruneWithDomainAndRange() {
-        return new AdjacencyTableRelation<S, T>(asPairs());
-    }
+//    public Relation<S, T> pruneWithDomainAndRange() {
+//        return new AdjacencyTableRelation<S, T>(asPairs());
+//    }
 
     public Relation<S, T> union(Relation<S, T> relation) {
         if (relation instanceof AdjacencyTableRelation)
@@ -239,7 +239,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return newRelation(getFromSet(), getToSet(), table);
     }
 
-    public Relation<S, T> domainExclusion(OrderedSet<T> set) {
+    public Relation<S, T> domainExclusion(OrderedSet<S> set) {
         AdjacencyTable table = getTable().copy();
         int bound = table.bound();
         for (int i = 0; i < bound; i++) {

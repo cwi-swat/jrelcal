@@ -10,152 +10,131 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
     extends AbstractRelation<S, T> 
 {
     Set<Pair<S, T>> set = new HashSet<Pair<S,T>>();
-
+    
+    public PairSetRelation() {
+    }
+   
+    public PairSetRelation(Set<Pair<S,T>> set) {
+       this.set = new HashSet<Pair<S,T>>(set);
+    }
+    
     public void add(Pair<S, T> pair) {
-        // TODO Auto-generated method stub
-        
+        set.add(pair);        
     }
 
-    public OrderedSet<Pair<S, T>> asPairs() {
-        // TODO Auto-generated method stub
-        return null;
+    public OrderedSet<Pair<S, T>> asPairs() {       
+        return new OrderedSet<Pair<S,T>>(set);
     }
 
     public int cardinality() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    public Relation<S, T> complement() {
-        // TODO Auto-generated method stub
-        return null;
+       return set.size();
     }
 
     public <U extends Comparable<U>> Relation<S, U> compose(Relation<T, U> relation) {
-        // TODO Auto-generated method stub
-        return null;
+        Relation<S, U> result = new PairSetRelation<S, U>();
+        for (Pair<S,T> p:set) {
+            for (Pair<T,U> p2:relation) {
+                if (p.getSecond().equals(p2.getFirst()))
+                    result.add(new Pair<S, U>(p.getFirst(), p2.getSecond()));
+            }                
+        }
+        return result;
     }
 
     public Relation<S, T> difference(Relation<S, T> relation) {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Pair<S,T>> resultSet = new HashSet<Pair<S,T>>(set);
+        resultSet.removeAll(relation.asPairs());
+        Relation<S,T> result = new PairSetRelation<S, T>(resultSet);
+        return result;
     }
 
     public OrderedSet<S> domain() {
-        // TODO Auto-generated method stub
-        return null;
+        OrderedSet<S> result = new OrderedSet<S>();
+        for (Pair<S,T> p:set)
+            result.add(p.getFirst());
+        return result;
     }
 
-    public Relation<S, T> domainExclusion(OrderedSet<T> set) {
-        // TODO Auto-generated method stub
-        return null;
+    public Relation<S, T> domainExclusion(OrderedSet<S> set) {
+        Relation<S,T> result = new PairSetRelation<S, T>();
+        for(Pair<S,T> p: this)
+            if (!set.contains(p.getFirst()))
+                result.add(p);
+        return result;
     }
 
     public Relation<S, T> domainRestriction(OrderedSet<S> set) {
-        // TODO Auto-generated method stub
-        return null;
+        Relation<S,T> result = new PairSetRelation<S, T>();
+        for(Pair<S,T> p: this)
+            if (set.contains(p.getFirst()))
+                result.add(p);
+        return result;
     }
 
-    public boolean elementOf(Pair<S, T> element) {
-        // TODO Auto-generated method stub
-        return false;
+   public boolean equals(Relation<S, T> relation) {
+        return asPairs().equals(relation.asPairs());
     }
 
-    public boolean equals(Relation<S, T> relation) {
-        // TODO Auto-generated method stub
-        return false;
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object o) {
+        return equals((Relation<S, T>)o);
     }
-
-    public OrderedSet<T> image(S s) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<T> image(OrderedSet<S> set) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void initialize(OrderedSet<Pair<S, T>> pairs) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, OrderedSet<Pair<S, T>> pairs) {
-        // TODO Auto-generated method stub
-        
-    }
-
+    
     public Relation<S, T> intersection(Relation<S, T> relation) {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Pair<S,T>> intersection = new HashSet<Pair<S,T>>(set);
+        intersection.retainAll(relation.asPairs());
+        return new PairSetRelation<S,T>(intersection);
     }
 
     public Relation<T, S> inverse() {
-        // TODO Auto-generated method stub
-        return null;
+        Relation<T,S> result = new PairSetRelation<T, S>();
+        for (Pair<S, T> p:set)
+            result.add(p.swap());
+        return result;
     }
 
     public Iterator<Pair<S, T>> iterator() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<S> leftImage(T t) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<S> leftImage(OrderedSet<T> set) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<S> leftSection(T t) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Relation<S, T> pruneWithDomainAndRange() {
-        // TODO Auto-generated method stub
-        return null;
+        return set.iterator();
     }
 
     public OrderedSet<T> range() {
-        // TODO Auto-generated method stub
-        return null;
+        OrderedSet<T> resultSet = new OrderedSet<T>();
+        for (Pair<S,T> p:this)
+            resultSet.add(p.getSecond());
+            
+        return resultSet;
     }
 
     public Relation<S, T> rangeExclusion(OrderedSet<T> set) {
-        // TODO Auto-generated method stub
-        return null;
+        Relation<S,T> result = new PairSetRelation<S, T>();
+        for(Pair<S,T> p: this)
+            if (!set.contains(p.getSecond()))
+                result.add(p);
+        return result;
     }
 
     public Relation<S, T> rangeRestriction(OrderedSet<T> set) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<T> rightImage(S s) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<T> rightImage(OrderedSet<S> set) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public OrderedSet<T> rightSection(S s) {
-        // TODO Auto-generated method stub
-        return null;
+        Relation<S,T> result = new PairSetRelation<S, T>();
+        for(Pair<S,T> p: this)
+            if (set.contains(p.getSecond()))
+                result.add(p);
+        return result;
     }
 
     public Relation<S, T> union(Relation<S, T> relation) {
-        // TODO Auto-generated method stub
-        return null;
+        set.addAll(relation.asPairs());
+        return this;
     }
     
-    
-   
+    public OrderedSet<T> rightSection(S s) {
+        OrderedSet<S> set = new OrderedSet<S>();
+        set.add(s);
+        return domainRestriction(set).range();
+    }
+
+    public OrderedSet<S> leftSection(T t) {
+        OrderedSet<T> set = new OrderedSet<T>();
+        set.add(t);
+        return rangeRestriction(set).domain();
+    }
 }
