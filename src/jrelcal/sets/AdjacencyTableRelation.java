@@ -15,7 +15,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         initialize(inferFromSet(pairs), inferToSet(pairs), pairs);
     }
 
-    public void initialize(IndexedSet<S> domain, IndexedSet<T> range, OrderedSet<Pair<S, T>> pairs) {
+    public void initialize(IndexedSet<S> domain, IndexedSet<T> range,
+        OrderedSet<Pair<S, T>> pairs) {
         initialize(domain, range, new AdjacencyTable(domain.size(), pairsToEdges(domain,
             range, pairs)));
     }
@@ -105,15 +106,15 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-//    public Relation<S, T> pruneWithDomainAndRange() {
-//        return new AdjacencyTableRelation<S, T>(asPairs());
-//    }
+    //    public Relation<S, T> pruneWithDomainAndRange() {
+    //        return new AdjacencyTableRelation<S, T>(asPairs());
+    //    }
 
     public Relation<S, T> union(Relation<S, T> relation) {
         if (relation instanceof AdjacencyTableRelation)
             return union((AdjacencyTableRelation<S, T>)relation);
-        // TODO Peter: Provide default implementation
-        return null;
+        else
+            return new AdjacencyTableRelation<S, T>(this.asPairs().union(relation.asPairs()));
     }
 
     public Relation<S, T> union(AdjacencyTableRelation<S, T> relation) {
@@ -508,7 +509,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return set;
     }
 
-    public static <T extends Comparable<T>> OrderedSet<T> sinks(AdjacencyTableRelation<T, T> relation) {
+    public static <T extends Comparable<T>> OrderedSet<T> sinks(
+        AdjacencyTableRelation<T, T> relation) {
         int n = relation.getFromSet().size();
         AdjacencyTable table = relation.getTable();
         Integer inDegree[] = table.inDegree(n);
@@ -529,7 +531,8 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
             return carrier(relation);
         T last = set.last();
         OrderedSet<T> temp = transitiveClosure(relation).rightSection(last);
-        return temp.intersection(commonDescendants(relation, (OrderedSet<T>)set.headSet(last)));
+        return temp
+            .intersection(commonDescendants(relation, (OrderedSet<T>)set.headSet(last)));
     }
 
     public static <T extends Comparable<T>> OrderedSet<T> commonAncestors(
@@ -555,4 +558,4 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         return asPairs().iterator();
     }
 
- }
+}
