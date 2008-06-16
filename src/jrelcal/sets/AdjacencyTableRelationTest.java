@@ -9,6 +9,7 @@ package jrelcal.sets;
 
 import jrelcal.Pair;
 import junit.framework.TestCase;
+import static jrelcal.sets.AdjacencyTableRelation.transitiveClosure;
 
 /**
  * @author storm
@@ -457,7 +458,30 @@ public class AdjacencyTableRelationTest extends TestCase {
     public void testInverseDiverse() {
         assertEquals(twoOneThreeTwoRelation, oneTwoTwoThreeRelation.inverse());
     }
+    
+    /*
+     * Transitive Closure
+     */
+    
+    public void testTCWithEmpty() {
+        assertEquals(emptyRelation, transitiveClosure(emptyRelation));
+    }
 
+//    public void testCompositionXWithEmpty() {
+//        assertEquals(emptyRelation, aRelation.compose(emptyRelation));
+//    }
+//
+//    public void testCompositionEmptyWithX() {
+//        assertEquals(emptyRelation, emptyRelation.compose(aRelation));
+//    }
+//
+//    public void testCompositionXwithYUnrelated() {
+//        assertEquals(emptyRelation, aRelation.compose(bRelation));
+//    }
+//    
+//    public void testCompositionXwithYRelated() {
+//        assertEquals(oneFourTwoFiveRelation, oneTwoTwoThreeRelation.compose(twoFourThreeFiveRelation));
+//    }
     
 }
 
