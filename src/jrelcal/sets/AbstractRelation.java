@@ -45,6 +45,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         while (seeds.difference(stop).size() != 0) {
             liveSeeds = seeds.difference(stop);
             result = rel.domainRestriction(liveSeeds).union(result);
+           
             seeds = result.range();
             stop = stop.union(liveSeeds);
         }

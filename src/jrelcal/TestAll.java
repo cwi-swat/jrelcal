@@ -7,6 +7,7 @@ import jrelcal.sets.AdjacencyTableRelationTest;
 import jrelcal.sets.IndexedSetTest;
 import jrelcal.sets.OrderedSetTest;
 import jrelcal.sets.PairSetRelationTest;
+import jrelcal.sets.RelationTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,6 +20,7 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
+       
         suite.addTest(new TestSuite(OrderedSetTest.class));
         suite.addTest(new TestSuite(IndexedSetTest.class));
         suite.addTest(new TestSuite(BagTest.class));
