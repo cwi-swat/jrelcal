@@ -3,7 +3,6 @@ package jrelcal.sets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import jrelcal.Pair;
 
@@ -73,31 +72,23 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
     }
 
     /*
-     * Return pair (X,Y) with node X from seeds and node Y from stop if there is a path from X to Y.
+     * Return pair (X,Y) with node X from seeds and node Y from stops if there is a path from X to Y.
      * (Instead of returning the complete subgraph)
      */
     public static <T extends Comparable<T>> Relation<T, T> lazySlice(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops) {
-        // For every seed store its outgoing neighbours
         Map<T, OrderedSet<T>> seedWorkList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedStopList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedDoneList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedPrevDoneList = new HashMap<T, OrderedSet<T>>();
         for (T seed : seeds) {
             seedWorkList.put(seed, rel.rightSection(seed));
-
             seedStopList.put(seed, stops);
-
             seedDoneList.put(seed, new OrderedSet<T>(seed));
-
             seedPrevDoneList.put(seed, new OrderedSet<T>());
         }
-
         Relation<T, T> result = new PairSetRelation<T, T>();
         OrderedSet<T> doneSeeds = new OrderedSet<T>();
-
-        // Or doneSeeds verandert niet meer, of voor elke seed zijn de stop list leeg.
-        // of geen van de doneSeeds lists verandert meer
         while (!everySetEmpty(seedStopList)
             && someSetNotEqualPrevious(seedDoneList, seedPrevDoneList)) {
             for (T s : seedWorkList.keySet()) {

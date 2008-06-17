@@ -1,7 +1,7 @@
 package jrelcal;
 
-import jrelcal.bags.MultiRelation;
 import jrelcal.bags.Bag;
+import jrelcal.bags.MultiRelation;
 import jrelcal.sets.IndexedSet;
 
 public class MainTests {

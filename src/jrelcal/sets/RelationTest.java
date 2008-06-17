@@ -526,6 +526,10 @@ public abstract class RelationTest extends TestCase {
 
     }
 
+    /*
+     * Lazy Slice (connectivity)
+     */
+
     public void testLazySlice() {
         assertEquals(lazySliceResultRelation, AbstractRelation.lazySlice(oneTwoSet,
             sliceRelation2, eightNineSet));
@@ -536,14 +540,34 @@ public abstract class RelationTest extends TestCase {
             sliceRelation2, tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySlice3() {
+    public void testLazySliceReachableAfterStop() {
         assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
     }
-    
-    public void testLazySlice4() {
-        sliceRelation3.add(pair(1,14));
+
+    public void testLazySliceCycleBackToSeed() {
+        sliceRelation3.add(pair(1, 14));
         assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySliceNonExistentSeed() {
+        assertEquals(emptyRelation, AbstractRelation.lazySlice(new OrderedSet<Integer>(666),
+            sliceRelation3, tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySliceEmptySeeds() {
+        assertEquals(emptyRelation, AbstractRelation.lazySlice(emptySet, sliceRelation3,
+            tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySliceEmptySinks() {
+        assertEquals(emptyRelation, AbstractRelation.lazySlice(oneTwoSet, sliceRelation3,
+            emptySet));
+    }
+
+    public void testLazySliceEmptySeedsAndSinks() {
+        assertEquals(emptyRelation, AbstractRelation.lazySlice(emptySet, sliceRelation3,
+            emptySet));
     }
 }

@@ -8,10 +8,10 @@ package jrelcal.bags;
 
 
 import java.util.Collection;
-import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeMap;
 
 import jrelcal.sets.IndexedSet;
 

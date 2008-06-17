@@ -1,7 +1,8 @@
 package jrelcal.ci;
 
 import jrelcal.Pair;
-import jrelcal.sets.*;
+import jrelcal.sets.AdjacencyTableRelation;
+import jrelcal.sets.OrderedSet;
 
 public class ContinuousIntegration {
     

@@ -7,7 +7,6 @@ import jrelcal.sets.AdjacencyTableRelationTest;
 import jrelcal.sets.IndexedSetTest;
 import jrelcal.sets.OrderedSetTest;
 import jrelcal.sets.PairSetRelationTest;
-import jrelcal.sets.RelationTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
