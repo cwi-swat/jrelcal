@@ -25,6 +25,11 @@ public abstract class RelationTest extends TestCase {
     protected Relation<Integer, Integer> sliceResultRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceCycleRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceCycleResultRelation = this.getRelation();
+    protected Relation<Integer, Integer> sliceRelation2 = this.getRelation();
+    protected Relation<Integer, Integer> sliceRelation3 = this.getRelation();
+    protected Relation<Integer, Integer> lazySliceResultRelation = this.getRelation();
+    protected Relation<Integer, Integer> lazySliceResultRelation2 = this.getRelation();
+    protected Relation<Integer, Integer> lazySliceResultRelation3 = this.getRelation();
 
     protected OrderedSet<Integer> emptySet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> oneSet = new OrderedSet<Integer>();
@@ -34,9 +39,11 @@ public abstract class RelationTest extends TestCase {
     protected OrderedSet<Integer> oneTwoThreeSet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> twoThreeSet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> fourFiveSet = new OrderedSet<Integer>();
+    protected OrderedSet<Integer> eightNineSet = new OrderedSet<Integer>();
+    protected OrderedSet<Integer> tenElevenTwelveThirteenSet = new OrderedSet<Integer>();
 
     protected abstract Relation<Integer, Integer> getRelation();
-    
+
     protected OrderedSet<Integer> empty() {
         return new OrderedSet<Integer>();
     }
@@ -58,6 +65,12 @@ public abstract class RelationTest extends TestCase {
         twoThreeSet.add(3);
         fourFiveSet.add(4);
         fourFiveSet.add(5);
+        eightNineSet.add(8);
+        eightNineSet.add(9);
+        tenElevenTwelveThirteenSet.add(10);
+        tenElevenTwelveThirteenSet.add(11);
+        tenElevenTwelveThirteenSet.add(12);
+        tenElevenTwelveThirteenSet.add(13);
 
         singletonRelation.add(pair(1, 1));
 
@@ -114,11 +127,52 @@ public abstract class RelationTest extends TestCase {
         sliceRelation.add(pair(8, 1));
         sliceRelation.add(pair(1, 9));
 
+        sliceRelation2.add(pair(1, 3));
+        sliceRelation2.add(pair(2, 4));
+        sliceRelation2.add(pair(2, 5));
+        sliceRelation2.add(pair(4, 1));
+        sliceRelation2.add(pair(3, 4));
+        sliceRelation2.add(pair(7, 6));
+        sliceRelation2.add(pair(6, 5));
+        sliceRelation2.add(pair(4, 8));
+        sliceRelation2.add(pair(5, 9));
+        sliceRelation2.add(pair(8, 10));
+        sliceRelation2.add(pair(8, 11));
+        sliceRelation2.add(pair(8, 12));
+        sliceRelation2.add(pair(9, 12));
+        sliceRelation2.add(pair(9, 13));
+        sliceRelation2.add(pair(10, 14));
+        sliceRelation2.add(pair(11, 10));
+        sliceRelation2.add(pair(11, 14));
+        sliceRelation2.add(pair(12, 15));
+        sliceRelation2.add(pair(15, 16));
+
+        for (Pair<Integer, Integer> p : sliceRelation2.asPairs())
+            sliceRelation3.add(p);
+
+        sliceRelation3.add(pair(16, 13));
+
         sliceResultRelation.add(pair(1, 2));
         sliceResultRelation.add(pair(1, 3));
         sliceResultRelation.add(pair(2, 6));
         sliceResultRelation.add(pair(3, 5));
         sliceResultRelation.add(pair(1, 9));
+
+        lazySliceResultRelation.add(pair(1, 8));
+        lazySliceResultRelation.add(pair(2, 8));
+        lazySliceResultRelation.add(pair(2, 9));
+
+        lazySliceResultRelation2.add(pair(1, 10));
+        lazySliceResultRelation2.add(pair(1, 11));
+        lazySliceResultRelation2.add(pair(1, 12));
+        lazySliceResultRelation2.add(pair(2, 10));
+        lazySliceResultRelation2.add(pair(2, 11));
+        lazySliceResultRelation2.add(pair(2, 12));
+        lazySliceResultRelation2.add(pair(2, 13));
+
+        for (Pair<Integer, Integer> p : lazySliceResultRelation2.asPairs())
+            lazySliceResultRelation3.add(p);
+        lazySliceResultRelation3.add(pair(1, 13));
 
         sliceCycleRelation = new PairSetRelation<Integer, Integer>(sliceRelation.asPairs());
         sliceCycleRelation.add(pair(3, 2));
@@ -467,12 +521,29 @@ public abstract class RelationTest extends TestCase {
     }
 
     public void testCycleSlice() {
-        System.out.println(sliceCycleResultRelation.asPairs());
-        System.out.println(AbstractRelation.slice(oneSet, sliceCycleRelation, emptySet)
-            .asPairs());
         assertEquals(sliceCycleResultRelation, AbstractRelation.slice(oneSet,
             sliceCycleRelation, emptySet));
 
     }
 
+    public void testLazySlice() {
+        assertEquals(lazySliceResultRelation, AbstractRelation.lazySlice(oneTwoSet,
+            sliceRelation2, eightNineSet));
+    }
+
+    public void testLazySlice2() {
+        assertEquals(lazySliceResultRelation2, AbstractRelation.lazySlice(oneTwoSet,
+            sliceRelation2, tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySlice3() {
+        assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
+            sliceRelation3, tenElevenTwelveThirteenSet));
+    }
+    
+    public void testLazySlice4() {
+        sliceRelation3.add(pair(1,14));
+        assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
+            sliceRelation3, tenElevenTwelveThirteenSet));
+    }
 }
