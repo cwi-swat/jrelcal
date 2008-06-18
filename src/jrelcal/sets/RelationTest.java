@@ -147,9 +147,9 @@ public abstract class RelationTest extends TestCase {
         sliceRelation2.add(pair(11, 14));
         sliceRelation2.add(pair(12, 15));
         sliceRelation2.add(pair(15, 16));
-        
-        tcResultRelation.add(sliceRelation2.asPairs());
-        
+
+        tcResultRelation.add(PairSetRelation.transitiveClosure(sliceRelation2).asPairs());
+
         sliceRelation3.add(sliceRelation2.asPairs());
 
         sliceRelation3.add(pair(16, 13));
@@ -172,8 +172,7 @@ public abstract class RelationTest extends TestCase {
         lazySliceResultRelation2.add(pair(2, 12));
         lazySliceResultRelation2.add(pair(2, 13));
 
-        for (Pair<Integer, Integer> p : lazySliceResultRelation2.asPairs())
-            lazySliceResultRelation3.add(p);
+        lazySliceResultRelation3.add(lazySliceResultRelation2.asPairs());
         lazySliceResultRelation3.add(pair(1, 13));
 
         sliceCycleRelation = new PairSetRelation<Integer, Integer>(sliceRelation.asPairs());
@@ -571,5 +570,29 @@ public abstract class RelationTest extends TestCase {
     public void testLazySliceEmptySeedsAndSinks() {
         assertEquals(emptyRelation, AbstractRelation.lazySlice(emptySet, sliceRelation3,
             emptySet));
+    }
+
+    /*
+     * Transitive Closure
+     */
+    public void testTransitiveClosure1() {
+        System.out.println(this.getClass());
+        long time = System.currentTimeMillis();
+        Relation<Integer, Integer> testResult = PairSetRelation.transitiveClosure(aRelation);
+        System.out.println("Operation time: " + (System.currentTimeMillis() - time) + " ms");
+        System.out.println("Cardinality TC " + testResult.cardinality());
+        aRelation.add(pair(3, 5));
+        assertEquals(aRelation, testResult);
+    }
+
+    public void testTransitiveClosure2() {
+        System.out.println(this.getClass());
+        long time = System.currentTimeMillis();
+        Relation<Integer, Integer> testResult = PairSetRelation.transitiveClosure(bRelation);
+        System.out.println("Operation time: " + (System.currentTimeMillis() - time) + " ms");
+        System.out.println("Cardinality TC " + testResult.cardinality());
+        bRelation.add(pair(10, 50));
+        bRelation.add(pair(10, 30));
+        assertEquals(bRelation, testResult);
     }
 }

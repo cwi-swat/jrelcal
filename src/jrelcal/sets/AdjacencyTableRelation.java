@@ -472,7 +472,6 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
 
     public static <T extends Comparable<T>> Relation<T, T> transitiveClosure(
         AdjacencyTableRelation<T, T> relation) {
-        System.out.println("ADJACENCYRELATION TC");
         return new AdjacencyTableRelation<T, T>(relation.getFromSet(), relation.getToSet(),
             relation.getTable().transitiveClosure());
     }
