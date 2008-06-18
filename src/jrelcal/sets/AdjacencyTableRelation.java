@@ -32,7 +32,7 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         initialize((new OrderedSet<Pair<S, T>>(pair)).union(asPairs()));
     }
     
-    public void addPairs(Set<Pair<S, T>> pairSet) {
+    public void add(Set<Pair<S, T>> pairSet) {
         for (Pair<S,T> p: pairSet)
             this.add(p);        
     }

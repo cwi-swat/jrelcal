@@ -21,7 +21,7 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         set.add(pair);
     }
     
-    public void addPairs(Set<Pair<S, T>> pairSet) {
+    public void add(Set<Pair<S, T>> pairSet) {
         for (Pair<S,T> p: pairSet)
             this.add(p);        
     }

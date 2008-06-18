@@ -148,12 +148,9 @@ public abstract class RelationTest extends TestCase {
         sliceRelation2.add(pair(12, 15));
         sliceRelation2.add(pair(15, 16));
         
-        for (Pair<Integer, Integer> p : sliceRelation2.asPairs())
-            tcResultRelation.add(p);
+        tcResultRelation.add(sliceRelation2.asPairs());
         
-        
-        for (Pair<Integer, Integer> p : sliceRelation2.asPairs())
-            sliceRelation3.add(p);
+        sliceRelation3.add(sliceRelation2.asPairs());
 
         sliceRelation3.add(pair(16, 13));
 

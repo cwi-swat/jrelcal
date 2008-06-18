@@ -12,7 +12,7 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
 
     public void add(Pair<S, T> pair);
     
-    public void addPairs(Set<Pair<S,T>> pairSet);
+    public void add(Set<Pair<S,T>> pairSet);
 
     public OrderedSet<Pair<S, T>> asPairs();
 
