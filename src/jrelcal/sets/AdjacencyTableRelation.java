@@ -1,6 +1,7 @@
 package jrelcal.sets;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import jrelcal.Pair;
 
@@ -29,6 +30,11 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
 
     public void add(Pair<S, T> pair) {
         initialize((new OrderedSet<Pair<S, T>>(pair)).union(asPairs()));
+    }
+    
+    public void addPairs(Set<Pair<S, T>> pairSet) {
+        for (Pair<S,T> p: pairSet)
+            this.add(p);        
     }
 
     public AdjacencyTableRelation() {

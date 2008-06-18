@@ -26,6 +26,7 @@ public abstract class RelationTest extends TestCase {
     protected Relation<Integer, Integer> sliceCycleRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceCycleResultRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceRelation2 = this.getRelation();
+    protected Relation<Integer, Integer> tcResultRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceRelation3 = this.getRelation();
     protected Relation<Integer, Integer> lazySliceResultRelation = this.getRelation();
     protected Relation<Integer, Integer> lazySliceResultRelation2 = this.getRelation();
@@ -146,7 +147,11 @@ public abstract class RelationTest extends TestCase {
         sliceRelation2.add(pair(11, 14));
         sliceRelation2.add(pair(12, 15));
         sliceRelation2.add(pair(15, 16));
-
+        
+        for (Pair<Integer, Integer> p : sliceRelation2.asPairs())
+            tcResultRelation.add(p);
+        
+        
         for (Pair<Integer, Integer> p : sliceRelation2.asPairs())
             sliceRelation3.add(p);
 

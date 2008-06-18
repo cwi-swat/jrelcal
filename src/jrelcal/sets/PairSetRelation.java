@@ -20,6 +20,11 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
     public void add(Pair<S, T> pair) {
         set.add(pair);
     }
+    
+    public void addPairs(Set<Pair<S, T>> pairSet) {
+        for (Pair<S,T> p: pairSet)
+            this.add(p);        
+    }
 
     public OrderedSet<Pair<S, T>> asPairs() {
         return new OrderedSet<Pair<S, T>>(set);
@@ -153,4 +158,6 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         }
         return result;
     }
+
+   
 }

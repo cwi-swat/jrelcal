@@ -1,6 +1,7 @@
 package jrelcal.sets;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import jrelcal.Pair;
 
@@ -10,6 +11,8 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
         Comparable<Relation<S, T>> {
 
     public void add(Pair<S, T> pair);
+    
+    public void addPairs(Set<Pair<S,T>> pairSet);
 
     public OrderedSet<Pair<S, T>> asPairs();
 
