@@ -61,21 +61,16 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         return result;
     }
 
-    private static <T extends Comparable<T>> boolean someSetNotEqualPrevious(
-        Map<T, OrderedSet<T>> done, Map<T, OrderedSet<T>> previous) {
-        boolean result = false;
-        for (T seed : done.keySet()) {
-            if (!(done.get(seed).equals(previous.get(seed))))
-                return true;
-        }
-        return result;
+    public static <R extends Comparable<R>, Q extends Comparable<Q>, S extends Comparable<S>> Relation<Q, S> reachCompose(
+        Relation<Q, R> a, Relation<R, R> r, Relation<R, S> b) {
+        return a.compose(AbstractRelation.reach(a.range(), r, b.domain())).compose(b);
     }
 
     /*
      * Return pair (X,Y) with node X from seeds and node Y from stops if there is a path from X to Y.
      * (Instead of returning the complete subgraph)
      */
-    public static <T extends Comparable<T>> Relation<T, T> lazySlice(OrderedSet<T> seeds,
+    public static <T extends Comparable<T>> Relation<T, T> reach(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops) {
         Map<T, OrderedSet<T>> seedWorkList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedStopList = new HashMap<T, OrderedSet<T>>();
@@ -89,8 +84,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         }
         Relation<T, T> result = new PairSetRelation<T, T>();
         OrderedSet<T> doneSeeds = new OrderedSet<T>();
-        while (!everySetEmpty(seedStopList)
-            && someSetNotEqualPrevious(seedDoneList, seedPrevDoneList)) {
+        while (!everySetEmpty(seedStopList) && !seedDoneList.equals(seedPrevDoneList)) {
             for (T s : seedWorkList.keySet()) {
                 seedPrevDoneList.put(s, seedDoneList.get(s));
                 OrderedSet<T> neighbours = seedWorkList.get(s);
