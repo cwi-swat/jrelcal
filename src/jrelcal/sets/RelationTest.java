@@ -532,67 +532,110 @@ public abstract class RelationTest extends TestCase {
      */
 
     public void testLazySlice() {
-        assertEquals(lazySliceResultRelation, AbstractRelation.lazySlice(oneTwoSet,
+        assertEquals(lazySliceResultRelation, AbstractRelation.reach(oneTwoSet,
             sliceRelation2, eightNineSet));
     }
 
+    public void testLazySliceConsistentTC() {
+        assertEquals(lazySliceResultRelation, AbstractRelation.transitiveClosure(
+            sliceRelation2).domainRestriction(oneTwoSet).rangeRestriction(eightNineSet));
+    }
+
     public void testLazySlice2() {
-        assertEquals(lazySliceResultRelation2, AbstractRelation.lazySlice(oneTwoSet,
+        System.out.println(this.getClass());
+        long time = System.currentTimeMillis();
+        assertEquals(lazySliceResultRelation2, AbstractRelation.reach(oneTwoSet,
             sliceRelation2, tenElevenTwelveThirteenSet));
+        System.out.println("LAZY Operation time: " + (System.currentTimeMillis() - time)
+            + " ms");
+    }
+
+    public void testLazySliceConsistentTC2() {
+        System.out.println(this.getClass());
+        long time = System.currentTimeMillis();
+        assertEquals(lazySliceResultRelation2, AbstractRelation.transitiveClosure(
+            sliceRelation2).domainRestriction(oneTwoSet).rangeRestriction(
+            tenElevenTwelveThirteenSet));
+        System.out
+            .println("TC Operation time: " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void testLazySliceReachableAfterStop() {
-        assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
+        assertEquals(lazySliceResultRelation3, AbstractRelation.reach(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySliceConsistentTC3() {
+        assertEquals(lazySliceResultRelation3, AbstractRelation.transitiveClosure(
+            sliceRelation3).domainRestriction(oneTwoSet).rangeRestriction(
+            tenElevenTwelveThirteenSet));
     }
 
     public void testLazySliceCycleBackToSeed() {
         sliceRelation3.add(pair(1, 14));
-        assertEquals(lazySliceResultRelation3, AbstractRelation.lazySlice(oneTwoSet,
+        assertEquals(lazySliceResultRelation3, AbstractRelation.reach(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
+    }
+
+    public void testLazySliceConsistentTC4() {
+        sliceRelation3.add(pair(1, 14));
+        assertEquals(lazySliceResultRelation3, AbstractRelation.transitiveClosure(
+            sliceRelation3).domainRestriction(oneTwoSet).rangeRestriction(
+            tenElevenTwelveThirteenSet));
     }
 
     public void testLazySliceNonExistentSeed() {
-        assertEquals(emptyRelation, AbstractRelation.lazySlice(new OrderedSet<Integer>(666),
+        assertEquals(emptyRelation, AbstractRelation.reach(new OrderedSet<Integer>(666),
             sliceRelation3, tenElevenTwelveThirteenSet));
     }
 
+    public void testLazySliceConsistentTC5() {
+        assertEquals(emptyRelation, AbstractRelation.transitiveClosure(sliceRelation3)
+            .domainRestriction(new OrderedSet<Integer>(666)).rangeRestriction(
+                tenElevenTwelveThirteenSet));
+    }
+
     public void testLazySliceEmptySeeds() {
-        assertEquals(emptyRelation, AbstractRelation.lazySlice(emptySet, sliceRelation3,
+        assertEquals(emptyRelation, AbstractRelation.reach(emptySet, sliceRelation3,
             tenElevenTwelveThirteenSet));
     }
 
     public void testLazySliceEmptySinks() {
-        assertEquals(emptyRelation, AbstractRelation.lazySlice(oneTwoSet, sliceRelation3,
-            emptySet));
+        assertEquals(emptyRelation, AbstractRelation
+            .reach(oneTwoSet, sliceRelation3, emptySet));
     }
 
     public void testLazySliceEmptySeedsAndSinks() {
-        assertEquals(emptyRelation, AbstractRelation.lazySlice(emptySet, sliceRelation3,
-            emptySet));
+        assertEquals(emptyRelation, AbstractRelation.reach(emptySet, sliceRelation3, emptySet));
+    }
+
+    public void testLazySliceConsistentTC6() {
+        assertEquals(emptyRelation, AbstractRelation.transitiveClosure(sliceRelation3)
+            .domainRestriction(emptySet).rangeRestriction(emptySet));
     }
 
     /*
      * Transitive Closure
      */
     public void testTransitiveClosure1() {
-        System.out.println(this.getClass());
-        long time = System.currentTimeMillis();
-        Relation<Integer, Integer> testResult = PairSetRelation.transitiveClosure(aRelation);
-        System.out.println("Operation time: " + (System.currentTimeMillis() - time) + " ms");
-        System.out.println("Cardinality TC " + testResult.cardinality());
+        Relation<Integer, Integer> testResult = AbstractRelation.transitiveClosure(aRelation);
         aRelation.add(pair(3, 5));
         assertEquals(aRelation, testResult);
     }
 
     public void testTransitiveClosure2() {
-        System.out.println(this.getClass());
-        long time = System.currentTimeMillis();
-        Relation<Integer, Integer> testResult = PairSetRelation.transitiveClosure(bRelation);
-        System.out.println("Operation time: " + (System.currentTimeMillis() - time) + " ms");
-        System.out.println("Cardinality TC " + testResult.cardinality());
+        Relation<Integer, Integer> testResult = AbstractRelation.transitiveClosure(bRelation);
         bRelation.add(pair(10, 50));
         bRelation.add(pair(10, 30));
+        assertEquals(bRelation, testResult);
+    }
+    
+    public void testReflexiveTransitiveClosure() {
+        Relation<Integer, Integer> testResult = AbstractRelation.reflexiveTransitiveClosure(bRelation);
+        bRelation.add(pair(10, 50));
+        bRelation.add(pair(10, 30));
+        for (Integer i :testResult.domain().union(testResult.range()))
+            bRelation.add(pair(i,i));
         assertEquals(bRelation, testResult);
     }
 }

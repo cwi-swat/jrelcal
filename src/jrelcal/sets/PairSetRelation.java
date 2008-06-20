@@ -9,10 +9,14 @@ import jrelcal.Pair;
 public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
     extends
         AbstractRelation<S, T> {
-    Set<Pair<S, T>> set = new HashSet<Pair<S, T>>();
+    private Set<Pair<S, T>> set = new HashSet<Pair<S, T>>();
 
     public PairSetRelation() {}
 
+    public PairSetRelation(Relation<S,T> rel) {
+        this.set = new HashSet<Pair<S, T>>(rel.asPairs());
+    }
+    
     public PairSetRelation(Set<Pair<S, T>> set) {
         this.set = new HashSet<Pair<S, T>>(set);
     }
@@ -142,7 +146,7 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         return rangeRestriction(set).domain();
     }
 
-    public static <T extends Comparable<T>> Relation<T, T> transitiveClosure(
+    public static <T extends Comparable<T>> PairSetRelation<T, T> transitiveClosure(
         PairSetRelation<T, T> relation) {
         PairSetRelation<T, T> result = new PairSetRelation<T, T>(relation.asPairs());
         int prevResultSize = 0;    
@@ -158,6 +162,23 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         }
         return result;
     }
-
-   
+    
+    public static <T extends Comparable<T>> PairSetRelation<T, T> reflexiveTransitiveClosure(
+        PairSetRelation<T, T> rel) {
+        PairSetRelation<T, T> result = new PairSetRelation<T, T>(rel);
+        int prevResultSize = 0;    
+        while (!(prevResultSize == result.cardinality())) {
+            prevResultSize = result.cardinality();
+            for (Pair<T,T> p : result.asPairs()) {
+                result.add(new Pair<T,T>(p.getFirst(), p.getFirst()));
+                result.add(new Pair<T,T>(p.getSecond(), p.getSecond()));
+                for (Pair<T, T> p2 : result.asPairs()) {
+                    if (p.getSecond().equals(p2.getFirst())) {
+                        result.add(new Pair<T, T>(p.getFirst(), p2.getSecond()));
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

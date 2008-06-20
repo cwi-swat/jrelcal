@@ -28,6 +28,17 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         }
         return 0;
     }
+    
+    public static <T extends Comparable<T>> Relation<T, T> reflexiveTransitiveClosure(Relation<T, T> rel) {
+        if (rel instanceof AdjacencyTableRelation)
+            return AdjacencyTableRelation.reflexiveTransitiveClosure((AdjacencyTableRelation<T, T>)rel);
+        else if (rel instanceof PairSetRelation)
+            return PairSetRelation.reflexiveTransitiveClosure((PairSetRelation<T, T>)rel);
+        else {
+            //TODO default implementation using asPairs();
+            return null;
+        }
+    }
 
     public static <T extends Comparable<T>> Relation<T, T> transitiveClosure(Relation<T, T> rel) {
         if (rel instanceof AdjacencyTableRelation)
@@ -41,16 +52,24 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
     }
 
     public static <T extends Comparable<T>> Relation<T, T> slice(OrderedSet<T> seeds,
-        Relation<T, T> rel, OrderedSet<T> stop) {
+        Relation<T, T> rel, OrderedSet<T> stops) {
         Relation<T, T> result = new PairSetRelation<T, T>();
         OrderedSet<T> liveSeeds = new OrderedSet<T>();
-        while (seeds.difference(stop).size() != 0) {
-            liveSeeds = seeds.difference(stop);
+        while (seeds.difference(stops).size() != 0) {
+            liveSeeds = seeds.difference(stops);
             result = rel.domainRestriction(liveSeeds).union(result);
             seeds = result.range();
-            stop = stop.union(liveSeeds);
+            stops = stops.union(liveSeeds);
         }
         return result;
+    }
+    
+    public static <T extends Comparable<T>> Relation<T, T> sliceRelational(OrderedSet<T> seeds,
+        Relation<T, T> rel, OrderedSet<T> stops) {
+        
+        
+       
+        return null;
     }
 
     private static <T extends Comparable<T>> boolean everySetEmpty(
