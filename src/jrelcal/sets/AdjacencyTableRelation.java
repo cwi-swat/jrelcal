@@ -3,6 +3,8 @@ package jrelcal.sets;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.collections15.Predicate;
+
 import jrelcal.Pair;
 
 public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparable<T>>
@@ -241,6 +243,16 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
         int bound = table.bound();
         for (int i = 0; i < bound; i++) {
             if (!set.contains(getFromSet().elementAt(i)))
+                table.setImage(i, new VertexSet());
+        }
+        return newRelation(getFromSet(), getToSet(), table);
+    }
+    
+    public Relation<S, T> domainRestriction(Predicate<S> p) {
+        AdjacencyTable table = getTable().copy();
+        int bound = table.bound();
+        for (int i = 0; i < bound; i++) {
+            if (!p.evaluate(getFromSet().elementAt(i)))
                 table.setImage(i, new VertexSet());
         }
         return newRelation(getFromSet(), getToSet(), table);

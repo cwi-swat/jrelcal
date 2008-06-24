@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.collections15.Predicate;
+
 import jrelcal.Pair;
 
 public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
@@ -76,6 +78,15 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         for (Pair<S, T> p : this)
             if (set.contains(p.getFirst()))
                 result.add(p);
+        return result;
+    }
+    
+    public Relation<S, T> domainRestriction(Predicate<S> p) {
+        Relation<S, T> result = new PairSetRelation<S, T>();
+        for (Pair<S, T> pair : this) {
+            if (p.evaluate(pair.getFirst()))
+                result.add(pair);
+        }
         return result;
     }
 

@@ -3,6 +3,8 @@ package jrelcal.sets;
 import jrelcal.Pair;
 import junit.framework.TestCase;
 
+import org.apache.commons.collections15.Predicate;
+
 public abstract class RelationTest extends TestCase {
     protected Relation<Integer, Integer> emptyRelation = this.getRelation();
     protected Relation<Integer, Integer> aRelation = this.getRelation();
@@ -28,9 +30,9 @@ public abstract class RelationTest extends TestCase {
     protected Relation<Integer, Integer> sliceRelation2 = this.getRelation();
     protected Relation<Integer, Integer> tcResultRelation = this.getRelation();
     protected Relation<Integer, Integer> sliceRelation3 = this.getRelation();
-    protected Relation<Integer, Integer> lazySliceResultRelation = this.getRelation();
-    protected Relation<Integer, Integer> lazySliceResultRelation2 = this.getRelation();
-    protected Relation<Integer, Integer> lazySliceResultRelation3 = this.getRelation();
+    protected Relation<Integer, Integer> reachResultRelation = this.getRelation();
+    protected Relation<Integer, Integer> reachResultRelation2 = this.getRelation();
+    protected Relation<Integer, Integer> reachResultRelation3 = this.getRelation();
 
     protected OrderedSet<Integer> emptySet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> oneSet = new OrderedSet<Integer>();
@@ -42,6 +44,8 @@ public abstract class RelationTest extends TestCase {
     protected OrderedSet<Integer> fourFiveSet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> eightNineSet = new OrderedSet<Integer>();
     protected OrderedSet<Integer> tenElevenTwelveThirteenSet = new OrderedSet<Integer>();
+    
+    protected Predicate<Integer> greaterThanOne;
 
     protected abstract Relation<Integer, Integer> getRelation();
 
@@ -108,6 +112,12 @@ public abstract class RelationTest extends TestCase {
 
         oneFourTwoFiveRelation.add(pair(1, 4));
         oneFourTwoFiveRelation.add(pair(2, 5));
+        
+        greaterThanOne = new Predicate<Integer>() {
+            public boolean evaluate(Integer i) {
+              return i > 1;
+            }
+          };
 
         aRelation.add(pair(1, 2));
         aRelation.add(pair(3, 4));
@@ -160,20 +170,20 @@ public abstract class RelationTest extends TestCase {
         sliceResultRelation.add(pair(3, 5));
         sliceResultRelation.add(pair(1, 9));
 
-        lazySliceResultRelation.add(pair(1, 8));
-        lazySliceResultRelation.add(pair(2, 8));
-        lazySliceResultRelation.add(pair(2, 9));
+        reachResultRelation.add(pair(1, 8));
+        reachResultRelation.add(pair(2, 8));
+        reachResultRelation.add(pair(2, 9));
 
-        lazySliceResultRelation2.add(pair(1, 10));
-        lazySliceResultRelation2.add(pair(1, 11));
-        lazySliceResultRelation2.add(pair(1, 12));
-        lazySliceResultRelation2.add(pair(2, 10));
-        lazySliceResultRelation2.add(pair(2, 11));
-        lazySliceResultRelation2.add(pair(2, 12));
-        lazySliceResultRelation2.add(pair(2, 13));
+        reachResultRelation2.add(pair(1, 10));
+        reachResultRelation2.add(pair(1, 11));
+        reachResultRelation2.add(pair(1, 12));
+        reachResultRelation2.add(pair(2, 10));
+        reachResultRelation2.add(pair(2, 11));
+        reachResultRelation2.add(pair(2, 12));
+        reachResultRelation2.add(pair(2, 13));
 
-        lazySliceResultRelation3.add(lazySliceResultRelation2.asPairs());
-        lazySliceResultRelation3.add(pair(1, 13));
+        reachResultRelation3.add(reachResultRelation2.asPairs());
+        reachResultRelation3.add(pair(1, 13));
 
         sliceCycleRelation = new PairSetRelation<Integer, Integer>(sliceRelation.asPairs());
         sliceCycleRelation.add(pair(3, 2));
@@ -354,6 +364,16 @@ public abstract class RelationTest extends TestCase {
         assertEquals(oneTwoTwoThreeRelation, oneTwoTwoThreeRelation
             .domainRestriction(oneTwoSet));
     }
+    
+    // domainRestriction with predicate
+    
+    public void testDomainRestrictionPredicate() {
+        assertEquals(twoOneRelation, oneTwoTwoOneRelation.domainRestriction(greaterThanOne));
+    }
+    
+    
+    
+    
 
     /*
      * rangeRestriction
@@ -544,85 +564,77 @@ public abstract class RelationTest extends TestCase {
      * Lazy Slice (connectivity)
      */
 
-    public void testLazySlice() {
-        assertEquals(lazySliceResultRelation, AbstractRelation.reach(oneTwoSet,
+    public void testReach() {
+        assertEquals(reachResultRelation, AbstractRelation.reach(oneTwoSet,
             sliceRelation2, eightNineSet));
     }
 
-    public void testLazySliceConsistentTC() {
-        assertEquals(lazySliceResultRelation, AbstractRelation.transitiveClosure(
+    public void testReachConsistentTC() {
+        assertEquals(reachResultRelation, AbstractRelation.transitiveClosure(
             sliceRelation2).domainRestriction(oneTwoSet).rangeRestriction(eightNineSet));
     }
 
-    public void testLazySlice2() {
-        System.out.println(this.getClass());
-        long time = System.currentTimeMillis();
-        assertEquals(lazySliceResultRelation2, AbstractRelation.reach(oneTwoSet,
+    public void testReach2() {
+        assertEquals(reachResultRelation2, AbstractRelation.reach(oneTwoSet,
             sliceRelation2, tenElevenTwelveThirteenSet));
-        System.out.println("LAZY Operation time: " + (System.currentTimeMillis() - time)
-            + " ms");
     }
 
-    public void testLazySliceConsistentTC2() {
-        System.out.println(this.getClass());
-        long time = System.currentTimeMillis();
-        assertEquals(lazySliceResultRelation2, AbstractRelation.transitiveClosure(
+    public void testReachConsistentTC2() {
+        assertEquals(reachResultRelation2, AbstractRelation.transitiveClosure(
             sliceRelation2).domainRestriction(oneTwoSet).rangeRestriction(
             tenElevenTwelveThirteenSet));
-        System.out
-            .println("TC Operation time: " + (System.currentTimeMillis() - time) + " ms");
     }
 
-    public void testLazySliceReachableAfterStop() {
-        assertEquals(lazySliceResultRelation3, AbstractRelation.reach(oneTwoSet,
+    public void testReachReachableAfterStop() {
+        assertEquals(reachResultRelation3, AbstractRelation.reach(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceConsistentTC3() {
-        assertEquals(lazySliceResultRelation3, AbstractRelation.transitiveClosure(
+    public void testReachConsistentTC3() {
+        assertEquals(reachResultRelation3, AbstractRelation.transitiveClosure(
             sliceRelation3).domainRestriction(oneTwoSet).rangeRestriction(
             tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceCycleBackToSeed() {
+    public void testReachCycleBackToSeed() {
         sliceRelation3.add(pair(1, 14));
-        assertEquals(lazySliceResultRelation3, AbstractRelation.reach(oneTwoSet,
+        assertEquals(reachResultRelation3, AbstractRelation.reach(oneTwoSet,
             sliceRelation3, tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceConsistentTC4() {
+    public void testReachConsistentTC4() {
         sliceRelation3.add(pair(1, 14));
-        assertEquals(lazySliceResultRelation3, AbstractRelation.transitiveClosure(
+        assertEquals(reachResultRelation3, AbstractRelation.transitiveClosure(
             sliceRelation3).domainRestriction(oneTwoSet).rangeRestriction(
             tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceNonExistentSeed() {
+    public void testReachNonExistentSeed() {
         assertEquals(emptyRelation, AbstractRelation.reach(new OrderedSet<Integer>(666),
             sliceRelation3, tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceConsistentTC5() {
+    public void testReachConsistentTC5() {
         assertEquals(emptyRelation, AbstractRelation.transitiveClosure(sliceRelation3)
             .domainRestriction(new OrderedSet<Integer>(666)).rangeRestriction(
                 tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceEmptySeeds() {
+    public void testReachEmptySeeds() {
         assertEquals(emptyRelation, AbstractRelation.reach(emptySet, sliceRelation3,
             tenElevenTwelveThirteenSet));
     }
 
-    public void testLazySliceEmptySinks() {
+    public void testReachEmptySinks() {
         assertEquals(emptyRelation, AbstractRelation
             .reach(oneTwoSet, sliceRelation3, emptySet));
     }
 
-    public void testLazySliceEmptySeedsAndSinks() {
+    public void testReachEmptySeedsAndSinks() {
         assertEquals(emptyRelation, AbstractRelation.reach(emptySet, sliceRelation3, emptySet));
     }
 
-    public void testLazySliceConsistentTC6() {
+    public void testReachConsistentTC6() {
         assertEquals(emptyRelation, AbstractRelation.transitiveClosure(sliceRelation3)
             .domainRestriction(emptySet).rangeRestriction(emptySet));
     }

@@ -3,6 +3,8 @@ package jrelcal.sets;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.collections15.Predicate;
+
 import jrelcal.Pair;
 
 public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
@@ -31,6 +33,8 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
     public <U extends Comparable<U>> Relation<S, U> compose(Relation<T, U> relation);
 
     public Relation<S, T> domainRestriction(OrderedSet<S> set);
+    
+    public Relation<S, T> domainRestriction(Predicate<S> p);
 
     public Relation<S, T> domainExclusion(OrderedSet<S> set);
 

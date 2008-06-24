@@ -115,7 +115,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
     
     /*
      * Naive implementations of slice and reach using Transitive Closure (TC). These
-     * are added for performance comparisons.
+     * are added for performance comparisons and consistency tests.
      */    
     public static <T extends Comparable<T>> Relation<T, T> sliceTC(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops) {
