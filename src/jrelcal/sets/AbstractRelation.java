@@ -10,7 +10,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
     implements
         Relation<S, T> {
 
-    // TODO Peter: This compareTo assumes ordered/sorted sets...
+    // This compareTo assumes ordered/sorted sets...
     public int compareTo(Relation<S, T> relation) {
         int thisSize = cardinality();
         int thatSize = relation.cardinality();
@@ -28,10 +28,22 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         }
         return 0;
     }
-    
-    public static <T extends Comparable<T>> Relation<T, T> reflexiveTransitiveClosure(Relation<T, T> rel) {
+
+    /*
+     * (STATIC) GRAPH OPERATIONS
+     * 
+     * Operations on graph require relations to be of type <T,T>. This can be enforced
+     * using generics, but this requires static definition of this operations.
+     * 
+     * An alternative would be to check the domain and range for type equality at runtime.
+     * 
+     */
+            
+    public static <T extends Comparable<T>> Relation<T, T> reflexiveTransitiveClosure(
+        Relation<T, T> rel) {
         if (rel instanceof AdjacencyTableRelation)
-            return AdjacencyTableRelation.reflexiveTransitiveClosure((AdjacencyTableRelation<T, T>)rel);
+            return AdjacencyTableRelation
+                .reflexiveTransitiveClosure((AdjacencyTableRelation<T, T>)rel);
         else if (rel instanceof PairSetRelation)
             return PairSetRelation.reflexiveTransitiveClosure((PairSetRelation<T, T>)rel);
         else {
@@ -63,32 +75,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         }
         return result;
     }
-    
-    public static <T extends Comparable<T>> Relation<T, T> sliceRelational(OrderedSet<T> seeds,
-        Relation<T, T> rel, OrderedSet<T> stops) {
-        
-        
-       
-        return null;
-    }
 
-    private static <T extends Comparable<T>> boolean everySetEmpty(
-        Map<T, OrderedSet<T>> seedStopList) {
-        boolean result = true;
-        for (OrderedSet<T> valueSet : seedStopList.values())
-            result = result && valueSet.size() == 0;
-        return result;
-    }
-
-    public static <R extends Comparable<R>, Q extends Comparable<Q>, S extends Comparable<S>> Relation<Q, S> reachCompose(
-        Relation<Q, R> a, Relation<R, R> r, Relation<R, S> b) {
-        return a.compose(AbstractRelation.reach(a.range(), r, b.domain())).compose(b);
-    }
-
-    /*
-     * Return pair (X,Y) with node X from seeds and node Y from stops if there is a path from X to Y.
-     * (Instead of returning the complete subgraph)
-     */
     public static <T extends Comparable<T>> Relation<T, T> reach(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops) {
         Map<T, OrderedSet<T>> seedWorkList = new HashMap<T, OrderedSet<T>>();
@@ -120,6 +107,44 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
             }
         }
         return result;
+    }
+
+    public static <T extends Comparable<T>> OrderedSet<T> carrier(Relation<T, T> rel) {
+        return rel.domain().union(rel.range());
+    }
+    
+    /*
+     * Naive implementations of slice and reach using Transitive Closure (TC). These
+     * are added for performance comparisons.
+     */    
+    public static <T extends Comparable<T>> Relation<T, T> sliceTC(OrderedSet<T> seeds,
+        Relation<T, T> rel, OrderedSet<T> stops) {
+        if (stops.size() > 0)
+            return rel.domainRestriction(carrier(transitiveClosure(rel).domainRestriction(
+                seeds).rangeRestriction(stops)));
+        else
+            return rel.domainRestriction(carrier(transitiveClosure(rel).domainRestriction(
+                seeds)));
+    }
+
+    public static <T extends Comparable<T>> Relation<T, T> reachTC(OrderedSet<T> seeds,
+        Relation<T, T> rel, OrderedSet<T> stops) {
+        Relation<T, T> result = transitiveClosure(rel).domainRestriction(seeds);
+        result = result.rangeRestriction(stops);
+        return result;
+    }
+    
+    private static <T extends Comparable<T>> boolean everySetEmpty(
+        Map<T, OrderedSet<T>> seedStopList) {
+        boolean result = true;
+        for (OrderedSet<T> valueSet : seedStopList.values())
+            result = result && valueSet.size() == 0;
+        return result;
+    }
+
+    public static <R extends Comparable<R>, Q extends Comparable<Q>, S extends Comparable<S>> Relation<Q, S> reachCompose(
+        Relation<Q, R> a, Relation<R, R> r, Relation<R, S> b) {
+        return a.compose(AbstractRelation.reach(a.range(), r, b.domain())).compose(b);
     }
 
     @Override

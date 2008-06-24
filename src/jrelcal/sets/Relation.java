@@ -37,7 +37,7 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
     public Relation<S, T> rangeRestriction(OrderedSet<T> set);
 
     public Relation<S, T> rangeExclusion(OrderedSet<T> set);
-       
+        
     public OrderedSet<T> rightSection(S s); 
     
     public OrderedSet<S> leftSection(T t);

@@ -515,16 +515,29 @@ public abstract class RelationTest extends TestCase {
     public void testSliceEmpty() {
         assertEquals(emptyRelation, AbstractRelation.slice(emptySet, emptyRelation, emptySet));
     }
+    
+    public void testSliceEmptyTC() {
+        assertEquals(emptyRelation, AbstractRelation.sliceTC(emptySet, emptyRelation, emptySet));
+    }
 
     public void testEasySlice() {
         assertEquals(sliceResultRelation, AbstractRelation.slice(oneSet, sliceRelation,
+            emptySet));
+    }
+    
+    public void testEasySliceTC() {
+        assertEquals(sliceResultRelation, AbstractRelation.sliceTC(oneSet, sliceRelation,
             emptySet));
     }
 
     public void testCycleSlice() {
         assertEquals(sliceCycleResultRelation, AbstractRelation.slice(oneSet,
             sliceCycleRelation, emptySet));
-
+    }
+    
+    public void testCycleSliceTC() {
+        assertEquals(sliceCycleResultRelation, AbstractRelation.sliceTC(oneSet,
+            sliceCycleRelation, emptySet));
     }
 
     /*
@@ -613,7 +626,10 @@ public abstract class RelationTest extends TestCase {
         assertEquals(emptyRelation, AbstractRelation.transitiveClosure(sliceRelation3)
             .domainRestriction(emptySet).rangeRestriction(emptySet));
     }
-
+    
+    
+    
+    
     /*
      * Transitive Closure
      */
