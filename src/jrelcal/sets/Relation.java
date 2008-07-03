@@ -45,18 +45,16 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
     public OrderedSet<T> rightSection(S s); 
     
     public OrderedSet<S> leftSection(T t);
-        
+    public int cardinality();
+    
     public boolean equals(Relation<S, T> relation);
     
     @SuppressWarnings("unchecked")
     public boolean equals(Object o);
 
-    public int cardinality();
-
     public String toString();
-
+ 
     public Iterator<Pair<S, T>> iterator();
-
+    
     public int compareTo(Relation<S, T> relation);
-
 }

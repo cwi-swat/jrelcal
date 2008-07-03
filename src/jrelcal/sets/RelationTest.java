@@ -371,6 +371,14 @@ public abstract class RelationTest extends TestCase {
         assertEquals(twoOneRelation, oneTwoTwoOneRelation.domainRestriction(greaterThanOne));
     }
     
+    public void testDomainRestrictionEmptyResultPredicate() {
+        assertEquals(emptyRelation, oneOneRelation.domainRestriction(greaterThanOne));
+    }
+    
+    public void testDomainRestrictionOnEmptyRelationPredicate() {
+        assertEquals(emptyRelation, emptyRelation.domainRestriction(greaterThanOne));
+    }
+    
     
     
     

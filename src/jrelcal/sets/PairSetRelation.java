@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.collections15.Predicate;
-
 import jrelcal.Pair;
+
+import org.apache.commons.collections15.Predicate;
 
 public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
     extends
@@ -157,19 +157,13 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         return rangeRestriction(set).domain();
     }
 
-    public static <T extends Comparable<T>> PairSetRelation<T, T> transitiveClosure(
+    public static <T extends Comparable<T>> Relation<T, T> transitiveClosure(
         PairSetRelation<T, T> relation) {
-        PairSetRelation<T, T> result = new PairSetRelation<T, T>(relation.asPairs());
+        Relation<T, T> result = new PairSetRelation<T, T>(relation.asPairs());
         int prevResultSize = 0;    
         while (!(prevResultSize == result.cardinality())) {
             prevResultSize = result.cardinality();
-            for (Pair<T,T> p : result.asPairs()) {                
-                for (Pair<T, T> p2 : result.asPairs()) {
-                    if (p.getSecond().equals(p2.getFirst())) {
-                        result.add(new Pair<T, T>(p.getFirst(), p2.getSecond()));
-                    }
-                }
-            }
+            result = result.union(result.compose(relation));
         }
         return result;
     }
