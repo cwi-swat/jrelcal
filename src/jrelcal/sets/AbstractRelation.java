@@ -38,7 +38,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
      * An alternative would be to check the domain and range for type equality at runtime.
      * 
      */
-            
+
     public static <T extends Comparable<T>> Relation<T, T> reflexiveTransitiveClosure(
         Relation<T, T> rel) {
         if (rel instanceof AdjacencyTableRelation)
@@ -82,41 +82,54 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         Map<T, OrderedSet<T>> seedStopList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedDoneList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedPrevDoneList = new HashMap<T, OrderedSet<T>>();
+        
+        initWorkLists(seeds, rel, stops, seedWorkList, seedStopList, seedDoneList,
+            seedPrevDoneList);
+        
+        Relation<T, T> result = new PairSetRelation<T, T>();
+        while (!everySetEmpty(seedStopList) && !seedDoneList.equals(seedPrevDoneList)) {
+            traverseGraph(rel, seedWorkList, seedStopList, seedDoneList, seedPrevDoneList,
+                result);
+        }
+        
+        return result;
+    }
+
+    private static <T extends Comparable<T>> void initWorkLists(OrderedSet<T> seeds,
+        Relation<T, T> rel, OrderedSet<T> stops, Map<T, OrderedSet<T>> seedWorkList,
+        Map<T, OrderedSet<T>> seedStopList, Map<T, OrderedSet<T>> seedDoneList,
+        Map<T, OrderedSet<T>> seedPrevDoneList) {
         for (T seed : seeds) {
             seedWorkList.put(seed, rel.rightSection(seed));
             seedStopList.put(seed, stops);
             seedDoneList.put(seed, new OrderedSet<T>(seed));
             seedPrevDoneList.put(seed, new OrderedSet<T>());
         }
-        Relation<T, T> result = new PairSetRelation<T, T>();
-        OrderedSet<T> doneSeeds = new OrderedSet<T>();
-        while (!everySetEmpty(seedStopList) && !seedDoneList.equals(seedPrevDoneList)) {
-            for (T s : seedWorkList.keySet()) {
-                seedPrevDoneList.put(s, seedDoneList.get(s));
-                OrderedSet<T> neighbours = seedWorkList.get(s);
-                doneSeeds = doneSeeds.union(seedWorkList.get(s));
-                OrderedSet<T> temp = seedDoneList.get(s);
-                OrderedSet<T> unionNew = temp.union(seedWorkList.get(s));
-                seedDoneList.put(s, unionNew);
-                OrderedSet<T> stopsForSeed = seedStopList.get(s);
-                OrderedSet<T> common = stopsForSeed.intersection(neighbours);
-                seedStopList.put(s, stopsForSeed.difference(common));
-                for (T t : common)
-                    result.add(new Pair<T, T>(s, t));
-                seedWorkList.put(s, rel.domainRestriction(neighbours).range());
-            }
+    }
+
+    private static <T extends Comparable<T>> void traverseGraph(Relation<T, T> rel,
+        Map<T, OrderedSet<T>> seedWorkList, Map<T, OrderedSet<T>> seedStopList,
+        Map<T, OrderedSet<T>> seedDoneList, Map<T, OrderedSet<T>> seedPrevDoneList,
+        Relation<T, T> result) {
+        for (T s : seedWorkList.keySet()) {
+            seedPrevDoneList.put(s, seedDoneList.get(s));
+            seedDoneList.put(s, seedDoneList.get(s).union(seedWorkList.get(s)));
+            OrderedSet<T> common = seedStopList.get(s).intersection(seedWorkList.get(s));
+            seedStopList.put(s, seedStopList.get(s).difference(common));
+            for (T t : common)
+                result.add(new Pair<T, T>(s, t));
+            seedWorkList.put(s, rel.domainRestriction(seedWorkList.get(s)).range());
         }
-        return result;
     }
 
     public static <T extends Comparable<T>> OrderedSet<T> carrier(Relation<T, T> rel) {
         return rel.domain().union(rel.range());
     }
-    
+
     /*
      * Naive implementations of slice and reach using Transitive Closure (TC). These
      * are added for performance comparisons and consistency tests.
-     */    
+     */
     public static <T extends Comparable<T>> Relation<T, T> sliceTC(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops) {
         if (stops.size() > 0)
@@ -133,7 +146,7 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         result = result.rangeRestriction(stops);
         return result;
     }
-    
+
     private static <T extends Comparable<T>> boolean everySetEmpty(
         Map<T, OrderedSet<T>> seedStopList) {
         boolean result = true;
