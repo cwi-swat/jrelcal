@@ -1,5 +1,7 @@
 package jrelcal.sets;
-
+/**
+ * @author Peter Rademaker
+ */
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -82,16 +84,16 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
         Map<T, OrderedSet<T>> seedStopList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedDoneList = new HashMap<T, OrderedSet<T>>();
         Map<T, OrderedSet<T>> seedPrevDoneList = new HashMap<T, OrderedSet<T>>();
-        
+
         initWorkLists(seeds, rel, stops, seedWorkList, seedStopList, seedDoneList,
             seedPrevDoneList);
-        
+
         Relation<T, T> result = new PairSetRelation<T, T>();
         while (!everySetEmpty(seedStopList) && !seedDoneList.equals(seedPrevDoneList)) {
             traverseGraph(rel, seedWorkList, seedStopList, seedDoneList, seedPrevDoneList,
                 result);
         }
-        
+
         return result;
     }
 
