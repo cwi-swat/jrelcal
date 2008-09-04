@@ -1,4 +1,5 @@
 package jrelcal.sets;
+
 /**
  * @author Peter Rademaker
  */
@@ -63,6 +64,11 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
             //TODO default implementation using asPairs();
             return null;
         }
+    }
+
+    public static <T extends Comparable<T>> Relation<T, T> slice(OrderedSet<T> seeds,
+        Relation<T, T> rel) {
+        return slice(seeds, rel, new OrderedSet<T>());
     }
 
     public static <T extends Comparable<T>> Relation<T, T> slice(OrderedSet<T> seeds,

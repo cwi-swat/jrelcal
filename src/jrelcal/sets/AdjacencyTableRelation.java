@@ -277,6 +277,17 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
                     table.getImage(i).remove(image);
         return newRelation(getFromSet(), getToSet(), table);
     }
+    
+    public Relation<S, T> rangeRestriction(Predicate<T> pred) {
+        AdjacencyTable table = getTable().copy();
+        int bound = table.bound();
+        for (int i = 0; i < bound; i++)
+            for (Integer image : table.getImage(i))
+                if (!pred.evaluate(getToSet().elementAt(image)))
+                    table.getImage(i).remove(image);
+        return newRelation(getFromSet(), getToSet(), table);
+    }
+
 
     public Relation<S, T> rangeExclusion(OrderedSet<T> set) {
         AdjacencyTable table = getTable().copy();
@@ -323,13 +334,31 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     public OrderedSet<T> rightSection(S s) {
         OrderedSet<S> set = new OrderedSet<S>();
         set.add(s);
-        return domainRestriction(set).range();
+        return rightSection(set);
+    }
+    
+    public OrderedSet<T> rightSection(Set<S> set) {
+        OrderedSet<S> oSet = new OrderedSet<S>(set);
+        return domainRestriction(oSet).range();
+    }
+
+    public OrderedSet<T> rightSection(Predicate<S> pred) {
+        return domainRestriction(pred).range();
     }
 
     public OrderedSet<S> leftSection(T t) {
         OrderedSet<T> set = new OrderedSet<T>();
         set.add(t);
         return rangeRestriction(set).domain();
+    }
+    
+    public OrderedSet<S> leftSection(Set<T> set) {
+        OrderedSet<T> oSet = new OrderedSet<T>(set);
+        return rangeRestriction(oSet).domain();
+    }
+
+    public OrderedSet<S> leftSection(Predicate<T> tPred) {
+        return rangeRestriction(tPred).domain();
     }
 
     public boolean equals(Relation<S, T> relation) {
@@ -574,5 +603,4 @@ public class AdjacencyTableRelation<S extends Comparable<S>, T extends Comparabl
     public Iterator<Pair<S, T>> iterator() {
         return asPairs().iterator();
     }
-
 }

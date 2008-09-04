@@ -142,6 +142,14 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
         return result;
     }
 
+    public Relation<S, T> rangeRestriction(Predicate<T> pred) {
+        Relation<S, T> result = new PairSetRelation<S, T>();
+        for (Pair<S, T> p : this)
+            if (pred.evaluate(p.getSecond()))
+                result.add(p);
+        return result;
+    }
+    
     public Relation<S, T> union(Relation<S, T> relation) {
         set.addAll(relation.asPairs());
         return this;
@@ -150,13 +158,32 @@ public class PairSetRelation<S extends Comparable<S>, T extends Comparable<T>>
     public OrderedSet<T> rightSection(S s) {
         OrderedSet<S> set = new OrderedSet<S>();
         set.add(s);
-        return domainRestriction(set).range();
+        return rightSection(set);
+        
     }
 
+    public OrderedSet<T> rightSection(Set<S> set) {
+        OrderedSet<S> oSet = new OrderedSet<S>(set);
+        return domainRestriction(oSet).range();
+    }
+
+    public OrderedSet<T> rightSection(Predicate<S> pred) {
+        return domainRestriction(pred).range();
+    }
+    
     public OrderedSet<S> leftSection(T t) {
         OrderedSet<T> set = new OrderedSet<T>();
         set.add(t);
-        return rangeRestriction(set).domain();
+        return leftSection(set);
+    }
+
+    public OrderedSet<S> leftSection(Set<T> set) {
+        OrderedSet<T> oSet = new OrderedSet<T>(set);
+        return rangeRestriction(oSet).domain();
+    }
+
+    public OrderedSet<S> leftSection(Predicate<T> tPred) {
+        return rangeRestriction(tPred).domain();
     }
 
     public static <T extends Comparable<T>> Relation<T, T> transitiveClosure(
