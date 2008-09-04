@@ -12,6 +12,12 @@ public interface Relation<S extends Comparable<S>, T extends Comparable<T>>
         Iterable<Pair<S, T>>,
         Comparable<Relation<S, T>> {
 
+    // TODO To be added:
+    //      - Predicate versions for all exclusions and restrictions (both range and domain)
+    //      - A carrier method
+    //      To be fixed
+    //      - ConcurrentModificationException thrown when doing rangeRestrictions on a AdjacencyTableRelation
+    
     public void add(Pair<S, T> pair);
     
     public void add(Set<Pair<S,T>> pairs);
