@@ -102,6 +102,11 @@ public abstract class AbstractRelation<S extends Comparable<S>, T extends Compar
 
         return result;
     }
+    
+    public static <T extends Comparable<T>> OrderedSet<T> reach(OrderedSet<T> seeds,
+        Relation<T, T> rel) {
+        return carrier(slice(seeds, rel)).difference(seeds);
+    }
 
     private static <T extends Comparable<T>> void initWorkLists(OrderedSet<T> seeds,
         Relation<T, T> rel, OrderedSet<T> stops, Map<T, OrderedSet<T>> seedWorkList,
