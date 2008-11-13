@@ -1,3 +1,8 @@
+2008-11-13    <storm@cwi.nl>
+
+	* Merged from Peter Rademaker's jrelcal_ext branch from 20156 to
+	27003. Fixed some build issues. Bumped version number to 0.2.
+
 2006-06-28    <storm@cwi.nl>
 
 	* Added build.xml to simplify building/testing using Ant.

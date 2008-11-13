@@ -2,11 +2,11 @@ prefix=@prefix@
 
 Maintainers=storm@cwi.nl,paulk@cwi.nl
 Name: JRelCal
-Version: 0.1
+Version: 0.2
 Description:
 JarFile=JRelCal.jar
 Jars=${prefix}/share/${JarFile}
 Packages=jrelcal,jrelcal.rsf,jrelcal.ci,jrelcal.bags,jrelcal.bom,jrelcal.sets
-LocalJars=jars/junit.jar
+LocalJars=jars/junit.jar:jars/collections-generic-4.01.jar
 MainClass=
 TestClass=TestAll

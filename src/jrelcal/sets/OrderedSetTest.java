@@ -12,28 +12,28 @@ import junit.framework.TestCase;
  * @author storm
  * @class jrelcal.OrderedSetTest
  */
-public class SetTest extends TestCase {
-	protected Set<Integer> emptySet;
-	protected Set<Integer> oneSet;
-	protected Set<Integer> twoSet;
-	protected Set<Integer> oneTwoThreeSet;
-	protected Set<Integer> twoThreeFourSet;
-	protected Set<Integer> oneTwoSet;
-	protected Set<Integer> fourFiveSixSet;
+public class OrderedSetTest extends TestCase {
+	protected OrderedSet<Integer> emptySet;
+	protected OrderedSet<Integer> oneSet;
+	protected OrderedSet<Integer> twoSet;
+	protected OrderedSet<Integer> oneTwoThreeSet;
+	protected OrderedSet<Integer> twoThreeFourSet;
+	protected OrderedSet<Integer> oneTwoSet;
+	protected OrderedSet<Integer> fourFiveSixSet;
 	
 	
-	public SetTest(String string) {
+	public OrderedSetTest(String string) {
 		super(string);
 	}
 	
 	protected void setUp() {
-		emptySet = new Set<Integer>();
-		oneSet = new Set<Integer>();
-		twoSet = new Set<Integer>();
-		oneTwoThreeSet = new Set<Integer>();
-		twoThreeFourSet = new Set<Integer>();
-		oneTwoSet = new Set<Integer>();
-		fourFiveSixSet = new Set<Integer>();
+		emptySet = new OrderedSet<Integer>();
+		oneSet = new OrderedSet<Integer>();
+		twoSet = new OrderedSet<Integer>();
+		oneTwoThreeSet = new OrderedSet<Integer>();
+		twoThreeFourSet = new OrderedSet<Integer>();
+		oneTwoSet = new OrderedSet<Integer>();
+		fourFiveSixSet = new OrderedSet<Integer>();
 		
 		oneSet.add(1);
 		twoSet.add(2);
